@@ -15,10 +15,40 @@ public class ClientChat {
 	private HomeFrame homeF = null;
 	
 	private String nowId = null;
+	private String chk = null;
 	
 	ClientChat(Socket s){
 		this.withServer = s;
 		login(this);
+		
+		if(nowId!=null) {
+			receive();			
+		}
+	}
+	
+	private void receive() {
+		// TODO Auto-generated method stub
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					while(true) {
+						reMsg = withServer.getInputStream();
+						byte[] buffer = new byte[256];
+						reMsg.read(buffer);
+						String reMsg = new String(buffer);
+						reMsg = reMsg.trim();
+						System.out.println(reMsg);
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
+					System.out.println("Server Out");
+				}
+			}
+		}).start();
 	}
 	
 	public void send(String msg) {
@@ -29,7 +59,6 @@ public class ClientChat {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 	}
 
 	private void login(ClientChat cc) {
@@ -50,7 +79,7 @@ public class ClientChat {
 		JoinFrame joinF = new JoinFrame(this);
 	}
 	
-	public void chkFrame(String msg) {
+	public void chkSet(String msg) {
 		try {
 			seMsg = withServer.getOutputStream();
 			seMsg.write(msg.getBytes());
@@ -58,7 +87,7 @@ public class ClientChat {
 			reMsg = withServer.getInputStream();
 			byte[] buffer = new byte[256];
 			reMsg.read(buffer);
-			String chk = new String(buffer);
+			chk = new String(buffer);
 			chk = chk.trim();
 			
 			System.out.println(chk);
@@ -69,6 +98,10 @@ public class ClientChat {
 		}
 	}
 	
+	public String getChkMessage() {
+		return chk;
+	}
+	
 	public void loginSet(String id, String pwd) {
 		String user = "login:" + id + "/" + pwd;
 		
@@ -77,7 +110,7 @@ public class ClientChat {
 		System.out.println("id:" + id);
 		System.out.println("pwd:" + pwd);
 		
-		chkFrame(user);
+		chkSet(user);
 	}
 
 }

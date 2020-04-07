@@ -3,6 +3,7 @@ package db;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DAOCenter {
 	private Connection con = null;
@@ -23,7 +24,7 @@ public class DAOCenter {
 			fDAO = FavoriteDAO.getInstance(con);
 			frDAO = FriendDAO.getInstance(con);
 		} else if(con==null) {
-			System.out.println("DB connect fail");
+			System.out.println("DB not connect");
 		}
 	}
 	
@@ -78,6 +79,11 @@ public class DAOCenter {
 			Dif = frDAO;
 			break;
 		}
+	}
+	
+	public Object getDB(String tName){
+		tableChk(tName);
+		return Dif.getDBList(tName);
 	}
 
 }

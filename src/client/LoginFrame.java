@@ -82,6 +82,8 @@ public class LoginFrame extends JFrame implements ActionListener {
 		
 		if(nowCom.equals(loginBtn)) {
 			cc.loginSet(id, pwd);
+			idField.setText("");
+			pwdField.setText("");
 		} else if(nowCom.equals(endBtn)) {
 			System.exit(0);
 		} else if(nowCom.equals(joinBtn)) {

@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class MemberDAO implements DAOInterface {
 	private static Connection con = null;
@@ -74,9 +75,37 @@ public class MemberDAO implements DAOInterface {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.out.println("DB not connect");
 		}
 		return false;
+	}
+
+	@Override
+	public Object getDBList(String tName) {
+		// TODO Auto-generated method stub
+		ArrayList<MemberDTO> mList = new ArrayList<>();
+		try {
+			String sql = "select * from member";
+			stmt = con.prepareStatement(sql);
+			if (stmt!=null) {
+				rs = stmt.executeQuery(sql);
+				while(rs.next()) {
+					MemberDTO m = new MemberDTO();
+					
+					m.setId(rs.getString("id"));
+					m.setPwd(rs.getString("pwd"));
+					m.setPhone(rs.getString("phone"));
+					
+					mList.add(m);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			System.out.println("DB not connect");
+		}
+		return mList;
 	}
 
 }
