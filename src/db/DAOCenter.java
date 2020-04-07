@@ -66,18 +66,18 @@ public class DAOCenter {
 	
 	private void tableChk(String tName) {
 		switch(tName) {
-		case "member" :
-			Dif = mDAO;
-			break;
-		case "post" :
-			Dif = pDAO;
-			break;
-		case "favorite" :
-			Dif = fDAO;
-			break;
-		case "friend" :
-			Dif = frDAO;
-			break;
+			case "member" :
+				Dif = mDAO;
+				break;
+			case "post" :
+				Dif = pDAO;
+				break;
+			case "favorite" :
+				Dif = fDAO;
+				break;
+			case "friend" :
+				Dif = frDAO;
+				break;
 		}
 	}
 	

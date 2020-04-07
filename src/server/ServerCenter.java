@@ -1,5 +1,8 @@
 package server;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import db.DAOCenter;
@@ -49,7 +52,39 @@ public class ServerCenter {
 		} else if(msg.indexOf("idCheck:")!=-1) {
 			idChk = idCheck(msg);
 		} else if(msg.indexOf("setList:")!=-1) {
-			
+			setList(msg);
+		}
+	}
+
+	private void setList(String msg) {
+		// TODO Auto-generated method stub
+		String tName = msg.substring(msg.indexOf(":")+1, msg.lastIndexOf("/"));
+		if(nowSc.getNowScId().equals(msg.substring(msg.lastIndexOf("/")+1, msg.length()))){
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream os = new ObjectOutputStream(bos);
+				
+				switch(tName) {
+					case "member" :
+						os.writeObject(mList);
+						break;
+					case "post" :
+						os.writeObject(pList);
+						break;
+					case "favorite" :
+						os.writeObject(fList);
+						break;
+					case "friend" :
+						os.writeObject(frList);
+						break;
+				}
+				
+				byte[] resultByte = bos.toByteArray();
+				nowSc.sendList(resultByte);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

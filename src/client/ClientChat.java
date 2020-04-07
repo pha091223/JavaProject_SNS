@@ -1,9 +1,17 @@
 package client;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+
+import db.FavoriteDTO;
+import db.FriendDTO;
+import db.MemberDTO;
+import db.PostDTO;
 
 public class ClientChat {
 	private Socket withServer = null;
@@ -20,10 +28,6 @@ public class ClientChat {
 	ClientChat(Socket s){
 		this.withServer = s;
 		login(this);
-		
-		if(nowId!=null) {
-			receive();			
-		}
 	}
 	
 	private void receive() {
@@ -69,12 +73,49 @@ public class ClientChat {
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
 		if(chk.indexOf("login true")!=-1) {
-			homeF = new HomeFrame(nowId, cc);
+			homeF = HomeFrame.getInstance(nowId, cc);
+			receiveList();
+			homeF.Frame();
 		} else {
 			nowId = null;
 		}
 	}
 	
+	private void receiveList() {
+		// TODO Auto-generated method stub
+		try {
+			reMsg = withServer.getInputStream();
+			byte[] reBuffer = new byte[1024];
+			reMsg.read(reBuffer);
+			
+			ByteArrayInputStream bis = new ByteArrayInputStream(reBuffer);
+			ObjectInputStream ois = new ObjectInputStream(bis);
+			
+			switch(homeF.getTName()) {
+				case "member" :
+					ArrayList<MemberDTO> mList = (ArrayList<MemberDTO>)ois.readObject();
+					System.out.println(mList);
+					homeF.getMemberList(mList);
+					break;
+				case "post" :
+					ArrayList<PostDTO> pList = (ArrayList<PostDTO>)ois.readObject();
+					System.out.println(pList);
+					break;
+				case "favorite" :
+					ArrayList<FavoriteDTO> fList = (ArrayList<FavoriteDTO>)ois.readObject();
+					System.out.println(fList);
+					break;
+				case "friend" :
+					ArrayList<FriendDTO> frList = (ArrayList<FriendDTO>)ois.readObject();
+					System.out.println(frList);
+					break;
+			}
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void Join() {
 		JoinFrame joinF = new JoinFrame(this);
 	}

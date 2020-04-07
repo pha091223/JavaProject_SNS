@@ -1,15 +1,16 @@
 package client;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+
+import db.DAOCenter;
+import db.MemberDTO;
 
 public class HomeFrame extends JFrame {
 	private JTabbedPane tabPane = new JTabbedPane();
@@ -19,22 +20,28 @@ public class HomeFrame extends JFrame {
 	private JPanel tab_3 = new JPanel();
 	private JPanel tab_4 = new JPanel();
 	
-	private ClientChat nowSc = null;
-	private String nowId = null;
+	private static ClientChat nowCc = null;
+	private static String nowId = null;
+	private String getTName = null;
 	
-	HomeFrame(String id, ClientChat cc){
+	private ArrayList<MemberDTO> mList = null;
+	
+	private static HomeFrame HomeF = null;
+	
+	private HomeFrame(){
 		super("SNS Program");
-		nowId = id;
-		nowSc = cc;
+		setList("member");
+	}
+
+	public void Frame() {
+		// TODO Auto-generated method stub
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 500, 500);
-		
-		setList();
 		
 		createTimeline();
 		createMyPage();
 		createDirectMessage();
-		CreateSearch();
+		createSearch();
 		
 		createTabbledP();
 		
@@ -46,9 +53,27 @@ public class HomeFrame extends JFrame {
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 	}
 
-	private void setList() {
+	public static HomeFrame getInstance(String id, ClientChat cc) {
+		nowId = id;
+		nowCc = cc;
+		if(HomeF==null) {
+			HomeF = new HomeFrame();
+		}
+		return HomeF;
+	}
+	
+	private void setList(String tName) {
 		// TODO Auto-generated method stub
-		nowSc.send("setList:" + nowId);
+		getTName = tName;
+		nowCc.send("setList:" + tName + "/" + nowId);
+	}
+	
+	public String getTName() {
+		return getTName;
+	}
+	
+	public void getMemberList(ArrayList<MemberDTO> m) {
+		mList = m;
 	}
 
 	private void createTimeline() {
@@ -57,7 +82,8 @@ public class HomeFrame extends JFrame {
 		
 		JTextArea timeline_1 = new JTextArea();
 		timeline_1.setEditable(false);
-		timeline_1.setText("First");
+//		timeline_1.setText("First");
+		timeline_1.setText(mList.get(0).getPhone());
 		tab_1.add(timeline_1);
 		
 		JTextArea timeline_2 = new JTextArea();
@@ -91,7 +117,7 @@ public class HomeFrame extends JFrame {
 		
 	}
 
-	private void CreateSearch() {
+	private void createSearch() {
 		// TODO Auto-generated method stub
 		
 	}

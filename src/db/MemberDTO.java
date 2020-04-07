@@ -1,6 +1,8 @@
 package db;
 
-public class MemberDTO {
+import java.io.Serializable;
+
+public class MemberDTO implements Serializable {
 	private String id = null;
 	private String pwd = null;
 	private String phone = null;

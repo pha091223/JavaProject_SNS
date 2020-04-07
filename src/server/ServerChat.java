@@ -13,6 +13,8 @@ public class ServerChat extends Thread {
 	private InputStream reMsg = null;
 	private OutputStream seMsg = null;
 	
+	private String nowId = null;
+	
 	ServerChat(Socket c, ServerCenter sc){
 		this.withClient = c;
 		this.sc = sc;
@@ -23,6 +25,10 @@ public class ServerChat extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		receive();
+	}
+	
+	public String getNowScId() {
+		return nowId;
 	}
 	
 	private void receive() {
@@ -40,6 +46,11 @@ public class ServerChat extends Thread {
 						String reMsg = new String(buffer);
 						reMsg = reMsg.trim();
 						System.out.println(reMsg);
+						
+						if(reMsg.indexOf("setList:")!=-1) {
+							nowId = reMsg.substring(reMsg.indexOf(":")+1, reMsg.length());
+						}
+						
 						sc.receiveClientMsg(reMsg, nowSc);
 					}
 				} catch (IOException e) {
@@ -61,6 +72,16 @@ public class ServerChat extends Thread {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			System.out.println("Client Logout");
+		}
+	}
+	
+	public void sendList(byte[] resultByte) {
+		try {
+			seMsg = withClient.getOutputStream();
+			seMsg.write(resultByte);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
