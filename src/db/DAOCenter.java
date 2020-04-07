@@ -23,8 +23,6 @@ public class DAOCenter {
 			pDAO = PostDAO.getInstance(con);
 			fDAO = FavoriteDAO.getInstance(con);
 			frDAO = FriendDAO.getInstance(con);
-		} else if(con==null) {
-			// System.out.println("DB not connect");
 		}
 	}
 	
@@ -62,6 +60,11 @@ public class DAOCenter {
 	public boolean select(String tName, Object DTO) {
 		tableChk(tName);
 		return Dif.select(DTO);
+	}
+	
+	public boolean select(String tName, String s) {
+		tableChk(tName);
+		return Dif.select(s);
 	}
 	
 	private void tableChk(String tName) {

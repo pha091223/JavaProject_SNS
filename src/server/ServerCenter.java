@@ -17,26 +17,15 @@ public class ServerCenter {
 	
 	private ArrayList<ServerChat> sList = new ArrayList<>();
 	
-	private ArrayList<MemberDTO> mList = new ArrayList<>();
-	private ArrayList<PostDTO> pList = new ArrayList<>();
-	private ArrayList<FavoriteDTO> fList = new ArrayList<>();
-	private ArrayList<FriendDTO> frList = new ArrayList<>();
+//	private ArrayList<MemberDTO> mList = new ArrayList<>();
+//	private ArrayList<PostDTO> pList = new ArrayList<>();
+//	private ArrayList<FavoriteDTO> fList = new ArrayList<>();
+//	private ArrayList<FriendDTO> frList = new ArrayList<>();
 	
 	private boolean idChk = false;
 	
 	ServerCenter(){
 		Dc = DAOCenter.getInstance();
-		if(Dc!=null) {
-			getDBList();
-		}
-	}
-	
-	private void getDBList() {
-		// TODO Auto-generated method stub
-		mList = (ArrayList<MemberDTO>)Dc.getDB("member");
-		pList = (ArrayList<PostDTO>)Dc.getDB("post");
-		fList = (ArrayList<FavoriteDTO>)Dc.getDB("favorite");
-		frList = (ArrayList<FriendDTO>)Dc.getDB("friend");
 	}
 
 	public void addSc(ServerChat sc) {
@@ -46,9 +35,9 @@ public class ServerCenter {
 	public void receiveClientMsg(String msg, ServerChat sc) {
 		nowSc = sc;
 		if(msg.indexOf("login:")!=-1) {
-			reLogin(msg);
+			Login(msg);
 		} else if(msg.indexOf("join:")!=-1) {
-			reJoin(msg);
+			Join(msg);
 		} else if(msg.indexOf("idCheck:")!=-1) {
 			idChk = idCheck(msg);
 		} else if(msg.indexOf("setList:")!=-1) {
@@ -64,20 +53,20 @@ public class ServerCenter {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos);
 				
-				switch(tName) {
-					case "member" :
-						os.writeObject(mList);
-						break;
-					case "post" :
-						os.writeObject(pList);
-						break;
-					case "favorite" :
-						os.writeObject(fList);
-						break;
-					case "friend" :
-						os.writeObject(frList);
-						break;
-				}
+//				switch(tName) {
+//					case "member" :
+//						os.writeObject(Dc.getDB("member"));
+//						break;
+//					case "post" :
+//						os.writeObject(Dc.getDB("post"));
+//						break;
+//					case "favorite" :
+//						os.writeObject(Dc.getDB("favorite"));
+//						break;
+//					case "friend" :
+//						os.writeObject(Dc.getDB("friend"));
+//						break;
+//				}
 				
 				byte[] resultByte = bos.toByteArray();
 				nowSc.sendList(resultByte);
@@ -95,27 +84,35 @@ public class ServerCenter {
 		if(id.length()>8) {
 			nowSc.send("In eight");
 		} else {
-			boolean chk = true;
-			if(mList!=null) {
-				for(MemberDTO i : mList) {
-					if(id.equals(i.getId())) {
-						nowSc.send("Same Id");
-						chk = false;
-						return false;
-					} else {
-						chk = true;
-					}
-				}
-			}
-			if(chk==true) {
+			if(Dc.select("member", id)) {
 				nowSc.send("Possible Id");
 				return true;
+			} else {
+				nowSc.send("Same Id");
 			}
+			
+//			boolean chk = true;
+//			if(mList!=null) {
+//				for(MemberDTO i : mList) {
+//					if(id.equals(i.getId())) {
+//						nowSc.send("Same Id");
+//						chk = false;
+//						return false;
+//					} else {
+//						chk = true;
+//					}
+//				}
+//			}
+//			if(chk==true) {
+//				nowSc.send("Possible Id");
+//				return true;
+//			}
+			
 		}
 		return false;
 	}
 
-	private void reLogin(String msg) {
+	private void Login(String msg) {
 		// TODO Auto-generated method stub
 		String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());
 		String id = reMsg.substring(0, reMsg.indexOf("/"));
@@ -132,48 +129,30 @@ public class ServerCenter {
 		}
 	}
 	
-	private void reJoin(String msg) {
+	private void Join(String msg) {
 		String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());
 		String id = reMsg.substring(0, reMsg.indexOf("/"));
 		String pwd = reMsg.substring(reMsg.indexOf("/")+1, reMsg.lastIndexOf("/"));
 		String phone = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
 		
 		if(idChk==true) {
-			boolean chk = true;
+			MemberDTO m = new MemberDTO();
+			m.setId(id);
+			m.setPwd(pwd);
+			m.setPhone(phone);
 			
-			if(mList!=null) {
-				for(MemberDTO i : mList) {
-					if(id.equals(i.getId())) {
-						nowSc.send("Same Id");
-						chk = false;
-						break;
-					} else if(phone.equals(i.getPhone())) {
-						nowSc.send("Same PhoneNumber");
-						chk = false;
-						break;
-					} else {
-						chk = true;
-					}
-				}
-			}
-			
-			if(chk==true) {
-				MemberDTO m = new MemberDTO();
-				m.setId(id);
-				m.setPwd(pwd);
-				m.setPhone(phone);
-				
+			if(Dc.select("member", m)) {
 				if(Dc.insert("member", m)) {
 					nowSc.send("join true");
-					getDBList();
 				} else {
 					nowSc.send("join false:DBSave");
 				}
+			} else {
+				nowSc.send("Same PhoneNumber");
 			}
 		} else if(idChk==false) {
 			nowSc.send("Wrong Id or Do not Id Check");
 		}
-		
 	}
 
 }

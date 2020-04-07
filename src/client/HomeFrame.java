@@ -9,10 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
-import db.DAOCenter;
-import db.MemberDTO;
-
 public class HomeFrame extends JFrame {
+
 	private JTabbedPane tabPane = new JTabbedPane();
 	
 	private JPanel tab_1 = new JPanel();
@@ -23,8 +21,6 @@ public class HomeFrame extends JFrame {
 	private static ClientChat nowCc = null;
 	private static String nowId = null;
 	private String getTName = null;
-	
-	private ArrayList<MemberDTO> mList = null;
 	
 	private static HomeFrame HomeF = null;
 	
@@ -72,8 +68,8 @@ public class HomeFrame extends JFrame {
 		return getTName;
 	}
 	
-	public void getMemberList(ArrayList<MemberDTO> m) {
-		mList = m;
+	public void getDBList(Object o) {
+		
 	}
 
 	private void createTimeline() {
@@ -83,7 +79,6 @@ public class HomeFrame extends JFrame {
 		JTextArea timeline_1 = new JTextArea();
 		timeline_1.setEditable(false);
 //		timeline_1.setText("First");
-		timeline_1.setText(mList.get(0).getPhone());
 		tab_1.add(timeline_1);
 		
 		JTextArea timeline_2 = new JTextArea();

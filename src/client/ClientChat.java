@@ -84,32 +84,19 @@ public class ClientChat {
 	private void receiveList() {
 		// TODO Auto-generated method stub
 		try {
+			System.out.println("object receive waiting");
+			
 			reMsg = withServer.getInputStream();
 			byte[] reBuffer = new byte[1024];
 			reMsg.read(reBuffer);
 			
 			ByteArrayInputStream bis = new ByteArrayInputStream(reBuffer);
 			ObjectInputStream ois = new ObjectInputStream(bis);
+			ArrayList<MemberDTO> mList = (ArrayList<MemberDTO>)ois.readObject();
 			
-			switch(homeF.getTName()) {
-				case "member" :
-					ArrayList<MemberDTO> mList = (ArrayList<MemberDTO>)ois.readObject();
-					System.out.println(mList);
-					homeF.getMemberList(mList);
-					break;
-				case "post" :
-					ArrayList<PostDTO> pList = (ArrayList<PostDTO>)ois.readObject();
-					System.out.println(pList);
-					break;
-				case "favorite" :
-					ArrayList<FavoriteDTO> fList = (ArrayList<FavoriteDTO>)ois.readObject();
-					System.out.println(fList);
-					break;
-				case "friend" :
-					ArrayList<FriendDTO> frList = (ArrayList<FriendDTO>)ois.readObject();
-					System.out.println(frList);
-					break;
-			}
+			System.out.println(mList);
+			
+			// homeF.getDBList(o);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

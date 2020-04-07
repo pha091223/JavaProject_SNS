@@ -52,7 +52,6 @@ public class MemberDAO implements DAOInterface {
 	@Override
 	public boolean select(Object DTO) {
 		// TODO Auto-generated method stub
-		int cnt = 0;
 		try {
 			MemberDTO m = (MemberDTO)DTO;
 			if(m.getPhone()==null) {
@@ -60,17 +59,29 @@ public class MemberDAO implements DAOInterface {
 				PreparedStatement psmt = con.prepareStatement(sqlId);
 				
 				psmt.setString(1, m.getId());
-				cnt = psmt.executeUpdate();
+				int cnt = psmt.executeUpdate();
 				
 				if(cnt==1) {
 					String sqlPwd = "select * from member where id=? and pwd=?";
 					psmt = con.prepareStatement(sqlPwd);
+					
 					psmt.setString(1, m.getId());
 					psmt.setString(2, m.getPwd());
 					cnt = cnt + psmt.executeUpdate();
+					
 					if(cnt>1) {
 						return true;
 					}
+				}
+			} else if(m.getPhone()!=null) {
+				String sqlPhone = "select * from member where phone=?";
+				PreparedStatement psmt = con.prepareStatement(sqlPhone);
+				
+				psmt.setString(1, m.getPhone());
+				int cnt = psmt.executeUpdate();
+				
+				if(cnt==0) {
+					return true;
 				}
 			}
 		} catch (SQLException e) {
@@ -81,6 +92,27 @@ public class MemberDAO implements DAOInterface {
 		return false;
 	}
 
+	@Override
+	public boolean select(String s) {
+		// TODO Auto-generated method stub
+		try {
+			String sqlId = "select * from member where id=?";
+			PreparedStatement psmt = con.prepareStatement(sqlId);
+			
+			psmt.setString(1, s);
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			System.out.println("DB not connect");
+		}
+		return false;
+	}
+	
 	@Override
 	public Object getDBList(String tName) {
 		// TODO Auto-generated method stub
@@ -107,5 +139,7 @@ public class MemberDAO implements DAOInterface {
 		}
 		return mList;
 	}
+
+
 
 }
