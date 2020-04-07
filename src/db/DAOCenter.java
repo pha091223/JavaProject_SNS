@@ -43,8 +43,10 @@ public class DAOCenter {
 	
 	private void connect() {
 		try {
+//			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", 
+//						"system", "11111111");
 			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", 
-						"system", "11111111");
+			"system", "123456789");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

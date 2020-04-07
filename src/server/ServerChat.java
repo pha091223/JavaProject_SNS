@@ -48,7 +48,7 @@ public class ServerChat extends Thread {
 						System.out.println(reMsg);
 						
 						if(reMsg.indexOf("setList:")!=-1) {
-							nowId = reMsg.substring(reMsg.indexOf(":")+1, reMsg.length());
+							nowId = reMsg.substring(reMsg.indexOf("/")+1, reMsg.length());
 						}
 						
 						sc.receiveClientMsg(reMsg, nowSc);

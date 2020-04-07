@@ -90,13 +90,16 @@ public class ClientChat {
 			byte[] reBuffer = new byte[1024];
 			reMsg.read(reBuffer);
 			
+			System.out.println("object receive start");
+			
 			ByteArrayInputStream bis = new ByteArrayInputStream(reBuffer);
 			ObjectInputStream ois = new ObjectInputStream(bis);
-			ArrayList<MemberDTO> mList = (ArrayList<MemberDTO>)ois.readObject();
 			
-			System.out.println(mList);
+			Object o = ois.readObject();
 			
-			// homeF.getDBList(o);
+			System.out.println(o);
+			
+			homeF.getDBList(o);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

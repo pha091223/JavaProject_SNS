@@ -9,6 +9,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
+import db.MemberDTO;
+
 public class HomeFrame extends JFrame {
 
 	private JTabbedPane tabPane = new JTabbedPane();
@@ -23,6 +25,8 @@ public class HomeFrame extends JFrame {
 	private String getTName = null;
 	
 	private static HomeFrame HomeF = null;
+	
+	private Object o = null;
 	
 	private HomeFrame(){
 		super("SNS Program");
@@ -69,7 +73,7 @@ public class HomeFrame extends JFrame {
 	}
 	
 	public void getDBList(Object o) {
-		
+		this.o = o;
 	}
 
 	private void createTimeline() {
@@ -78,7 +82,7 @@ public class HomeFrame extends JFrame {
 		
 		JTextArea timeline_1 = new JTextArea();
 		timeline_1.setEditable(false);
-//		timeline_1.setText("First");
+		timeline_1.setText("First");
 		tab_1.add(timeline_1);
 		
 		JTextArea timeline_2 = new JTextArea();

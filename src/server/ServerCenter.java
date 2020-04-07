@@ -25,7 +25,7 @@ public class ServerCenter {
 	private boolean idChk = false;
 	
 	ServerCenter(){
-		Dc = DAOCenter.getInstance();
+//		Dc = DAOCenter.getInstance();
 	}
 
 	public void addSc(ServerChat sc) {
@@ -52,6 +52,9 @@ public class ServerCenter {
 			try {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos);
+				
+				ArrayList<MemberDTO> mList = new ArrayList<>();
+				os.writeObject(mList);
 				
 //				switch(tName) {
 //					case "member" :
@@ -91,23 +94,6 @@ public class ServerCenter {
 				nowSc.send("Same Id");
 			}
 			
-//			boolean chk = true;
-//			if(mList!=null) {
-//				for(MemberDTO i : mList) {
-//					if(id.equals(i.getId())) {
-//						nowSc.send("Same Id");
-//						chk = false;
-//						return false;
-//					} else {
-//						chk = true;
-//					}
-//				}
-//			}
-//			if(chk==true) {
-//				nowSc.send("Possible Id");
-//				return true;
-//			}
-			
 		}
 		return false;
 	}
@@ -127,6 +113,8 @@ public class ServerCenter {
 		} else {
 			nowSc.send("login false");
 		}
+		
+		nowSc.send("login true");
 	}
 	
 	private void Join(String msg) {
