@@ -19,13 +19,17 @@ public class HomeFrame extends JFrame {
 	private JPanel tab_3 = new JPanel();
 	private JPanel tab_4 = new JPanel();
 	
+	private ClientChat nowSc = null;
 	private String nowId = null;
 	
-	HomeFrame(String id){
+	HomeFrame(String id, ClientChat cc){
 		super("SNS Program");
 		nowId = id;
+		nowSc = cc;
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 500, 500);
+		
+		setList();
 		
 		createTimeline();
 		createMyPage();
@@ -42,8 +46,13 @@ public class HomeFrame extends JFrame {
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 	}
 
-	private void createTimeline() {
+	private void setList() {
 		// TODO Auto-generated method stub
+		nowSc.send("setList:" + nowId);
+	}
+
+	private void createTimeline() {
+		// TODO Auto-generated method stub		
 		tab_1.setLayout(new BoxLayout(tab_1, BoxLayout.Y_AXIS));
 		
 		JTextArea timeline_1 = new JTextArea();

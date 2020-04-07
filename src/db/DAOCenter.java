@@ -24,7 +24,7 @@ public class DAOCenter {
 			fDAO = FavoriteDAO.getInstance(con);
 			frDAO = FriendDAO.getInstance(con);
 		} else if(con==null) {
-			System.out.println("DB not connect");
+			// System.out.println("DB not connect");
 		}
 	}
 	

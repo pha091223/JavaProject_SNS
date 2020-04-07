@@ -68,8 +68,8 @@ public class ClientChat {
 	
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
-		if(chk.indexOf("true")!=-1) {
-			homeF = new HomeFrame(nowId);
+		if(chk.indexOf("login true")!=-1) {
+			homeF = new HomeFrame(nowId, cc);
 		} else {
 			nowId = null;
 		}

@@ -31,9 +31,9 @@ public class ServerCenter {
 	private void getDBList() {
 		// TODO Auto-generated method stub
 		mList = (ArrayList<MemberDTO>)Dc.getDB("member");
-		pList = (ArrayList<PostDTO>)Dc.getDB("post");
-		fList = (ArrayList<FavoriteDTO>)Dc.getDB("favorite");
-		frList = (ArrayList<FriendDTO>)Dc.getDB("friend");
+//		pList = (ArrayList<PostDTO>)Dc.getDB("post");
+//		fList = (ArrayList<FavoriteDTO>)Dc.getDB("favorite");
+//		frList = (ArrayList<FriendDTO>)Dc.getDB("friend");
 	}
 
 	public void addSc(ServerChat sc) {
@@ -48,6 +48,8 @@ public class ServerCenter {
 			reJoin(msg);
 		} else if(msg.indexOf("idCheck:")!=-1) {
 			idChk = idCheck(msg);
+		} else if(msg.indexOf("setList:")!=-1) {
+			
 		}
 	}
 
@@ -76,7 +78,6 @@ public class ServerCenter {
 			}
 		}
 		return false;
-		
 	}
 
 	private void reLogin(String msg) {
@@ -129,11 +130,10 @@ public class ServerCenter {
 				
 				if(Dc.insert("member", m)) {
 					nowSc.send("join true");
+					getDBList();
 				} else {
-					nowSc.send("join false");
+					nowSc.send("join false:DBSave");
 				}
-			} else if(chk==false) {
-				nowSc.send("join false");
 			}
 		} else if(idChk==false) {
 			nowSc.send("Wrong Id or Do not Id Check");

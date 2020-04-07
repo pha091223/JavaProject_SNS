@@ -73,9 +73,7 @@ public class ChkFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				now.setVisible(false);
-				if(textLabel.getText().equals("Welcome.")) {
-					cc.Home(chk, cc);
-				}
+				cc.Home(chk, cc);
 			}
 		});
 	}
