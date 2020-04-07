@@ -31,9 +31,9 @@ public class ServerCenter {
 	private void getDBList() {
 		// TODO Auto-generated method stub
 		mList = (ArrayList<MemberDTO>)Dc.getDB("member");
-//		pList = (ArrayList<PostDTO>)Dc.getDB("post");
-//		fList = (ArrayList<FavoriteDTO>)Dc.getDB("favorite");
-//		frList = (ArrayList<FriendDTO>)Dc.getDB("friend");
+		pList = (ArrayList<PostDTO>)Dc.getDB("post");
+		fList = (ArrayList<FavoriteDTO>)Dc.getDB("favorite");
+		frList = (ArrayList<FriendDTO>)Dc.getDB("friend");
 	}
 
 	public void addSc(ServerChat sc) {
