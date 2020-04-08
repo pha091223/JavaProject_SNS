@@ -20,7 +20,7 @@ public class ServerCenter {
 	private boolean idChk = false;
 	
 	ServerCenter(){
-		Dc = DAOCenter.getInstance();
+//		Dc = DAOCenter.getInstance();
 	}
 
 	public void addSc(ServerChat sc) {
@@ -68,6 +68,7 @@ public class ServerCenter {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos);
 				
+<<<<<<< HEAD
 				switch(tName) {
 					case "member" :
 						os.writeObject(Dc.getDB("member"));
@@ -82,6 +83,25 @@ public class ServerCenter {
 						os.writeObject(Dc.getDB("friend"));
 						break;
 				}
+=======
+				ArrayList<MemberDTO> mList = new ArrayList<>();
+				os.writeObject(mList);
+				
+//				switch(tName) {
+//					case "member" :
+//						os.writeObject(Dc.getDB("member"));
+//						break;
+//					case "post" :
+//						os.writeObject(Dc.getDB("post"));
+//						break;
+//					case "favorite" :
+//						os.writeObject(Dc.getDB("favorite"));
+//						break;
+//					case "friend" :
+//						os.writeObject(Dc.getDB("friend"));
+//						break;
+//				}
+>>>>>>> refs/remotes/origin/master
 				
 				byte[] resultByte = bos.toByteArray();
 				nowSc.sendList(resultByte);
@@ -108,6 +128,10 @@ public class ServerCenter {
 				nowSc.send("Possible Id");
 				return true;
 			}
+<<<<<<< HEAD
+=======
+			
+>>>>>>> refs/remotes/origin/master
 		}
 		return false;
 	}
@@ -127,6 +151,8 @@ public class ServerCenter {
 		} else {
 			nowSc.send("login false");
 		}
+		
+		nowSc.send("login true");
 	}
 	
 	private void Join(String msg) {

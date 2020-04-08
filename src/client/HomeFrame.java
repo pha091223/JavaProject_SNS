@@ -29,6 +29,8 @@ import javax.swing.event.DocumentListener;
 
 import db.MemberDTO;
 
+import db.MemberDTO;
+
 public class HomeFrame extends JFrame {
 
 	private JTabbedPane tabPane = new JTabbedPane();
@@ -45,6 +47,8 @@ public class HomeFrame extends JFrame {
 	private String getTName = null;
 	
 	private static HomeFrame HomeF = null;
+	
+	private Object o = null;
 	
 	private HomeFrame(){
 		super("SNS Program");
@@ -85,6 +89,17 @@ public class HomeFrame extends JFrame {
 		getTName = tName;
 		nowCc.send("setList:" + tName + "/" + nowId);
 	}
+<<<<<<< HEAD
+=======
+	
+	public String getTName() {
+		return getTName;
+	}
+	
+	public void getDBList(Object o) {
+		this.o = o;
+	}
+>>>>>>> refs/remotes/origin/master
 
 	private void createTimeline() {
 		// TODO Auto-generated method stub		
