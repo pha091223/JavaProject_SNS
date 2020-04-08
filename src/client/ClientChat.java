@@ -7,11 +7,6 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import db.FavoriteDTO;
-import db.FriendDTO;
-import db.MemberDTO;
-import db.PostDTO;
-
 public class ClientChat {
 	private Socket withServer = null;
 	private InputStream reMsg = null;
@@ -72,7 +67,7 @@ public class ClientChat {
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
 		if(chk.indexOf("login true")!=-1) {
-			loginF.setVisible(false);
+			loginF.dispose();
 			homeF = HomeFrame.getInstance(nowId, cc);
 			receiveObject();
 			homeF.Frame();
@@ -87,8 +82,6 @@ public class ClientChat {
 			reMsg = withServer.getInputStream();
 			byte[] reBuffer = new byte[1024];
 			reMsg.read(reBuffer);
-			
-			System.out.println("object receive start");
 			
 			ByteArrayInputStream bis = new ByteArrayInputStream(reBuffer);
 			ObjectInputStream ois = new ObjectInputStream(bis);

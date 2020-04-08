@@ -3,6 +3,7 @@ package client;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -11,8 +12,10 @@ import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -22,7 +25,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -40,6 +46,8 @@ public class HomeFrame extends JFrame {
 	
 	private JPanel searchP = new JPanel();
 	
+	private JButton searchM = new JButton();
+	
 	private static ClientChat nowCc = null;
 	private static String nowId = null;
 	private String getTName = null;
@@ -48,6 +56,7 @@ public class HomeFrame extends JFrame {
 	
 	private HomeFrame(){
 		super("SNS Program");
+		setResizable(false);
 		setList("member");
 	}
 
@@ -57,7 +66,7 @@ public class HomeFrame extends JFrame {
 		this.setBounds(200, 100, 500, 500);
 		
 		createTimeline();
-		createMyPage();
+		createProfile();
 		createDirectMessage();
 		createSearch();
 		
@@ -116,7 +125,7 @@ public class HomeFrame extends JFrame {
 		tab_1.add(timeline_5);
 	}
 
-	private void createMyPage() {
+	private void createProfile() {
 		// TODO Auto-generated method stub
 		nowCc.send("myPage:" + nowId);
 		MemberDTO my = (MemberDTO)nowCc.receiveObject();
@@ -127,13 +136,13 @@ public class HomeFrame extends JFrame {
 		// 현재 사용자 Id
 		JLabel IdLabel = new JLabel(my.getId());
 		IdLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		IdLabel.setBounds(50, 50, 55, 15);
+		IdLabel.setBounds(50, 55, 55, 15);
 		IdLabel.setFont(new Font("Dialog", Font.BOLD, 20));
 		tab_2.add(IdLabel);
 		
 		// 친구 목록 Button
 		JButton FrListBtn = new JButton("Follow List");
-		FrListBtn.setBounds(190, 50, 95, 20);
+		FrListBtn.setBounds(190, 55, 95, 20);
 		FrListBtn.setBorderPainted(false);
 		FrListBtn.setContentAreaFilled(false);
 		Font font = FrListBtn.getFont();
@@ -144,7 +153,7 @@ public class HomeFrame extends JFrame {
 		
 		// 관심글 목록 Button
 		JButton FListBtn = new JButton("Favorite");
-		FListBtn.setBounds(345, 50, 95, 20);
+		FListBtn.setBounds(345, 55, 95, 20);
 		FListBtn.setBorderPainted(false);
 		FListBtn.setContentAreaFilled(false);
 		font = FListBtn.getFont();
@@ -154,21 +163,133 @@ public class HomeFrame extends JFrame {
 		tab_2.add(FListBtn);
 		
 		// 내가 쓴 글 (스크롤 기능)
+		JPanel myPostAll = new JPanel();
+		myPostAll.setLayout(null);
+		myPostAll.setBounds(0, 120, 480, 285);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//		scrollPane.setBorder(null);
+		scrollPane.setBounds(0, 120, 490, 285);
+		scrollPane.setPreferredSize(new Dimension(450, 1000));
+		myPostAll.add(scrollPane);
+
 		JPanel myPost = new JPanel();
-		myPost.setLayout(null);
-		myPost.setPreferredSize(new Dimension(465, 500));
-		myPost.setBounds(0, 120, 480, 285);
+		myPost.setLayout(new BoxLayout(myPost, BoxLayout.Y_AXIS));
 		
-		JScrollPane scroll = new JScrollPane(myPost);
-		scroll.setBounds(0, 120, 480, 285);
-		// 가로 스크롤 사용하지 않음, 스크롤바가 필요할 경우에만 스크롤바 표시
-		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setViewportView(myPost);
+
+		for(int i=0; i<10; i++) {
+			myPost.add(viewMyPost());
+		}
 		
-		JTextArea temp = new JTextArea();
-		temp.setBounds(0, 0, 480, 200);
-		temp.setEditable(false);
-		myPost.add(temp);
-		tab_2.add(scroll);
+		tab_2.add(scrollPane);
+		
+		JButton MyPageBtn = new JButton("MyPage");
+		MyPageBtn.setBounds(12, 415, 97, 23);
+		tab_2.add(MyPageBtn);
+		
+		MyPageBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		JButton PostWriteBtn = new JButton("Write");
+		PostWriteBtn.setBounds(280, 415, 97, 23);
+		tab_2.add(PostWriteBtn);
+		
+		PostWriteBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		JButton UpdateBtn = new JButton("Update");
+		UpdateBtn.setBounds(385, 415, 97, 23);
+		tab_2.add(UpdateBtn);
+		
+		UpdateBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+	
+	private Panel viewMyPost() {
+		Panel Mp = new Panel();
+		Mp.setBounds(10, 120, 465, 240);
+		
+		JTextPane myPostContent = new JTextPane();
+		
+		JButton myPostfavoriteBtn = new JButton("Favorite");
+		
+		myPostfavoriteBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		JButton myPostModifyBtn = new JButton("Modify");
+		
+		myPostModifyBtn.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		JLabel writerId = new JLabel(nowId);
+		
+		JLabel myPostFavoriteNum = new JLabel("Favorite num");
+		
+		JButton myPostDeleteBtn = new JButton("Delete");
+		
+		GroupLayout gl_panel = new GroupLayout(Mp);
+		gl_panel.setHorizontalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(12)
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addComponent(writerId)
+						.addComponent(myPostContent, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addComponent(myPostfavoriteBtn)
+							.addGap(8)
+							.addComponent(myPostFavoriteNum)
+							.addGap(98)
+							.addComponent(myPostDeleteBtn)
+							.addGap(1)
+							.addComponent(myPostModifyBtn))))
+		);
+		gl_panel.setVerticalGroup(
+			gl_panel.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_panel.createSequentialGroup()
+					.addGap(19)
+					.addComponent(writerId)
+					.addGap(10)
+					.addComponent(myPostContent, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+					.addGap(10)
+					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
+						.addComponent(myPostfavoriteBtn)
+						.addGroup(gl_panel.createSequentialGroup()
+							.addGap(4)
+							.addComponent(myPostFavoriteNum))
+						.addComponent(myPostDeleteBtn)
+						.addComponent(myPostModifyBtn)))
+		);
+		
+		Mp.setLayout(gl_panel);
+		
+		return Mp;
 	}
 
 	private void createDirectMessage() {
@@ -186,6 +307,12 @@ public class HomeFrame extends JFrame {
 		tab_4.add(searchP, "North");
 		
 		createSearchData(txtInput);
+		
+		JPanel searchR = new JPanel();
+		searchR.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		searchM.setPreferredSize(new Dimension(80, 30));
+		searchR.add(searchM);
+		tab_4.add(searchR, "Center");
 	}
 	
 	private void createSearchData(JTextField txtInput) {
@@ -250,7 +377,17 @@ public class HomeFrame extends JFrame {
 					e.setSource(cbInput);
 					cbInput.dispatchEvent(e);
 					if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-						txtInput.setText(cbInput.getSelectedItem().toString());
+						if(cbInput.getSelectedItem().toString()!=null) {
+							txtInput.setText(cbInput.getSelectedItem().toString());
+							for(int i=0; i<items.size(); i++) {
+								MemberDTO m = (MemberDTO)items.get(i);
+								if(m.getId().equals(txtInput.getText())) {
+									searchM.setText(txtInput.getText());
+									txtInput.setText("");
+									break;
+								}
+							}
+						}
 						cbInput.setPopupVisible(false);
 					}
 				}
@@ -296,7 +433,7 @@ public class HomeFrame extends JFrame {
 	private void createTabbledP() {
 		// TODO Auto-generated method stub
 		tabPane.add("Timeline", tab_1);
-		tabPane.add("MyPage", tab_2);
+		tabPane.add("Profile", tab_2);
 		tabPane.add("DirectMessage", tab_3);
 		tabPane.add("Search", tab_4);
 	}

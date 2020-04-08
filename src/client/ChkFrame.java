@@ -22,6 +22,7 @@ public class ChkFrame extends JFrame {
 	
 	ChkFrame(String chk, ClientChat cc){
 		super("Check");
+		setResizable(false);
 		this.cc = cc;
 		this.chk = chk;
 		now = this;

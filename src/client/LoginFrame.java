@@ -21,6 +21,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 	
 	LoginFrame(ClientChat cc){
 		super("Login");
+		setResizable(false);
 		this.cc = cc;
 		Frame();
 	}
@@ -34,7 +35,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 		
 		// Center panel
 		cP = new JPanel();
-		cP.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+		cP.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 		JPanel cnP = new JPanel();
 		idLabel = new JLabel("I　D");
 		idField = new JTextField(15);
@@ -67,10 +68,6 @@ public class LoginFrame extends JFrame implements ActionListener {
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 		this.setVisible(true);
-	}
-
-	public void setClose() {
-		this.setVisible(false);
 	}
 
 	@Override

@@ -143,7 +143,7 @@ public class ServerCenter {
 				if(Dc.insert("member", m)) {
 					nowSc.send("join true");
 				} else {
-					nowSc.send("join false:DBSave");
+					nowSc.send("Exist Empty Data");
 				}
 			} else {
 				nowSc.send("Same PhoneNumber");

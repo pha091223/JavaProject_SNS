@@ -75,7 +75,9 @@ public class MemberDAO implements DAOInterface {
 						}
 					}
 				} else if(m.getPwd()==null) {
-					return true;
+					if(cnt>0) {
+						return true;						
+					}
 				}
 			} else if(m.getPhone()!=null) {
 				String sqlPhone = "select * from member where phone=?";

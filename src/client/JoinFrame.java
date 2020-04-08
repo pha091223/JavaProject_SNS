@@ -23,6 +23,7 @@ public class JoinFrame extends JFrame {
 	
 	JoinFrame(ClientChat cc){
 		super("Join");
+		setResizable(false);
 		this.cc = cc;
 		Frame();
 	}
@@ -131,8 +132,9 @@ public class JoinFrame extends JFrame {
 					}
 				}
 				cc.chkSet(msg);
+				
 				if(cc.getChkMessage().indexOf("true")!=-1){
-					setVisible(false);
+					dispose();
 				}
 			}
 		});
@@ -142,7 +144,7 @@ public class JoinFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				setVisible(false);
+				dispose();
 			}
 		});
 	}
