@@ -61,17 +61,21 @@ public class MemberDAO implements DAOInterface {
 				psmt.setString(1, m.getId());
 				int cnt = psmt.executeUpdate();
 				
-				if(cnt==1) {
-					String sqlPwd = "select * from member where id=? and pwd=?";
-					psmt = con.prepareStatement(sqlPwd);
-					
-					psmt.setString(1, m.getId());
-					psmt.setString(2, m.getPwd());
-					cnt = cnt + psmt.executeUpdate();
-					
-					if(cnt>1) {
-						return true;
+				if(m.getPwd()!=null) {
+					if(cnt==1) {
+						String sqlPwd = "select * from member where id=? and pwd=?";
+						psmt = con.prepareStatement(sqlPwd);
+						
+						psmt.setString(1, m.getId());
+						psmt.setString(2, m.getPwd());
+						cnt = cnt + psmt.executeUpdate();
+						
+						if(cnt>1) {
+							return true;
+						}
 					}
+				} else if(m.getPwd()==null) {
+					return true;
 				}
 			} else if(m.getPhone()!=null) {
 				String sqlPhone = "select * from member where phone=?";
@@ -93,30 +97,36 @@ public class MemberDAO implements DAOInterface {
 	}
 
 	@Override
-	public boolean select(String s) {
+	public Object select(String s) {
 		// TODO Auto-generated method stub
 		try {
-			String sqlId = "select * from member where id=?";
-			PreparedStatement psmt = con.prepareStatement(sqlId);
+			String sql = "select * from member where id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
 			
 			psmt.setString(1, s);
-			int cnt = psmt.executeUpdate();
+			rs = psmt.executeQuery();
 			
-			if(cnt==0) {
-				return true;
+			while(rs.next()) {
+				MemberDTO m = new MemberDTO();
+				
+				m.setId(rs.getString("id"));
+				m.setPwd(rs.getString("pwd"));
+				m.setPhone(rs.getString("phone"));
+				
+				return m;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			// e.printStackTrace();
 			System.out.println("DB not connect");
 		}
-		return false;
+		return null;
 	}
 	
 	@Override
 	public Object getDBList(String tName) {
 		// TODO Auto-generated method stub
-		ArrayList<MemberDTO> mList = new ArrayList<>();
+		ArrayList<Object> mList = new ArrayList<>();
 		try {
 			String sql = "select * from member";
 			stmt = con.prepareStatement(sql);

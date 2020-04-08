@@ -62,7 +62,7 @@ public class DAOCenter {
 		return Dif.select(DTO);
 	}
 	
-	public boolean select(String tName, String s) {
+	public Object select(String tName, String s) {
 		tableChk(tName);
 		return Dif.select(s);
 	}

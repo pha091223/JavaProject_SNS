@@ -57,6 +57,12 @@ public class FavoriteDAO implements DAOInterface {
 		}
 		return fList;
 	}
+
+	@Override
+	public Object select(String s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

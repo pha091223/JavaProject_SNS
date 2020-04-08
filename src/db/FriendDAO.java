@@ -42,7 +42,7 @@ public class FriendDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		ArrayList<FriendDTO> frList = new ArrayList<>();
 		try {
-			String sql = "select * from post";
+			String sql = "select * from friend";
 			stmt = con.prepareStatement(sql);
 			if (stmt!=null) {
 				rs = stmt.executeQuery(sql);
@@ -56,6 +56,12 @@ public class FriendDAO implements DAOInterface {
 			System.out.println("DB not connect");
 		}
 		return frList;
+	}
+
+	@Override
+	public Object select(String s) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

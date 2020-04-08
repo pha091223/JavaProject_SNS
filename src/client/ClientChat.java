@@ -30,7 +30,7 @@ public class ClientChat {
 		login(this);
 	}
 	
-	private void receive() {
+	public void receive() {
 		// TODO Auto-generated method stub
 		new Thread(new Runnable() {
 			
@@ -73,34 +73,34 @@ public class ClientChat {
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
 		if(chk.indexOf("login true")!=-1) {
+			loginF.setVisible(false);
 			homeF = HomeFrame.getInstance(nowId, cc);
-			receiveList();
+			receiveObject();
 			homeF.Frame();
 		} else {
 			nowId = null;
 		}
 	}
 	
-	private void receiveList() {
+	public Object receiveObject() {
 		// TODO Auto-generated method stub
 		try {
-			System.out.println("object receive waiting");
-			
 			reMsg = withServer.getInputStream();
 			byte[] reBuffer = new byte[1024];
 			reMsg.read(reBuffer);
 			
 			ByteArrayInputStream bis = new ByteArrayInputStream(reBuffer);
 			ObjectInputStream ois = new ObjectInputStream(bis);
-			ArrayList<MemberDTO> mList = (ArrayList<MemberDTO>)ois.readObject();
 			
-			System.out.println(mList);
+			Object o = ois.readObject();
+//			System.out.println(o);
 			
-			// homeF.getDBList(o);
-		} catch (ClassNotFoundException | IOException e) {
+			return o;
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	public void Join() {

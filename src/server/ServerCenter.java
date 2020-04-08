@@ -17,11 +17,6 @@ public class ServerCenter {
 	
 	private ArrayList<ServerChat> sList = new ArrayList<>();
 	
-//	private ArrayList<MemberDTO> mList = new ArrayList<>();
-//	private ArrayList<PostDTO> pList = new ArrayList<>();
-//	private ArrayList<FavoriteDTO> fList = new ArrayList<>();
-//	private ArrayList<FriendDTO> frList = new ArrayList<>();
-	
 	private boolean idChk = false;
 	
 	ServerCenter(){
@@ -42,6 +37,26 @@ public class ServerCenter {
 			idChk = idCheck(msg);
 		} else if(msg.indexOf("setList:")!=-1) {
 			setList(msg);
+		} else if(msg.indexOf("myPage:")!=-1) {
+			viewMyPage(msg);
+		}
+	}
+
+	private void viewMyPage(String msg) {
+		// TODO Auto-generated method stub
+		if(nowSc.getNowScId().equals(msg.substring(msg.lastIndexOf(":")+1, msg.length()))){
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream os = new ObjectOutputStream(bos);
+				
+				os.writeObject(Dc.select("member", nowSc.getNowScId()));
+				
+				byte[] resultByte = bos.toByteArray();
+				nowSc.sendList(resultByte);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -53,20 +68,20 @@ public class ServerCenter {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
 				ObjectOutputStream os = new ObjectOutputStream(bos);
 				
-//				switch(tName) {
-//					case "member" :
-//						os.writeObject(Dc.getDB("member"));
-//						break;
-//					case "post" :
-//						os.writeObject(Dc.getDB("post"));
-//						break;
-//					case "favorite" :
-//						os.writeObject(Dc.getDB("favorite"));
-//						break;
-//					case "friend" :
-//						os.writeObject(Dc.getDB("friend"));
-//						break;
-//				}
+				switch(tName) {
+					case "member" :
+						os.writeObject(Dc.getDB("member"));
+						break;
+					case "post" :
+						os.writeObject(Dc.getDB("post"));
+						break;
+					case "favorite" :
+						os.writeObject(Dc.getDB("favorite"));
+						break;
+					case "friend" :
+						os.writeObject(Dc.getDB("friend"));
+						break;
+				}
 				
 				byte[] resultByte = bos.toByteArray();
 				nowSc.sendList(resultByte);
@@ -84,30 +99,15 @@ public class ServerCenter {
 		if(id.length()>8) {
 			nowSc.send("In eight");
 		} else {
-			if(Dc.select("member", id)) {
+			MemberDTO m = new MemberDTO();
+			m.setId(id);
+			
+			if(Dc.select("member", m)) {
+				nowSc.send("Same Id");
+			} else {
 				nowSc.send("Possible Id");
 				return true;
-			} else {
-				nowSc.send("Same Id");
 			}
-			
-//			boolean chk = true;
-//			if(mList!=null) {
-//				for(MemberDTO i : mList) {
-//					if(id.equals(i.getId())) {
-//						nowSc.send("Same Id");
-//						chk = false;
-//						return false;
-//					} else {
-//						chk = true;
-//					}
-//				}
-//			}
-//			if(chk==true) {
-//				nowSc.send("Possible Id");
-//				return true;
-//			}
-			
 		}
 		return false;
 	}
