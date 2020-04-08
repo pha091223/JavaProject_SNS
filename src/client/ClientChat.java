@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import db.FavoriteDTO;
 import db.FriendDTO;
@@ -95,20 +94,10 @@ public class ClientChat {
 			ObjectInputStream ois = new ObjectInputStream(bis);
 			
 			Object o = ois.readObject();
-<<<<<<< HEAD
-//			System.out.println(o);
-=======
->>>>>>> refs/remotes/origin/master
-			
-<<<<<<< HEAD
-			return o;
-		} catch (Exception e) {
-=======
 			System.out.println(o);
 			
-			homeF.getDBList(o);
-		} catch (ClassNotFoundException | IOException e) {
->>>>>>> refs/remotes/origin/master
+			return o;
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
