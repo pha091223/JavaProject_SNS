@@ -7,13 +7,17 @@ import java.io.ObjectInputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import frame.ChkFrame;
+import frame.HomeFrame;
+import frame.JoinFrame;
+import frame.LoginFrame;
+
 public class ClientChat {
 	private Socket withServer = null;
 	private InputStream reMsg = null;
 	private OutputStream seMsg = null;
 	
 	private LoginFrame loginF = null;
-	private ChkFrame chkF = null;
 	private HomeFrame homeF = null;
 	
 	private String nowId = null;
@@ -64,16 +68,30 @@ public class ClientChat {
 		loginF = new LoginFrame(cc);
 	}
 	
+	public String getNowCcId() {
+		return nowId;
+	}
+	
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
-		if(chk.indexOf("login true")!=-1) {
+		if(chk.indexOf("Login true")!=-1) {
 			loginF.dispose();
 			homeF = HomeFrame.getInstance(nowId, cc);
-			receiveObject();
-			homeF.Frame();
+			// TableName 꼭 바꾸기 > 글 목록 받아와야 함
+			Object pList = getDBObject("setList:" + "member" + "/" + nowId);
+			homeF.Frame(pList);
 		} else {
 			nowId = null;
 		}
+	}
+	
+	public String getNowScId() {
+		return nowId;
+	}
+	
+	public Object getDBObject(String msg) {
+		send(msg);
+		return receiveObject();
 	}
 	
 	public Object receiveObject() {
@@ -87,7 +105,6 @@ public class ClientChat {
 			ObjectInputStream ois = new ObjectInputStream(bis);
 			
 			Object o = ois.readObject();
-			System.out.println(o);
 			
 			return o;
 		} catch (Exception e) {
@@ -112,7 +129,11 @@ public class ClientChat {
 			chk = new String(buffer);
 			chk = chk.trim();
 			
-			System.out.println(chk);
+			if(chk.equals("MyPage Delete true")) {
+				System.exit(0);
+			}
+			
+			System.out.println("CM : " + chk);
 			ChkFrame chkF = new ChkFrame(chk, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

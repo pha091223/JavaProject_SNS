@@ -1,4 +1,4 @@
-package client;
+package frame;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import client.ClientChat;
+
 public class LoginFrame extends JFrame implements ActionListener {
 	private JPanel cP, sP;
 	private JLabel idLabel, pwdLabel;
@@ -19,7 +21,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 	
 	private ClientChat cc = null;
 	
-	LoginFrame(ClientChat cc){
+	public LoginFrame(ClientChat cc){
 		super("Login");
 		setResizable(false);
 		this.cc = cc;

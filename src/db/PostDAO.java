@@ -49,4 +49,16 @@ public class PostDAO implements DAOInterface {
 		return null;
 	}
 
+	@Override
+	public boolean update(Object DTO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean delete(String s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

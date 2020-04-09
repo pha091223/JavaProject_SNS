@@ -1,0 +1,78 @@
+	DB Table 설계
+
+	- 회원 목록
+	create table member(
+	id varchar2(8),
+	pwd varchar2(15) not null,
+	phone varchar2(11) unique not null,
+	primary key(id));
+	
+	- 글 목록
+	create table post(
+	no number,
+	day number not null,
+	id varchar2(8),
+	text varchar2(200) not null,
+	image blob default empty_blob(),
+	primary key(no),
+	foreign key(id) references member(id));
+	
+	// Sequence
+	create sequence post_no
+	increment by 1;
+	
+	- 선호 목록
+	create table favorite(
+	no number,
+	id varchar2(8),
+	primary key(no, id),
+	foreign key(no) references post(no),
+	foreign key(id) references member(id));
+	
+	- 친구 목록
+	create table friend(
+	myid varchar2(8),
+	yourid varchar2(8),
+	primary key(myid, yourid),
+	foreign key(myid) references member(id),
+	foreign key(yourid) references member(id));
+	
+───────────────────────────────────────────────────────────────
+
+	Program 기능
+	
+	JTab 4개 구성 - 타임라인(홈)/내 정보/메시지(DM)/검색
+	
+	* 메시지는 기본 텍스트로만 구성(200글자)
+	
+	1. 회원
+	- 로그인/로그아웃
+	- 회원가입/탈퇴
+	- 아이디/패스워드 변경
+	
+	2. 타임라인
+	- 팔로우 한 사람 게시글이 시간 순서대로 출력(5개)
+	- 타임라인에서 글 확인과 함께 글 작성 가능
+	- 글 북마크 기능(좋아요)
+	
+	3. 현재 사용자 정보 보기
+	- 로그인 한 아이디/친구 목록/내가 쓴 글/북마크(좋아요) 한 글 확인 가능
+	- 글 수정 가능
+	- 회원 수정/탈퇴도 이곳에서 진입 가능
+	
+	4. 메시지
+	- 친구목록에서 수신자 선택해 실시간 채팅
+	
+	5. 검색
+	- 사용자 검색 가능(부분검색 포함)
+	
+	0. 희망기능
+	1) 회원
+	 - 아이디/비밀번호 등록시 제약조건
+	2) 타임라인
+	 - 그림도 게시 가능
+	3) 사용자 정보 보기
+	4) 메시지
+	 - 메시지 저장
+	 - 미접속시도 전송, 나중에 접속했을 때 쌓인 메시지 확인 가능
+	5) 검색

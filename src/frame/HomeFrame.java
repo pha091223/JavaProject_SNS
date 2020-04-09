@@ -1,4 +1,4 @@
-package client;
+package frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,8 +16,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,15 +30,14 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import client.ClientChat;
 import db.MemberDTO;
 
 public class HomeFrame extends JFrame {
-
 	private JTabbedPane tabPane = new JTabbedPane();
 	
 	private JPanel tab_1 = new JPanel();
@@ -50,23 +51,20 @@ public class HomeFrame extends JFrame {
 	
 	private static ClientChat nowCc = null;
 	private static String nowId = null;
-	private String getTName = null;
 	
 	private static HomeFrame HomeF = null;
 	
 	private HomeFrame(){
 		super("SNS Program");
-		setResizable(false);
-		setList("member");
 	}
 
-	public void Frame() {
+	public void Frame(Object o) {
 		// TODO Auto-generated method stub
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 500, 500);
 		
 		createTimeline();
-		createProfile();
+		createProfile(tab_2, nowId, nowCc);
 		createDirectMessage();
 		createSearch();
 		
@@ -88,47 +86,16 @@ public class HomeFrame extends JFrame {
 		}
 		return HomeF;
 	}
-	
-	private void setList(String tName) {
-		// TODO Auto-generated method stub
-		getTName = tName;
-		nowCc.send("setList:" + tName + "/" + nowId);
-	}
 
 	private void createTimeline() {
 		// TODO Auto-generated method stub		
-		tab_1.setLayout(new BoxLayout(tab_1, BoxLayout.Y_AXIS));
 		
-		JTextArea timeline_1 = new JTextArea();
-		timeline_1.setEditable(false);
-		timeline_1.setText("First");
-		tab_1.add(timeline_1);
-		
-		JTextArea timeline_2 = new JTextArea();
-		timeline_2.setEditable(false);
-		timeline_2.setText("Second");
-		tab_1.add(timeline_2);
-		
-		JTextArea timeline_3 = new JTextArea();
-		timeline_3.setEditable(false);
-		timeline_3.setText("Third");
-		tab_1.add(timeline_3);
-		
-		JTextArea timeline_4 = new JTextArea();
-		timeline_4.setEditable(false);
-		timeline_4.setText("Fourth");
-		tab_1.add(timeline_4);
-		
-		JTextArea timeline_5 = new JTextArea();
-		timeline_5.setEditable(false);
-		timeline_5.setText("Fifth");
-		tab_1.add(timeline_5);
 	}
 
-	private void createProfile() {
+	public void createProfile(JPanel tab_2, String nowId, ClientChat nowCc) {
 		// TODO Auto-generated method stub
-		nowCc.send("myPage:" + nowId);
-		MemberDTO my = (MemberDTO)nowCc.receiveObject();
+		Object receiveObject = nowCc.getDBObject("profile:" + nowId);
+		MemberDTO my = (MemberDTO)receiveObject;
 		
 		tab_2.setLayout(null);
 		tab_2.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -136,7 +103,7 @@ public class HomeFrame extends JFrame {
 		// 현재 사용자 Id
 		JLabel IdLabel = new JLabel(my.getId());
 		IdLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		IdLabel.setBounds(50, 55, 55, 15);
+		IdLabel.setBounds(30, 55, 120, 15);
 		IdLabel.setFont(new Font("Dialog", Font.BOLD, 20));
 		tab_2.add(IdLabel);
 		
@@ -169,8 +136,7 @@ public class HomeFrame extends JFrame {
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//		scrollPane.setBorder(null);
-		scrollPane.setBounds(0, 120, 490, 285);
+		scrollPane.setBounds(0, 120, 480, 285);
 		scrollPane.setPreferredSize(new Dimension(450, 1000));
 		myPostAll.add(scrollPane);
 
@@ -178,44 +144,59 @@ public class HomeFrame extends JFrame {
 		myPost.setLayout(new BoxLayout(myPost, BoxLayout.Y_AXIS));
 		
 		scrollPane.setViewportView(myPost);
-
+		
 		for(int i=0; i<10; i++) {
 			myPost.add(viewMyPost());
 		}
 		
 		tab_2.add(scrollPane);
 		
-		JButton MyPageBtn = new JButton("MyPage");
-		MyPageBtn.setBounds(12, 415, 97, 23);
-		tab_2.add(MyPageBtn);
-		
-		MyPageBtn.addActionListener(new ActionListener() {
+		if(this.nowId.equals(nowId)) {
+			JButton MyPageBtn = new JButton("MyPage");
+			MyPageBtn.setBounds(12, 410, 97, 23);
+			tab_2.add(MyPageBtn);
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+			MyPageBtn.addActionListener(new ActionListener() {
 				
-			}
-		});
-		
-		JButton PostWriteBtn = new JButton("Write");
-		PostWriteBtn.setBounds(280, 415, 97, 23);
-		tab_2.add(PostWriteBtn);
-		
-		PostWriteBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					new MyPageFrame(nowCc, nowId);
+				}
+			});
 			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+			JButton PostWriteBtn = new JButton("Write");
+			PostWriteBtn.setBounds(270, 410, 97, 23);
+			tab_2.add(PostWriteBtn);
+			
+			PostWriteBtn.addActionListener(new ActionListener() {
 				
-			}
-		});
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		} else {
+			JButton FollowBtn = new JButton("Follow");
+			FollowBtn.setBounds(12, 410, 97, 23);
+			tab_2.add(FollowBtn);
+			
+			FollowBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+		}
 		
-		JButton UpdateBtn = new JButton("Update");
-		UpdateBtn.setBounds(385, 415, 97, 23);
-		tab_2.add(UpdateBtn);
+		JButton RefreshBtn = new JButton("Refresh");
+		RefreshBtn.setBounds(375, 410, 97, 23);
+		tab_2.add(RefreshBtn);
 		
-		UpdateBtn.addActionListener(new ActionListener() {
+		RefreshBtn.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -313,12 +294,22 @@ public class HomeFrame extends JFrame {
 		searchM.setPreferredSize(new Dimension(80, 30));
 		searchR.add(searchM);
 		tab_4.add(searchR, "Center");
+		
+		searchM.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(searchM.getText().length()>0) {
+					new ProfileFrame(searchM.getText(), nowCc, HomeF);
+				}
+			}
+		});
 	}
 	
 	private void createSearchData(JTextField txtInput) {
-		setList("member");
-		
-		setupAutoComplete(txtInput, (ArrayList<Object>)nowCc.receiveObject());
+		Object receiveObject = nowCc.getDBObject("setList:" + "member" + "/" + nowId);
+		setupAutoComplete(txtInput, (ArrayList<Object>)receiveObject);
 		txtInput.setColumns(30);
 	}
 
@@ -377,7 +368,7 @@ public class HomeFrame extends JFrame {
 					e.setSource(cbInput);
 					cbInput.dispatchEvent(e);
 					if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-						if(cbInput.getSelectedItem().toString()!=null) {
+						if(cbInput.getSelectedItem()!=null && cbInput.getSelectedItem().toString()!=null) {
 							txtInput.setText(cbInput.getSelectedItem().toString());
 							for(int i=0; i<items.size(); i++) {
 								MemberDTO m = (MemberDTO)items.get(i);

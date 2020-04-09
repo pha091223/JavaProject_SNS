@@ -6,6 +6,10 @@ public interface DAOInterface {
 	
 	boolean select(Object DTO);
 	
+	boolean update(Object DTO);
+	
+	boolean delete(String s);
+	
 	Object select(String s);
 	
 	Object getDBList(String tName);

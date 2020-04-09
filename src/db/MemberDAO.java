@@ -152,6 +152,52 @@ public class MemberDAO implements DAOInterface {
 		return mList;
 	}
 
+	@Override
+	public boolean update(Object DTO) {
+		// TODO Auto-generated method stub
+		try {
+			MemberDTO m = (MemberDTO)DTO;
+			
+			String sql = "update member set pwd=?, phone=? where id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			
+			psmt.setString(1, m.getPwd());
+			psmt.setString(2, m.getPhone());
+			psmt.setString(3, m.getId());
+			
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			System.out.println("DB not connect");
+		}
+		return false;
+	}
+
+	@Override
+	public boolean delete(String s) {
+		// TODO Auto-generated method stub
+		try {
+			String sql = "delete from member where id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, s);
+			
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 
 
 }

@@ -67,6 +67,16 @@ public class DAOCenter {
 		return Dif.select(s);
 	}
 	
+	public boolean update(String tName, Object DTO) {
+		tableChk(tName);
+		return Dif.update(DTO);
+	}
+	
+	public boolean delete(String tName, String s) {
+		tableChk(tName);
+		return Dif.delete(s);
+	}
+	
 	private void tableChk(String tName) {
 		switch(tName) {
 			case "member" :

@@ -63,6 +63,18 @@ public class FavoriteDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean update(Object DTO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean delete(String s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

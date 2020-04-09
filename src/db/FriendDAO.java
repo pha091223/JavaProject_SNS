@@ -38,28 +38,24 @@ public class FriendDAO implements DAOInterface {
 	}
 
 	@Override
-	public ArrayList<FriendDTO> getDBList(String tName) {
-		// TODO Auto-generated method stub
-		ArrayList<FriendDTO> frList = new ArrayList<>();
-		try {
-			String sql = "select * from friend";
-			stmt = con.prepareStatement(sql);
-			if (stmt!=null) {
-				rs = stmt.executeQuery(sql);
-				while(rs.next()) {
-					
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
-		}
-		return frList;
+	public ArrayList<Object> getDBList(String tName) {
+		return null;
 	}
 
 	@Override
 	public Object select(String s) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean update(Object DTO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean delete(String s) {
 		// TODO Auto-generated method stub
 		return false;
 	}

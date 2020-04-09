@@ -75,7 +75,7 @@ public class ServerChat extends Thread {
 		}
 	}
 	
-	public void sendList(byte[] resultByte) {
+	public void sendDB(byte[] resultByte) {
 		try {
 			seMsg = withClient.getOutputStream();
 			seMsg.write(resultByte);
