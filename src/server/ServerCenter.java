@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import db.DAOCenter;
+import db.FriendDTO;
 import db.MemberDTO;
 
 public class ServerCenter {
@@ -24,6 +25,21 @@ public class ServerCenter {
 		sList.add(sc);
 	}
 	
+	private void sendObject(Object o) {
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream os = new ObjectOutputStream(bos);
+			
+			os.writeObject(o);
+			
+			byte[] resultByte = bos.toByteArray();
+			nowSc.sendDB(resultByte);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void receiveClientMsg(String msg, ServerChat sc) {
 		nowSc = sc;
 		
@@ -39,21 +55,29 @@ public class ServerCenter {
 			viewProfile(msg);
 		} else if(msg.indexOf("myPage:")!=-1) {
 			myPage(msg);
+		} else if(msg.indexOf("follow:")!=-1) {
+			followFriend(msg);
 		}
 	}
 	
-	private void sendObject(Object o) {
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream os = new ObjectOutputStream(bos);
+	private void followFriend(String msg) {
+		// TODO Auto-generated method stub
+		String myId = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
+		String yourId = msg.substring(msg.indexOf("/")+1, msg.length());
+		
+		if(msg.contains("add")) {
+			FriendDTO f = new FriendDTO();
+			f.setMyId(myId);
+			f.setyourId(yourId);
 			
-			os.writeObject(o);
+			if(Dc.insert("friend", f)) {
+				nowSc.send("Follow true");
+			} else {
+				nowSc.send("Follow false");
+			}			
+		} else if(msg.contains("del")) {
+			// follow 풀기
 			
-			byte[] resultByte = bos.toByteArray();
-			nowSc.sendDB(resultByte);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
@@ -65,31 +89,35 @@ public class ServerCenter {
 			String pwd = reMsg.substring(reMsg.indexOf("/")+1, reMsg.lastIndexOf("/"));
 			String phone = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
 			
-			if(phone.length()>11 || phone.substring(0, 3).indexOf("01")==-1) {
+			if(phone.length()==0) {
 				nowSc.send("Wrong PhoneNumber");
 			} else {
-				MemberDTO a = (MemberDTO)Dc.select("member", phone);
-				
-				if(a==null) {
-					updateProfile_my(id, pwd, phone);
+				if(phone.length()>11 || phone.substring(0, 3).indexOf("01")==-1) {
+					nowSc.send("Wrong PhoneNumber");
 				} else {
-					if(a.getId().equals(id)) {
+					MemberDTO a = (MemberDTO)Dc.select("member", phone);
+					
+					if(a==null) {
 						updateProfile_my(id, pwd, phone);
 					} else {
-						nowSc.send("Same PhoneNumber");						
+						if(a.getId().equals(id)) {
+							updateProfile_my(id, pwd, phone);
+						} else {
+							nowSc.send("Same PhoneNumber");
+						}
 					}
 				}
 			}
 		} else if(msg.indexOf("delete")!=-1){
 			if(msg.indexOf("sure")!=-1) {
 				if(Dc.delete("member", nowSc.getNowScId())) {
-					nowSc.send("MyPage Delete true");
 					for(ServerChat i : sList) {
 						if(i.getNowScId().equals(nowSc.getNowScId())){
 							sList.remove(i);
 							break;
 						}
 					}
+					nowSc.send("MyPage Delete true");
 				}
 			} else {
 				nowSc.send("MyPage Delete hope");
@@ -97,18 +125,7 @@ public class ServerCenter {
 		} else {
 			try {
 				String id = msg.substring(msg.indexOf(":")+1, msg.length());
-				
 				sendObject(Dc.select("member", id));
-				
-//				String id = msg.substring(msg.indexOf(":")+1, msg.length());
-//				
-//				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//				ObjectOutputStream os = new ObjectOutputStream(bos);
-//				
-//				os.writeObject(Dc.select("member", id));
-//				
-//				byte[] resultByte = bos.toByteArray();
-//				nowSc.sendDB(resultByte);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -148,7 +165,12 @@ public class ServerCenter {
 
 	private void setList(String msg) {
 		// TODO Auto-generated method stub
-		String tName = msg.substring(msg.indexOf(":")+1, msg.lastIndexOf("/"));
+		String tName = null;
+		String id = null;
+		
+		tName = msg.substring(msg.indexOf(":")+1, msg.lastIndexOf("/"));
+		id = msg.substring(msg.indexOf("/")+1, msg.length());
+		
 		if(nowSc.getNowScId().equals(msg.substring(msg.lastIndexOf("/")+1, msg.length()))){
 			try {
 				ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -165,7 +187,7 @@ public class ServerCenter {
 						os.writeObject(Dc.getDB("favorite"));
 						break;
 					case "friend" :
-						os.writeObject(Dc.getDB("friend"));
+						os.writeObject(Dc.getDB("friend", id));
 						break;
 				}
 				
@@ -184,6 +206,8 @@ public class ServerCenter {
 		
 		if(id.length()>8) {
 			nowSc.send("In eight");
+		} else if(id.length()==0) {
+			nowSc.send("Please input ID");
 		} else {
 			MemberDTO m = new MemberDTO();
 			m.setId(id);
@@ -222,22 +246,26 @@ public class ServerCenter {
 		String phone = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
 		
 		if(idChk==true) {
-			if(phone.length()>11 || phone.substring(0, 3).indexOf("01")==-1) {
+			if(phone.length()>11) {
 				nowSc.send("Wrong PhoneNumber");
 			} else {
-				MemberDTO m = new MemberDTO();
-				m.setId(id);
-				m.setPwd(pwd);
-				m.setPhone(phone);
-				
-				if(Dc.select("member", m)) {
-					if(Dc.insert("member", m)) {
-						nowSc.send("Join true");
-					} else {
-						nowSc.send("Join false");
-					}
+				if(phone!=null && phone.substring(0, 3).indexOf("01")==-1) {
+					nowSc.send("Wrong PhoneNumber");
 				} else {
-					nowSc.send("Same PhoneNumber");
+					MemberDTO m = new MemberDTO();
+					m.setId(id);
+					m.setPwd(pwd);
+					m.setPhone(phone);
+					
+					if(Dc.select("member", m)) {
+						if(Dc.insert("member", m)) {
+							nowSc.send("Join true");
+						} else {
+							nowSc.send("Join false");
+						}
+					} else {
+						nowSc.send("Same PhoneNumber");
+					}
 				}
 			}
 		} else if(idChk==false) {

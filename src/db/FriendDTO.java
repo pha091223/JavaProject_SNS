@@ -1,23 +1,25 @@
 package db;
 
-public class FriendDTO {
-	private String mId = null;
-	private String yId = null;
+import java.io.Serializable;
+
+public class FriendDTO implements Serializable{
+	private String myId = null;
+	private String yourId = null;
 	
-	public String getmId() {
-		return mId;
+	public String getMyId() {
+		return myId;
 	}
 	
-	public void setmId(String mId) {
-		this.mId = mId;
+	public void setMyId(String myId) {
+		this.myId = myId;
 	}
 	
-	public String getyId() {
-		return yId;
+	public String getyourId() {
+		return yourId;
 	}
 	
-	public void setyId(String yId) {
-		this.yId = yId;
+	public void setyourId(String yourId) {
+		this.yourId = yourId;
 	}
 	
 	

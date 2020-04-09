@@ -129,11 +129,12 @@ public class ClientChat {
 			chk = new String(buffer);
 			chk = chk.trim();
 			
-			if(chk.equals("MyPage Delete true")) {
+			System.out.println("CheckMessage : " + chk);
+
+			if(chk.contains("MyPage Delete true")) {
 				System.exit(0);
 			}
 			
-			System.out.println("CM : " + chk);
 			ChkFrame chkF = new ChkFrame(chk, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

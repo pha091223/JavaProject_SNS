@@ -151,6 +151,12 @@ public class MemberDAO implements DAOInterface {
 		}
 		return mList;
 	}
+	
+	@Override
+	public Object getDBList(String tName, String s) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	@Override
 	public boolean update(Object DTO) {
@@ -197,7 +203,6 @@ public class MemberDAO implements DAOInterface {
 		}
 		return false;
 	}
-
 
 
 }

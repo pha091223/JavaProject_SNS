@@ -92,7 +92,7 @@ public class ChkFrame extends JFrame {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated mString id = msg.substring(msg.indexOf(":")+1, msg.length());ethod stub
+					// TODO Auto-generated stub
 					setVisible(false);
 					cc.chkSet("deletemyPage:sure");
 				}

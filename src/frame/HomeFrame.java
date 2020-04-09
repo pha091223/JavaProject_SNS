@@ -35,6 +35,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import client.ClientChat;
+import db.FriendDTO;
 import db.MemberDTO;
 
 public class HomeFrame extends JFrame {
@@ -92,9 +93,9 @@ public class HomeFrame extends JFrame {
 		
 	}
 
-	public void createProfile(JPanel tab_2, String nowId, ClientChat nowCc) {
+	public void createProfile(JPanel tab_2, String id, ClientChat nowCc) {
 		// TODO Auto-generated method stub
-		Object receiveObject = nowCc.getDBObject("profile:" + nowId);
+		Object receiveObject = nowCc.getDBObject("profile:" + id);
 		MemberDTO my = (MemberDTO)receiveObject;
 		
 		tab_2.setLayout(null);
@@ -151,7 +152,7 @@ public class HomeFrame extends JFrame {
 		
 		tab_2.add(scrollPane);
 		
-		if(this.nowId.equals(nowId)) {
+		if(this.nowId.equals(id)) {
 			JButton MyPageBtn = new JButton("MyPage");
 			MyPageBtn.setBounds(12, 410, 97, 23);
 			tab_2.add(MyPageBtn);
@@ -161,7 +162,7 @@ public class HomeFrame extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					new MyPageFrame(nowCc, nowId);
+					new MyPageFrame(nowCc, id);
 				}
 			});
 			
@@ -178,18 +179,44 @@ public class HomeFrame extends JFrame {
 				}
 			});
 		} else {
-			JButton FollowBtn = new JButton("Follow");
-			FollowBtn.setBounds(12, 410, 97, 23);
-			tab_2.add(FollowBtn);
+			receiveObject = nowCc.getDBObject("setList:" + "friend" + "/" + nowId);
+			ArrayList<Object> fList = (ArrayList<Object>)receiveObject;
 			
-			FollowBtn.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					
+			JButton FollowBtn = new JButton();
+			FollowBtn.setBounds(12, 410, 97, 23);
+			
+			boolean a = false;
+			for(int i=0; i<fList.size(); i++) {
+				FriendDTO f = (FriendDTO)fList.get(i);
+				if(f.getMyId().equals(nowId) && f.getyourId().equals(id)) {
+					FollowBtn.setText("Unfollow");
+					a = true;
+					break;
+				} else {
+					a = false;
 				}
-			});
+				if(a==false) {
+					FollowBtn.setText("Follow");
+				}
+				tab_2.add(FollowBtn);					
+				
+				FollowBtn.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						if(FollowBtn.getText().equals("Follow")) {
+							nowCc.chkSet("addfollow:" + nowId + "/" + id);
+							
+							if(nowCc.getChkMessage().indexOf("true")!=-1){
+								FollowBtn.setText("Unfollow");
+							}
+						} else if(FollowBtn.getText().equals("Unfollow")) {
+							nowCc.chkSet("delfollow" + nowId + "/" + id);
+						}
+					}
+				});
+			}
 		}
 		
 		JButton RefreshBtn = new JButton("Refresh");

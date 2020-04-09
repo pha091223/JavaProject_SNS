@@ -77,6 +77,16 @@ public class DAOCenter {
 		return Dif.delete(s);
 	}
 	
+	public Object getDB(String tName){
+		tableChk(tName);
+		return Dif.getDBList(tName);
+	}
+	
+	public Object getDB(String tName, String s){
+		tableChk(tName);
+		return Dif.getDBList(tName, s);
+	}
+	
 	private void tableChk(String tName) {
 		switch(tName) {
 			case "member" :
@@ -92,11 +102,6 @@ public class DAOCenter {
 				Dif = frDAO;
 				break;
 		}
-	}
-	
-	public Object getDB(String tName){
-		tableChk(tName);
-		return Dif.getDBList(tName);
 	}
 
 }
