@@ -1,6 +1,8 @@
 package db;
 
-public class PostDTO {
+import java.io.Serializable;
+
+public class PostDTO implements Serializable {
 	private String no = null;
 	private String day = null;
 	private String id = null;

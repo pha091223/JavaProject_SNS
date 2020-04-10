@@ -3,7 +3,6 @@ package frame;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -15,19 +14,14 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -37,6 +31,7 @@ import javax.swing.event.DocumentListener;
 import client.ClientChat;
 import db.FriendDTO;
 import db.MemberDTO;
+import db.PostDTO;
 
 public class HomeFrame extends JFrame {
 	private JTabbedPane tabPane = new JTabbedPane();
@@ -64,7 +59,7 @@ public class HomeFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 500, 500);
 		
-		createTimeline();
+		createTimeline(o);
 		createProfile(tab_2, nowId, nowCc);
 		createDirectMessage();
 		createSearch();
@@ -88,9 +83,50 @@ public class HomeFrame extends JFrame {
 		return HomeF;
 	}
 
-	private void createTimeline() {
-		// TODO Auto-generated method stub		
+	private void createTimeline(Object o) {
+		// TODO Auto-generated method stub
+		tab_1.setLayout(null);
+		tab_1.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
+		JPanel myPostAll = new JPanel();
+		myPostAll.setLayout(null);
+		myPostAll.setBounds(0, 0, 480, 435);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(0, 0, 480, 435);
+		scrollPane.setPreferredSize(new Dimension(450, 1000));
+		myPostAll.add(scrollPane);
+		
+		JPanel myPost = new JPanel();
+		myPost.setLayout(new BoxLayout(myPost, BoxLayout.Y_AXIS));
+		
+		scrollPane.setViewportView(myPost);
+		
+		ArrayList<Object> pList = (ArrayList<Object>)o;
+		
+		settingPostView(pList, myPost);
+		
+		tab_1.add(scrollPane);
+	}
+	
+	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel
+	private void settingPostView(ArrayList<Object> pList, JPanel postPanel) {
+		OnePostFrame pF = new OnePostFrame();
+		
+		if(pList!=null) {
+			for(int i=0; i<pList.size(); i++) {
+				PostDTO p = (PostDTO)pList.get(i);
+				postPanel.add(pF.viewPost(p));
+			}			
+		} else if(pList==null) {
+			JPanel temp = new JPanel();
+			temp.setLayout(new BorderLayout());
+			JLabel empty = new JLabel("Empty Post");
+			empty.setHorizontalAlignment(JLabel.CENTER);
+			temp.add(empty, "Center");
+			postPanel.add(temp);
+		}
 	}
 
 	public void createProfile(JPanel tab_2, String id, ClientChat nowCc) {
@@ -172,9 +208,11 @@ public class HomeFrame extends JFrame {
 		
 		scrollPane.setViewportView(myPost);
 		
-		for(int i=0; i<10; i++) {
-			myPost.add(viewMyPost());
-		}
+		// 자신이 쓴 글 List 받아오기
+		Object receiveObject_myPost = nowCc.getObject("getList:" + "post" + "/" + nowId);
+		ArrayList<Object> myPList = (ArrayList<Object>)receiveObject_myPost;
+		
+		settingPostView(myPList, myPost);
 		
 		tab_2.add(scrollPane);
 		
@@ -211,14 +249,18 @@ public class HomeFrame extends JFrame {
 			JButton FollowBtn = new JButton();
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
-			for(int i=0; i<fList.size(); i++) {
-				FriendDTO f = (FriendDTO)fList.get(i);
-				if(f.getMyId().equals(nowId) && f.getYourId().equals(id)) {
-					FollowBtn.setText("Unfollow");
-					break;
-				} else {
-					FollowBtn.setText("Follow");
+			if(fList.size()>0) {
+				for(int i=0; i<fList.size(); i++) {
+					FriendDTO f = (FriendDTO)fList.get(i);
+					if(f.getMyId().equals(nowId) && f.getYourId().equals(id)) {
+						FollowBtn.setText("Unfollow");
+						break;
+					} else {
+						FollowBtn.setText("Follow");
+					}
 				}
+			} else {
+				FollowBtn.setText("Follow");
 			}
 			tab_2.add(FollowBtn);
 				
@@ -259,23 +301,23 @@ public class HomeFrame extends JFrame {
 		
 	}
 	
-	private Panel viewMyPost() {
-		Panel Mp = new Panel();
-		Mp.setBounds(10, 120, 465, 240);
+/*	private Panel viewPost() {
+		Panel viewPost = new Panel();
+		viewPost.setBounds(10, 120, 465, 240);
 		
-		JTextPane myPostContent = new JTextPane();
+		JTextPane postContent = new JTextPane();
 		
-		JButton myPostfavoriteBtn = new JButton("Favorite");
+		JButton postfavoriteBtn = new JButton("Favorite");
 		
-		myPostfavoriteBtn.addActionListener(new ActionListener() {
+		postfavoriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 			}
 		});
 		
-		JButton myPostModifyBtn = new JButton("Modify");
+		JButton postModifyBtn = new JButton("Modify");
 		
-		myPostModifyBtn.addActionListener(new ActionListener() {
+		postModifyBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
 				
@@ -285,26 +327,26 @@ public class HomeFrame extends JFrame {
 		JLabel writerId = new JLabel(nowId);
 		
 		// getList - 조건 : 글 작성자=대상 Id
-		JLabel myPostFavoriteNum = new JLabel("Favorite num");
+		JLabel postFavoriteNum = new JLabel("Favorite num");
 		
-		JButton myPostDeleteBtn = new JButton("Delete");
+		JButton postDeleteBtn = new JButton("Delete");
 		
-		GroupLayout gl_panel = new GroupLayout(Mp);
+		GroupLayout gl_panel = new GroupLayout(viewPost);
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
 					.addGap(12)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addComponent(writerId)
-						.addComponent(myPostContent, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE)
+						.addComponent(postContent, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(myPostfavoriteBtn)
+							.addComponent(postfavoriteBtn)
 							.addGap(8)
-							.addComponent(myPostFavoriteNum)
+							.addComponent(postFavoriteNum)
 							.addGap(98)
-							.addComponent(myPostDeleteBtn)
+							.addComponent(postDeleteBtn)
 							.addGap(1)
-							.addComponent(myPostModifyBtn))))
+							.addComponent(postModifyBtn))))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -312,21 +354,22 @@ public class HomeFrame extends JFrame {
 					.addGap(19)
 					.addComponent(writerId)
 					.addGap(10)
-					.addComponent(myPostContent, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
+					.addComponent(postContent, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
 					.addGap(10)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(myPostfavoriteBtn)
+						.addComponent(postfavoriteBtn)
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGap(4)
-							.addComponent(myPostFavoriteNum))
-						.addComponent(myPostDeleteBtn)
-						.addComponent(myPostModifyBtn)))
+							.addComponent(postFavoriteNum))
+						.addComponent(postDeleteBtn)
+						.addComponent(postModifyBtn)))
 		);
 		
-		Mp.setLayout(gl_panel);
+		viewPost.setLayout(gl_panel);
 		
-		return Mp;
+		return viewPost;
 	}
+	*/
 
 	private void createDirectMessage() {
 		// TODO Auto-generated method stub

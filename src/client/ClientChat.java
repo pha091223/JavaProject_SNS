@@ -77,9 +77,7 @@ public class ClientChat {
 		if(chk.indexOf("Login true")!=-1) {
 			loginF.dispose();
 			homeF = HomeFrame.getInstance(nowId, cc);
-			// TableName 꼭 바꾸기 > Home이 시작될 때 글 목록 받아와야 함
-			// setList - post 모든 내용
-			Object pList = getObject("setList:" + "member" + "/" + nowId);
+			Object pList = getObject("setList:" + "post" + "/" + nowId);
 			homeF.Frame(pList);
 		} else if(chk.indexOf("Login false")!=-1){
 			nowId = null;

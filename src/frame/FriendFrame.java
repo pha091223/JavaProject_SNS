@@ -76,6 +76,7 @@ public class FriendFrame extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				new ProfileFrame(FriendId, cc, HomeF);
+				dispose();
 			}
 		});
 		
