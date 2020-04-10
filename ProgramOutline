@@ -1,4 +1,4 @@
-	DB Table 설계
+	1. DB Table 설계
 
 	- 회원 목록
 	create table member(
@@ -14,6 +14,14 @@
 	id varchar2(8),
 	text varchar2(200) not null,
 	image blob default empty_blob(),
+	primary key(no),
+	foreign key(id) references member(id));
+	
+	create table post(
+	no number,
+	day date not null,
+	id varchar2(8),
+	text varchar2(200) not null,
 	primary key(no),
 	foreign key(id) references member(id));
 	
@@ -39,7 +47,7 @@
 	
 ───────────────────────────────────────────────────────────────
 
-	Program 기능
+	2. Program 기능
 	
 	JTab 4개 구성 - 타임라인(홈)/내 정보/메시지(DM)/검색
 	
@@ -76,3 +84,4 @@
 	 - 메시지 저장
 	 - 미접속시도 전송, 나중에 접속했을 때 쌓인 메시지 확인 가능
 	5) 검색
+	 - 사용자 제외 다른 주제로도 검색 가능

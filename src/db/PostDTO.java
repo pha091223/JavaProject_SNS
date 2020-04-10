@@ -1,13 +1,10 @@
 package db;
 
-import java.sql.Blob;
-
 public class PostDTO {
 	private String no = null;
 	private String day = null;
 	private String id = null;
 	private String text = null;
-	private Blob image = null;
 	
 	public String getNo() {
 		return no;
@@ -39,14 +36,6 @@ public class PostDTO {
 	
 	public void setText(String text) {
 		this.text = text;
-	}
-	
-	public Blob getImage() {
-		return image;
-	}
-	
-	public void setImage(Blob image) {
-		this.image = image;
 	}
 
 }

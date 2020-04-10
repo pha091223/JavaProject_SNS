@@ -183,7 +183,13 @@ public class MemberDAO implements DAOInterface {
 		}
 		return false;
 	}
-
+	
+	@Override
+	public boolean delete(Object DTO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 	@Override
 	public boolean delete(String s) {
 		// TODO Auto-generated method stub
@@ -203,6 +209,5 @@ public class MemberDAO implements DAOInterface {
 		}
 		return false;
 	}
-
 
 }

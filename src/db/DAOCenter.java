@@ -72,6 +72,11 @@ public class DAOCenter {
 		return Dif.update(DTO);
 	}
 	
+	public boolean delete(String tName, Object DTO) {
+		tableChk(tName);
+		return Dif.delete(DTO);
+	}
+	
 	public boolean delete(String tName, String s) {
 		tableChk(tName);
 		return Dif.delete(s);

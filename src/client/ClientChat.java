@@ -77,10 +77,11 @@ public class ClientChat {
 		if(chk.indexOf("Login true")!=-1) {
 			loginF.dispose();
 			homeF = HomeFrame.getInstance(nowId, cc);
-			// TableName 꼭 바꾸기 > 글 목록 받아와야 함
-			Object pList = getDBObject("setList:" + "member" + "/" + nowId);
+			// TableName 꼭 바꾸기 > Home이 시작될 때 글 목록 받아와야 함
+			// setList - post 모든 내용
+			Object pList = getObject("setList:" + "member" + "/" + nowId);
 			homeF.Frame(pList);
-		} else {
+		} else if(chk.indexOf("Login false")!=-1){
 			nowId = null;
 		}
 	}
@@ -89,7 +90,7 @@ public class ClientChat {
 		return nowId;
 	}
 	
-	public Object getDBObject(String msg) {
+	public Object getObject(String msg) {
 		send(msg);
 		return receiveObject();
 	}
@@ -129,7 +130,7 @@ public class ClientChat {
 			chk = new String(buffer);
 			chk = chk.trim();
 			
-			System.out.println("CheckMessage : " + chk);
+			System.out.println("/CheckMessage:" + chk);
 
 			if(chk.contains("MyPage Delete true")) {
 				System.exit(0);

@@ -51,6 +51,8 @@ public class ServerCenter {
 			idChk = idCheck(msg);
 		} else if(msg.indexOf("setList:")!=-1) {
 			setList(msg);
+		} else if(msg.indexOf("getList:")!=-1) {
+			getList(msg);
 		} else if(msg.indexOf("profile:")!=-1) {
 			viewProfile(msg);
 		} else if(msg.indexOf("myPage:")!=-1) {
@@ -65,11 +67,11 @@ public class ServerCenter {
 		String myId = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
 		String yourId = msg.substring(msg.indexOf("/")+1, msg.length());
 		
+		FriendDTO f = new FriendDTO();
+		f.setMyId(myId);
+		f.setYourId(yourId);
+		
 		if(msg.contains("add")) {
-			FriendDTO f = new FriendDTO();
-			f.setMyId(myId);
-			f.setyourId(yourId);
-			
 			if(Dc.insert("friend", f)) {
 				nowSc.send("Follow true");
 			} else {
@@ -77,7 +79,11 @@ public class ServerCenter {
 			}			
 		} else if(msg.contains("del")) {
 			// follow 풀기
-			
+			if(Dc.delete("friend", f)) {
+				nowSc.send("Unfollow true");
+			} else {
+				nowSc.send("Unfollow false");
+			}
 		}
 	}
 
@@ -163,6 +169,7 @@ public class ServerCenter {
 		}
 	}
 
+	// 조건 없이 table의 tuple 모두 가져오기
 	private void setList(String msg) {
 		// TODO Auto-generated method stub
 		String tName = null;
@@ -187,7 +194,7 @@ public class ServerCenter {
 						os.writeObject(Dc.getDB("favorite"));
 						break;
 					case "friend" :
-						os.writeObject(Dc.getDB("friend", id));
+						os.writeObject(Dc.getDB("friend"));
 						break;
 				}
 				
@@ -197,6 +204,42 @@ public class ServerCenter {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+	}
+	
+	// 조건 있이 table에서 맞는 tuple만 가져오기
+	private void getList(String msg) {
+		// TODO Auto-generated method stub
+		String tName = null;
+		String keyword = null;
+		
+		tName = msg.substring(msg.indexOf(":")+1, msg.lastIndexOf("/"));
+		keyword = msg.substring(msg.indexOf("/")+1, msg.length());
+		
+		try {
+			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ObjectOutputStream os = new ObjectOutputStream(bos);
+			
+			switch(tName) {
+				case "member" :
+					os.writeObject(Dc.getDB("member", keyword));
+					break;
+				case "post" :
+					os.writeObject(Dc.getDB("post", keyword));
+					break;
+				case "favorite" :
+					os.writeObject(Dc.getDB("favorite", keyword));
+					break;
+				case "friend" :
+					os.writeObject(Dc.getDB("friend", keyword));
+					break;
+			}
+			
+			byte[] resultByte = bos.toByteArray();
+			nowSc.sendDB(resultByte);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 

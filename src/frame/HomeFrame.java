@@ -95,7 +95,7 @@ public class HomeFrame extends JFrame {
 
 	public void createProfile(JPanel tab_2, String id, ClientChat nowCc) {
 		// TODO Auto-generated method stub
-		Object receiveObject = nowCc.getDBObject("profile:" + id);
+		Object receiveObject = nowCc.getObject("profile:" + id);
 		MemberDTO my = (MemberDTO)receiveObject;
 		
 		tab_2.setLayout(null);
@@ -119,6 +119,23 @@ public class HomeFrame extends JFrame {
 		FrListBtn.setFont(font.deriveFont(attributes));
 		tab_2.add(FrListBtn);
 		
+		FrListBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Object receiveObject = null;
+				
+				if(nowId.equals(id)) {
+					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
+				} else if(!nowId.equals(id)) {
+					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + id);
+				}
+				
+				new FriendFrame(HomeF, nowCc, receiveObject);
+			}
+		});
+		
 		// 관심글 목록 Button
 		JButton FListBtn = new JButton("Favorite");
 		FListBtn.setBounds(345, 55, 95, 20);
@@ -130,6 +147,15 @@ public class HomeFrame extends JFrame {
 		FListBtn.setFont(font.deriveFont(attributes));
 		tab_2.add(FListBtn);
 		
+		FListBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				// getList - 조건 : 관심글 등록자=대상자 Id
+			}
+		});
+		
 		// 내가 쓴 글 (스크롤 기능)
 		JPanel myPostAll = new JPanel();
 		myPostAll.setLayout(null);
@@ -140,7 +166,7 @@ public class HomeFrame extends JFrame {
 		scrollPane.setBounds(0, 120, 480, 285);
 		scrollPane.setPreferredSize(new Dimension(450, 1000));
 		myPostAll.add(scrollPane);
-
+		
 		JPanel myPost = new JPanel();
 		myPost.setLayout(new BoxLayout(myPost, BoxLayout.Y_AXIS));
 		
@@ -179,44 +205,43 @@ public class HomeFrame extends JFrame {
 				}
 			});
 		} else {
-			receiveObject = nowCc.getDBObject("setList:" + "friend" + "/" + nowId);
+			receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
 			ArrayList<Object> fList = (ArrayList<Object>)receiveObject;
 			
 			JButton FollowBtn = new JButton();
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
-			boolean a = false;
 			for(int i=0; i<fList.size(); i++) {
 				FriendDTO f = (FriendDTO)fList.get(i);
-				if(f.getMyId().equals(nowId) && f.getyourId().equals(id)) {
+				if(f.getMyId().equals(nowId) && f.getYourId().equals(id)) {
 					FollowBtn.setText("Unfollow");
-					a = true;
 					break;
 				} else {
-					a = false;
-				}
-				if(a==false) {
 					FollowBtn.setText("Follow");
 				}
-				tab_2.add(FollowBtn);					
+			}
+			tab_2.add(FollowBtn);
 				
-				FollowBtn.addActionListener(new ActionListener() {
+			FollowBtn.addActionListener(new ActionListener() {
 					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						if(FollowBtn.getText().equals("Follow")) {
-							nowCc.chkSet("addfollow:" + nowId + "/" + id);
-							
-							if(nowCc.getChkMessage().indexOf("true")!=-1){
-								FollowBtn.setText("Unfollow");
-							}
-						} else if(FollowBtn.getText().equals("Unfollow")) {
-							nowCc.chkSet("delfollow" + nowId + "/" + id);
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if(FollowBtn.getText().equals("Follow")) {
+						nowCc.chkSet("addfollow:" + nowId + "/" + id);
+						
+						if(nowCc.getChkMessage().indexOf("true")!=-1){
+							FollowBtn.setText("Unfollow");
+						}
+					} else if(FollowBtn.getText().equals("Unfollow")) {
+						nowCc.chkSet("delfollow:" + nowId + "/" + id);
+						
+						if(nowCc.getChkMessage().indexOf("true")!=-1) {
+							FollowBtn.setText("Follow");
 						}
 					}
-				});
-			}
+				}
+			});
 		}
 		
 		JButton RefreshBtn = new JButton("Refresh");
@@ -228,7 +253,7 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				// getList - 조건 : 글 작성자=대상자 Id
 			}
 		});
 		
@@ -244,6 +269,7 @@ public class HomeFrame extends JFrame {
 		
 		myPostfavoriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		
@@ -252,11 +278,13 @@ public class HomeFrame extends JFrame {
 		myPostModifyBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
+				
 			}
 		});
 		
 		JLabel writerId = new JLabel(nowId);
 		
+		// getList - 조건 : 글 작성자=대상 Id
 		JLabel myPostFavoriteNum = new JLabel("Favorite num");
 		
 		JButton myPostDeleteBtn = new JButton("Delete");
@@ -335,7 +363,7 @@ public class HomeFrame extends JFrame {
 	}
 	
 	private void createSearchData(JTextField txtInput) {
-		Object receiveObject = nowCc.getDBObject("setList:" + "member" + "/" + nowId);
+		Object receiveObject = nowCc.getObject("setList:" + "member" + "/" + nowId);
 		setupAutoComplete(txtInput, (ArrayList<Object>)receiveObject);
 		txtInput.setColumns(30);
 	}

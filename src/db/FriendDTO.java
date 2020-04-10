@@ -2,7 +2,7 @@ package db;
 
 import java.io.Serializable;
 
-public class FriendDTO implements Serializable{
+public class FriendDTO implements Serializable {
 	private String myId = null;
 	private String yourId = null;
 	
@@ -14,11 +14,11 @@ public class FriendDTO implements Serializable{
 		this.myId = myId;
 	}
 	
-	public String getyourId() {
+	public String getYourId() {
 		return yourId;
 	}
 	
-	public void setyourId(String yourId) {
+	public void setYourId(String yourId) {
 		this.yourId = yourId;
 	}
 	
