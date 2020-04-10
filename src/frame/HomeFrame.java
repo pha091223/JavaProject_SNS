@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
 import java.util.Map;
@@ -71,7 +73,54 @@ public class HomeFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
-		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
+		this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
+		
+		// 윈도우 동작을 읽는 리스너 : HomeFrame 창을 X 버튼을 눌러 닫을시 로그아웃 되며 처음의 로그인 창이 뜸
+		// > 시간이 된다면 버튼을 눌러 로그아웃하고 다시 로그인 창이 뜨도록 설계 및 구현
+		this.addWindowListener(new WindowListener() {
+
+			@Override
+			public void windowOpened(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeiconified(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowDeactivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				nowCc.chkSet("logout:" + nowCc.getNowCcId());
+			}
+			
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+			
+			@Override
+			public void windowActivated(WindowEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 
 	public static HomeFrame getInstance(String id, ClientChat cc) {
@@ -112,7 +161,7 @@ public class HomeFrame extends JFrame {
 	
 	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel
 	private void settingPostView(ArrayList<Object> pList, JPanel postPanel) {
-		OnePostFrame pF = new OnePostFrame();
+		OnePostFrame pF = new OnePostFrame(nowCc);
 		
 		if(pList!=null) {
 			for(int i=0; i<pList.size(); i++) {

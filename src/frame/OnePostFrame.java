@@ -10,16 +10,19 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextPane;
 
+import client.ClientChat;
 import db.PostDTO;
 
 public class OnePostFrame {
-
+	private ClientChat cc = null;
 	
-	OnePostFrame(){
-		
+	OnePostFrame(ClientChat cc){
+		this.cc = cc;
+//		System.out.println(cc.getNowCcId());
 	}
 
 	public Panel viewPost(PostDTO p) {
+		
 		Panel viewPost = new Panel();
 		viewPost.setBounds(10, 120, 465, 240);
 		
@@ -29,7 +32,7 @@ public class OnePostFrame {
 		
 		postfavoriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				// 관심글(좋아요) 등록
 			}
 		});
 		
@@ -38,18 +41,26 @@ public class OnePostFrame {
 		postModifyBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				
+				// 자신이 쓴 글이라면 수정 버튼 활성화
 			}
 		});
 		
 		// 글 작성자 이름
-//		JLabel writerId = new JLabel(p.getId());
-		JLabel writerId = new JLabel("AAAAA");
+		JLabel writerId = new JLabel(p.getId());
 		
 		// getList - 조건 : 글 작성자=대상 Id
 		JLabel postFavoriteNum = new JLabel("Favorite num");
 		
 		JButton postDeleteBtn = new JButton("Delete");
+		
+		postDeleteBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				// 자신이 쓴 글이라면 삭제 버튼 활성화
+			}
+		});
 		
 		GroupLayout gl_panel = new GroupLayout(viewPost);
 		gl_panel.setHorizontalGroup(

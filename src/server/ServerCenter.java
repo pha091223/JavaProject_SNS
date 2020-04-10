@@ -45,6 +45,8 @@ public class ServerCenter {
 		
 		if(msg.indexOf("login:")!=-1) {
 			login(msg);
+		} else if(msg.indexOf("logout:")!=-1) {
+			logout(msg);
 		} else if(msg.indexOf("join:")!=-1) {
 			join(msg);
 		} else if(msg.indexOf("idCheck:")!=-1) {
@@ -61,7 +63,7 @@ public class ServerCenter {
 			followFriend(msg);
 		}
 	}
-	
+
 	private void followFriend(String msg) {
 		// TODO Auto-generated method stub
 		String myId = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
@@ -265,6 +267,17 @@ public class ServerCenter {
 		return false;
 	}
 
+	private void logout(String msg) {
+		// TODO Auto-generated method stub
+		String id = msg.substring(msg.indexOf(":")+1, msg.length());
+		
+		if(msg.indexOf("sure")!=-1) {
+			nowSc.send("Logout true");
+		} else {
+			nowSc.send("Logout hope");
+		}
+	}
+	
 	private void login(String msg) {
 		// TODO Auto-generated method stub
 		String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());

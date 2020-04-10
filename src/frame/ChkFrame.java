@@ -47,6 +47,13 @@ public class ChkFrame extends JFrame {
 			} else if(chk.contains("false")) {
 				textLabel = new JLabel("Inexistant ID or Wrong PWD");
 			}
+		} else if(chk.contains("Logout")) {
+			if(chk.contains("hope")) {
+				textLabel = new JLabel("Logout?");
+			} else if(chk.contains("true")) {
+				textLabel = new JLabel("GoodBye");
+				chk = chk + "::GoodBye";
+			}
 		} else if(chk.contains("Join")) {
 			if(chk.contains("true")) {
 				textLabel = new JLabel("Join");
@@ -106,16 +113,49 @@ public class ChkFrame extends JFrame {
 					dispose();
 				}
 			});
-		} else {
+		} else if(textLabel.getText().equals("Logout?")) {
+			JButton cancleBtn = new JButton("Cancel");
+			sP.add(cancleBtn);
+			
 			OkBtn.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
+					// TODO Auto-generated stub
 					setVisible(false);
-					cc.Home(chk, cc);
+					cc.chkSet("logout:sure");
 				}
 			});
+			
+			cancleBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dispose();
+				}
+			});
+		} else {
+			if(chk.equals("Logout true" + "::GoodBye")) {
+				OkBtn.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						System.exit(0);
+					}
+				});
+			} else {
+				OkBtn.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						setVisible(false);
+						cc.Home(chk, cc);
+					}
+				});
+			}
 		}
 	}
 
