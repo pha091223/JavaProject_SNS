@@ -39,12 +39,66 @@ public class MemberDAO implements DAOInterface {
 			
 			int a = psmt.executeUpdate();
 			
-			if(a>0) {
+			if(a==1) {
 				return true;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("DB error");
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean update(Object DTO) {
+		// TODO Auto-generated method stub
+		try {
+			MemberDTO m = (MemberDTO)DTO;
+			
+			String sql = "update member set pwd=?, phone=? where id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			
+			psmt.setString(1, m.getPwd());
+			psmt.setString(2, m.getPhone());
+			psmt.setString(3, m.getId());
+			
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean delete(Object DTO) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
+	@Override
+	public boolean delete(String s) {
+		// TODO Auto-generated method stub
+		try {
+			String sql = "delete from member where id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, s);
+			
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return false;
 	}
@@ -76,7 +130,7 @@ public class MemberDAO implements DAOInterface {
 					}
 				} else if(m.getPwd()==null) {
 					if(cnt>0) {
-						return true;						
+						return true;
 					}
 				}
 			} else if(m.getPhone()!=null) {
@@ -92,8 +146,8 @@ public class MemberDAO implements DAOInterface {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
+			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return false;
 	}
@@ -119,8 +173,8 @@ public class MemberDAO implements DAOInterface {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
+			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return null;
 	}
@@ -132,7 +186,8 @@ public class MemberDAO implements DAOInterface {
 		try {
 			String sql = "select * from member";
 			stmt = con.prepareStatement(sql);
-			if (stmt!=null) {
+			
+			if(stmt!=null) {
 				rs = stmt.executeQuery(sql);
 				while(rs.next()) {
 					MemberDTO m = new MemberDTO();
@@ -146,8 +201,8 @@ public class MemberDAO implements DAOInterface {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
+			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return mList;
 	}
@@ -156,58 +211,6 @@ public class MemberDAO implements DAOInterface {
 	public Object getDBList(String tName, String s) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public boolean update(Object DTO) {
-		// TODO Auto-generated method stub
-		try {
-			MemberDTO m = (MemberDTO)DTO;
-			
-			String sql = "update member set pwd=?, phone=? where id=?";
-			PreparedStatement psmt = con.prepareStatement(sql);
-			
-			psmt.setString(1, m.getPwd());
-			psmt.setString(2, m.getPhone());
-			psmt.setString(3, m.getId());
-			
-			int cnt = psmt.executeUpdate();
-			
-			if(cnt==1) {
-				return true;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
-		}
-		return false;
-	}
-	
-	@Override
-	public boolean delete(Object DTO) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public boolean delete(String s) {
-		// TODO Auto-generated method stub
-		try {
-			String sql = "delete from member where id=?";
-			PreparedStatement psmt = con.prepareStatement(sql);
-			psmt.setString(1, s);
-			
-			int cnt = psmt.executeUpdate();
-			
-			if(cnt==1) {
-				return true;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
 	}
 
 }

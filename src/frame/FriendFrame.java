@@ -23,13 +23,13 @@ import db.FriendDTO;
 
 public class FriendFrame extends JFrame {
 	private HomeFrame HomeF = null;
-	private ClientChat cc = null;
+	private ClientChat nowCc = null;
 	
 	private ArrayList<Object> fList = null;
 	
 	FriendFrame(HomeFrame h, ClientChat cc, Object o){
 		HomeF = h;
-		this.cc = cc;
+		this.nowCc = cc;
 		
 		fList = (ArrayList<Object>)o;
 		
@@ -75,7 +75,7 @@ public class FriendFrame extends JFrame {
 		FProfileBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				new ProfileFrame(FriendId, cc, HomeF);
+				new ProfileFrame(FriendId, nowCc, HomeF);
 				dispose();
 			}
 		});

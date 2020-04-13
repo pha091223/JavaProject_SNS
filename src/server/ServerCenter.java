@@ -3,11 +3,13 @@ package server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import db.DAOCenter;
 import db.FriendDTO;
 import db.MemberDTO;
+import db.PostDTO;
 
 public class ServerCenter {
 	private DAOCenter Dc = null;
@@ -61,6 +63,43 @@ public class ServerCenter {
 			myPage(msg);
 		} else if(msg.indexOf("follow:")!=-1) {
 			followFriend(msg);
+		} else if(msg.indexOf("Post:")!=-1) {
+			post(msg);
+		}
+	}
+	
+	private void post(String msg) {
+		if(msg.contains("sharePost:")) {
+			String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());
+			String id = reMsg.substring(0, reMsg.indexOf("/"));
+			String post = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
+			
+			PostDTO p = new PostDTO();
+			p.setId(id);
+			p.setText(post);
+			
+			if(Dc.insert("post", p)) {
+				nowSc.send("Write true");
+			} else {
+				if(post.length()>200) {
+					nowSc.send("Write false : text length over 200");
+				} else {
+					nowSc.send("Write false : Please input text");					
+				}
+			}
+		} else if(msg.contains("deletePost:")) {
+			if(msg.indexOf("sure")!=-1) {
+				String postNum = msg.substring(msg.indexOf("/")+1, msg.length());
+				if(Dc.delete("post", postNum)){
+					nowSc.send("Post Delete true");
+				}
+			} else {
+				String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());
+				String id = reMsg.substring(0, reMsg.indexOf("/"));
+				String postNum = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
+				
+				nowSc.send("Post Delete hope" + ":" + postNum);
+			}
 		}
 	}
 
@@ -73,25 +112,31 @@ public class ServerCenter {
 		f.setMyId(myId);
 		f.setYourId(yourId);
 		
-		if(msg.contains("add")) {
+		if(msg.contains("addfollow:")) {
 			if(Dc.insert("friend", f)) {
 				nowSc.send("Follow true");
 			} else {
 				nowSc.send("Follow false");
 			}			
-		} else if(msg.contains("del")) {
+		} else if(msg.contains("delfollow:")) {
 			// follow 풀기
 			if(Dc.delete("friend", f)) {
 				nowSc.send("Unfollow true");
 			} else {
 				nowSc.send("Unfollow false");
 			}
+		} else if(msg.contains("chkfollow:")) {
+			if(Dc.select("friend", f)) {
+				nowSc.send("true");
+			} else {
+				nowSc.send("false");
+			}
 		}
 	}
 
 	private void myPage(String msg) {
 		// TODO Auto-generated method stub
-		if(msg.indexOf("update")!=-1) {
+		if(msg.indexOf("updatemyPage:")!=-1) {
 			String reMsg = msg.substring(msg.indexOf(":")+1, msg.length());
 			String id = reMsg.substring(0, reMsg.indexOf("/"));
 			String pwd = reMsg.substring(reMsg.indexOf("/")+1, reMsg.lastIndexOf("/"));
@@ -116,7 +161,7 @@ public class ServerCenter {
 					}
 				}
 			}
-		} else if(msg.indexOf("delete")!=-1){
+		} else if(msg.indexOf("deletemyPage:")!=-1){
 			if(msg.indexOf("sure")!=-1) {
 				if(Dc.delete("member", nowSc.getNowScId())) {
 					for(ServerChat i : sList) {
@@ -156,8 +201,9 @@ public class ServerCenter {
 
 	private void viewProfile(String msg) {
 		// TODO Auto-generated method stub
-		String id = msg.substring(msg.indexOf(":")+1, msg.length());
 		try {
+			String id = msg.substring(msg.indexOf(":")+1, msg.length());
+			
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream os = new ObjectOutputStream(bos);
 			
@@ -215,7 +261,7 @@ public class ServerCenter {
 		String tName = null;
 		String keyword = null;
 		
-		tName = msg.substring(msg.indexOf(":")+1, msg.lastIndexOf("/"));
+		tName = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
 		keyword = msg.substring(msg.indexOf("/")+1, msg.length());
 		
 		try {
@@ -273,6 +319,7 @@ public class ServerCenter {
 		
 		if(msg.indexOf("sure")!=-1) {
 			nowSc.send("Logout true");
+			sList.remove(nowSc);
 		} else {
 			nowSc.send("Logout hope");
 		}

@@ -23,13 +23,13 @@ public class MyPageFrame extends JFrame {
 	private JTextField[] textField = {idField, pwdField, phField_1, phField_2, phField_3};
 	private JButton applyBtn, endBtn;
 	
-	private ClientChat cc = null;
+	private ClientChat nowCc = null;
 	
-	private String id = null;
+	private String nowId = null;
 	
 	MyPageFrame(ClientChat cc, String id){
-		this.cc = cc;
-		this.id = id;
+		this.nowCc = cc;
+		this.nowId = id;
 		
 		cc.send("myPage:" + id);
 		MemberDTO my = (MemberDTO)cc.receiveObject();
@@ -101,7 +101,7 @@ public class MyPageFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				cc.chkSet("deletemyPage:" + id);
+				nowCc.chkSet("deletemyPage:" + nowId);
 			}
 		});
 		
@@ -138,9 +138,9 @@ public class MyPageFrame extends JFrame {
 						msg = msg + content[i] + "/";
 					}
 				}
-				cc.chkSet(msg);
+				nowCc.chkSet(msg);
 				
-				if(cc.getChkMessage().indexOf("true")!=-1){
+				if(nowCc.getChkMessage().indexOf("true")!=-1){
 					dispose();
 				}
 			}

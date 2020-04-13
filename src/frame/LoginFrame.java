@@ -19,12 +19,12 @@ public class LoginFrame extends JFrame implements ActionListener {
 	private JTextField idField, pwdField;
 	private JButton joinBtn, loginBtn, endBtn;
 	
-	private ClientChat cc = null;
+	private ClientChat nowCc = null;
 	
 	public LoginFrame(ClientChat cc){
 		super("Login");
 		setResizable(false);
-		this.cc = cc;
+		this.nowCc = cc;
 		Frame();
 	}
 	
@@ -80,13 +80,13 @@ public class LoginFrame extends JFrame implements ActionListener {
 		String pwd = pwdField.getText();
 		
 		if(nowCom.equals(loginBtn)) {
-			cc.loginSet(id, pwd);
+			nowCc.loginSet(id, pwd);
 			idField.setText("");
 			pwdField.setText("");
 		} else if(nowCom.equals(endBtn)) {
 			System.exit(0);
 		} else if(nowCom.equals(joinBtn)) {
-			cc.Join();
+			nowCc.Join();
 		}
 	}
 

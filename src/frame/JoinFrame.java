@@ -21,12 +21,12 @@ public class JoinFrame extends JFrame {
 	private JTextField[] textField = {idField, pwdField, phField_1, phField_2, phField_3};
 	private JButton joinBtn, endBtn;
 	
-	private ClientChat cc = null;
+	private ClientChat nowCc = null;
 	
 	public JoinFrame(ClientChat cc){
 		super("Join");
 		setResizable(false);
-		this.cc = cc;
+		this.nowCc = cc;
 		Frame();
 	}
 
@@ -75,7 +75,7 @@ public class JoinFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				String msg = "idCheck:" + textField[0].getText();
-				cc.chkSet(msg);
+				nowCc.chkSet(msg);
 			}
 		});
 		
@@ -133,9 +133,9 @@ public class JoinFrame extends JFrame {
 						msg = msg + content[i] + "/";
 					}
 				}
-				cc.chkSet(msg);
+				nowCc.chkSet(msg);
 				
-				if(cc.getChkMessage().indexOf("true")!=-1){
+				if(nowCc.getChkMessage().indexOf("true")!=-1){
 					dispose();
 				}
 			}

@@ -17,17 +17,17 @@ public class ChkFrame extends JFrame {
 	private JLabel textLabel;
 	private JButton OkBtn;
 	
-	private ChkFrame now = null;
-	private ClientChat cc = null;
+	private ChkFrame nowChkF = null;
+	private ClientChat nowCc = null;
 	
-	private String chk = null;
+	private String chkMsg = null;
 	
 	public ChkFrame(String chk, ClientChat cc){
 		super("Check");
 		setResizable(false);
-		this.cc = cc;
-		this.chk = chk;
-		now = this;
+		this.nowCc = cc;
+		this.chkMsg = chk;
+		nowChkF = this;
 		Frame();
 	}
 	
@@ -41,41 +41,49 @@ public class ChkFrame extends JFrame {
 		cP = new JPanel();
 		cP.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 		
-		if(chk.contains("Login")) {
-			if(chk.contains("true")) {
+		if(chkMsg.contains("Login")) {
+			if(chkMsg.contains("true")) {
 				textLabel = new JLabel("Welcome");
-			} else if(chk.contains("false")) {
+			} else if(chkMsg.contains("false")) {
 				textLabel = new JLabel("Inexistant ID or Wrong PWD");
 			}
-		} else if(chk.contains("Logout")) {
-			if(chk.contains("hope")) {
+		} else if(chkMsg.contains("Logout")) {
+			if(chkMsg.contains("hope")) {
 				textLabel = new JLabel("Logout?");
-			} else if(chk.contains("true")) {
+			} else if(chkMsg.contains("true")) {
 				textLabel = new JLabel("GoodBye");
-				chk = chk + "::GoodBye";
+				chkMsg = chkMsg + ":GoodBye";
 			}
-		} else if(chk.contains("Join")) {
-			if(chk.contains("true")) {
+		} else if(chkMsg.contains("Join")) {
+			if(chkMsg.contains("true")) {
 				textLabel = new JLabel("Join");
-			} else if(chk.contains("false")) {
+			} else if(chkMsg.contains("false")) {
 				textLabel = new JLabel("Exist Empty Data");
 			}
-		} else if(chk.contains("MyPage")){
-			if(chk.contains("Update")) {
-				if(chk.contains("true")) {
+		} else if(chkMsg.contains("MyPage")){
+			if(chkMsg.contains("Update")) {
+				if(chkMsg.contains("true")) {
 					textLabel = new JLabel("Apply");
-				} else if(chk.contains("false")) {
+				} else if(chkMsg.contains("false")) {
 					textLabel = new JLabel("Apply false");
 				}
-			} else if(chk.contains("Delete")) {
-				if(chk.contains("hope")) {
+			} else if(chkMsg.contains("Delete")) {
+				if(chkMsg.contains("hope")) {
 					textLabel = new JLabel("Sure?");
-				} else if(chk.contains("true")) {
+				} else if(chkMsg.contains("true")) {
 					textLabel = new JLabel("Withdrawl true");
 				}
 			}
+		} else if(chkMsg.contains("Post")){
+			if(chkMsg.contains("Delete")) {
+				if(chkMsg.contains("hope")) {
+					textLabel = new JLabel("Sure?");
+				} else if(chkMsg.contains("true")) {
+					textLabel = new JLabel("Post delete");
+				}
+			}
 		} else {
-			textLabel = new JLabel(chk);
+			textLabel = new JLabel(chkMsg);
 		}
 		cP.add(textLabel);
 		
@@ -100,8 +108,13 @@ public class ChkFrame extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated stub
+					if(chkMsg.contains("MyPage")){
+						nowCc.chkSet("deletemyPage:sure");
+					} else if(chkMsg.contains("Post")) {
+						String postNum = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
+						nowCc.chkSet("deletePost:sure" + "/" + postNum);
+					}
 					setVisible(false);
-					cc.chkSet("deletemyPage:sure");
 				}
 			});
 			
@@ -123,7 +136,7 @@ public class ChkFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated stub
 					setVisible(false);
-					cc.chkSet("logout:sure");
+					nowCc.chkSet("logout:sure");
 				}
 			});
 			
@@ -136,7 +149,7 @@ public class ChkFrame extends JFrame {
 				}
 			});
 		} else {
-			if(chk.equals("Logout true" + "::GoodBye")) {
+			if(chkMsg.equals("Logout true" + ":GoodBye")) {
 				OkBtn.addActionListener(new ActionListener() {
 					
 					@Override
@@ -152,7 +165,7 @@ public class ChkFrame extends JFrame {
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
 						setVisible(false);
-						cc.Home(chk, cc);
+						nowCc.Home(chkMsg, nowCc);
 					}
 				});
 			}

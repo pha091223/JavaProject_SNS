@@ -22,6 +22,7 @@ public class ClientChat {
 	
 	private String nowId = null;
 	private String chk = null;
+	private String receiveMsg = null;
 	
 	ClientChat(Socket s){
 		this.withServer = s;
@@ -30,27 +31,23 @@ public class ClientChat {
 	
 	public void receive() {
 		// TODO Auto-generated method stub
-		new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				try {
-					while(true) {
-						reMsg = withServer.getInputStream();
-						byte[] buffer = new byte[256];
-						reMsg.read(buffer);
-						String reMsg = new String(buffer);
-						reMsg = reMsg.trim();
-						System.out.println(reMsg);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					// e.printStackTrace();
-					System.out.println("Server Out");
-				}
-			}
-		}).start();
+		try {
+			reMsg = withServer.getInputStream();
+			byte[] buffer = new byte[256];
+			reMsg.read(buffer);
+			String reMsg = new String(buffer);
+			reMsg = reMsg.trim();
+			System.out.println(reMsg);
+			receiveMsg = reMsg;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+			System.out.println("Server Out");
+		}
+	}
+	
+	public String getReceiveMessage() {
+		return receiveMsg;
 	}
 	
 	public void send(String msg) {
@@ -77,8 +74,7 @@ public class ClientChat {
 		if(chk.indexOf("Login true")!=-1) {
 			loginF.dispose();
 			homeF = HomeFrame.getInstance(nowId, cc);
-			Object pList = getObject("setList:" + "post" + "/" + nowId);
-			homeF.Frame(pList);
+			homeF.Frame();
 		} else if(chk.indexOf("Login false")!=-1){
 			nowId = null;
 		}

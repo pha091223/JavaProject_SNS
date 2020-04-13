@@ -2,6 +2,7 @@ package frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -55,13 +56,22 @@ public class HomeFrame extends JFrame {
 	private HomeFrame(){
 		super("SNS Program");
 	}
+	
+	public static HomeFrame getInstance(String id, ClientChat cc) {
+		nowId = id;
+		nowCc = cc;
+		if(HomeF==null) {
+			HomeF = new HomeFrame();
+		}
+		return HomeF;
+	}
 
-	public void Frame(Object o) {
+	public void Frame() {
 		// TODO Auto-generated method stub
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 500, 500);
 		
-		createTimeline(o);
+		createTimeline();
 		createProfile(tab_2, nowId, nowCc);
 		createDirectMessage();
 		createSearch();
@@ -75,8 +85,7 @@ public class HomeFrame extends JFrame {
 		
 		this.setDefaultCloseOperation(this.DO_NOTHING_ON_CLOSE);
 		
-		// 윈도우 동작을 읽는 리스너 : HomeFrame 창을 X 버튼을 눌러 닫을시 로그아웃 되며 처음의 로그인 창이 뜸
-		// > 시간이 된다면 버튼을 눌러 로그아웃하고 다시 로그인 창이 뜨도록 설계 및 구현
+		// 윈도우 동작을 읽는 리스너 : HomeFrame 창을 X 버튼을 눌러 닫을시 로그아웃 처리
 		this.addWindowListener(new WindowListener() {
 
 			@Override
@@ -123,52 +132,81 @@ public class HomeFrame extends JFrame {
 		});
 	}
 
-	public static HomeFrame getInstance(String id, ClientChat cc) {
-		nowId = id;
-		nowCc = cc;
-		if(HomeF==null) {
-			HomeF = new HomeFrame();
-		}
-		return HomeF;
-	}
-
-	private void createTimeline(Object o) {
+	private void createTimeline() {
 		// TODO Auto-generated method stub
 		tab_1.setLayout(null);
 		tab_1.setBorder(new EmptyBorder(5, 5, 5, 5));
 		
-		JPanel myPostAll = new JPanel();
-		myPostAll.setLayout(null);
-		myPostAll.setBounds(0, 0, 480, 435);
+		JPanel timeline = new JPanel();
+		timeline.setLayout(new BorderLayout());
+		timeline.setBounds(0, 0, 480, 435);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(0, 0, 480, 435);
 		scrollPane.setPreferredSize(new Dimension(450, 1000));
-		myPostAll.add(scrollPane);
+		timeline.add(scrollPane);
 		
 		JPanel myPost = new JPanel();
 		myPost.setLayout(new BoxLayout(myPost, BoxLayout.Y_AXIS));
 		
 		scrollPane.setViewportView(myPost);
 		
+		Object o = nowCc.getObject("getList:" + "post" + "/" + nowId + "/t");
 		ArrayList<Object> pList = (ArrayList<Object>)o;
 		
-		settingPostView(pList, myPost);
+		settingPostView(pList, myPost, nowId);
 		
-		tab_1.add(scrollPane);
+		JPanel Btn = new JPanel();
+		Btn.setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 3));
+		
+		JButton RefreshBtn = new JButton("Refresh");
+		RefreshBtn.setPreferredSize(new Dimension(97, 23));
+		
+		RefreshBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("/RefreshBtn Click:Timeline");
+				
+				myPost.removeAll();
+				
+				Object o = nowCc.getObject("getList:" + "post" + "/" + nowId + "/t");
+				ArrayList<Object> pList = (ArrayList<Object>)o;
+				
+				settingPostView(pList, myPost, nowId);
+				
+				// 레이아웃 변경을 적용하고 다시 그림
+				revalidate();
+				repaint();
+			}
+		});
+		
+		JButton PostWriteBtn = new JButton("Write");
+		PostWriteBtn.setPreferredSize(new Dimension(97, 23));
+		
+		PostWriteBtnListner(PostWriteBtn, nowCc);
+		
+		Btn.add(PostWriteBtn);
+		Btn.add(RefreshBtn);
+		
+		timeline.add(scrollPane, "Center");
+		timeline.add(Btn, "South");
+		
+		tab_1.add(timeline);
 	}
 	
-	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel
-	private void settingPostView(ArrayList<Object> pList, JPanel postPanel) {
+	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel, 글을 보고 있는 사용자 Id
+	private void settingPostView(ArrayList<Object> pList, JPanel postPanel, String id) {
 		OnePostFrame pF = new OnePostFrame(nowCc);
 		
-		if(pList!=null) {
+		if(pList.size()>0) {
 			for(int i=0; i<pList.size(); i++) {
 				PostDTO p = (PostDTO)pList.get(i);
 				postPanel.add(pF.viewPost(p));
-			}			
-		} else if(pList==null) {
+			}
+		} else if(pList.size()==0) {
 			JPanel temp = new JPanel();
 			temp.setLayout(new BorderLayout());
 			JLabel empty = new JLabel("Empty Post");
@@ -258,10 +296,10 @@ public class HomeFrame extends JFrame {
 		scrollPane.setViewportView(myPost);
 		
 		// 자신이 쓴 글 List 받아오기
-		Object receiveObject_myPost = nowCc.getObject("getList:" + "post" + "/" + nowId);
+		Object receiveObject_myPost = nowCc.getObject("getList:" + "post" + "/" + id);
 		ArrayList<Object> myPList = (ArrayList<Object>)receiveObject_myPost;
 		
-		settingPostView(myPList, myPost);
+		settingPostView(myPList, myPost, id);
 		
 		tab_2.add(scrollPane);
 		
@@ -283,31 +321,16 @@ public class HomeFrame extends JFrame {
 			PostWriteBtn.setBounds(270, 410, 97, 23);
 			tab_2.add(PostWriteBtn);
 			
-			PostWriteBtn.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-			});
+			PostWriteBtnListner(PostWriteBtn, nowCc);
 		} else {
-			receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
-			ArrayList<Object> fList = (ArrayList<Object>)receiveObject;
-			
 			JButton FollowBtn = new JButton();
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
-			if(fList.size()>0) {
-				for(int i=0; i<fList.size(); i++) {
-					FriendDTO f = (FriendDTO)fList.get(i);
-					if(f.getMyId().equals(nowId) && f.getYourId().equals(id)) {
-						FollowBtn.setText("Unfollow");
-						break;
-					} else {
-						FollowBtn.setText("Follow");
-					}
-				}
+			nowCc.send("chkfollow:" + nowId + "/" + id);
+			nowCc.receive();
+			
+			if(nowCc.getReceiveMessage().contains("true")) {
+				FollowBtn.setText("Unfollow");
 			} else {
 				FollowBtn.setText("Follow");
 			}
@@ -344,81 +367,31 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				// getList - 조건 : 글 작성자=대상자 Id
+				System.out.println("/RefreshBtn Click:Profile");
+				
+				myPost.removeAll();
+				
+				Object receiveObject_Post = nowCc.getObject("getList:" + "post" + "/" + id);
+				ArrayList<Object> pList = (ArrayList<Object>)receiveObject_Post;
+				
+				settingPostView(pList, myPost, id);
+				
+				myPost.revalidate();
+				myPost.repaint();
 			}
 		});
-		
 	}
 	
-/*	private Panel viewPost() {
-		Panel viewPost = new Panel();
-		viewPost.setBounds(10, 120, 465, 240);
-		
-		JTextPane postContent = new JTextPane();
-		
-		JButton postfavoriteBtn = new JButton("Favorite");
-		
-		postfavoriteBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		
-		JButton postModifyBtn = new JButton("Modify");
-		
-		postModifyBtn.addActionListener(new ActionListener() {
+	private void PostWriteBtnListner(JButton PostWriteBtn, ClientChat nowCc) {
+		PostWriteBtn.addActionListener(new ActionListener() {
 			
+			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+				// TODO Auto-generated method stub
+				WritePostFrame writePost = new WritePostFrame(nowCc);
 			}
 		});
-		
-		JLabel writerId = new JLabel(nowId);
-		
-		// getList - 조건 : 글 작성자=대상 Id
-		JLabel postFavoriteNum = new JLabel("Favorite num");
-		
-		JButton postDeleteBtn = new JButton("Delete");
-		
-		GroupLayout gl_panel = new GroupLayout(viewPost);
-		gl_panel.setHorizontalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(12)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(writerId)
-						.addComponent(postContent, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE)
-						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(postfavoriteBtn)
-							.addGap(8)
-							.addComponent(postFavoriteNum)
-							.addGap(98)
-							.addComponent(postDeleteBtn)
-							.addGap(1)
-							.addComponent(postModifyBtn))))
-		);
-		gl_panel.setVerticalGroup(
-			gl_panel.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(19)
-					.addComponent(writerId)
-					.addGap(10)
-					.addComponent(postContent, GroupLayout.PREFERRED_SIZE, 145, GroupLayout.PREFERRED_SIZE)
-					.addGap(10)
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(postfavoriteBtn)
-						.addGroup(gl_panel.createSequentialGroup()
-							.addGap(4)
-							.addComponent(postFavoriteNum))
-						.addComponent(postDeleteBtn)
-						.addComponent(postModifyBtn)))
-		);
-		
-		viewPost.setLayout(gl_panel);
-		
-		return viewPost;
 	}
-	*/
 
 	private void createDirectMessage() {
 		// TODO Auto-generated method stub

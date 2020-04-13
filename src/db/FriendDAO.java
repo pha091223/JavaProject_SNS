@@ -44,6 +44,7 @@ public class FriendDAO implements DAOInterface {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return false;
 	}
@@ -72,6 +73,7 @@ public class FriendDAO implements DAOInterface {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return false;
 	}
@@ -85,6 +87,22 @@ public class FriendDAO implements DAOInterface {
 	@Override
 	public boolean select(Object DTO) {
 		// TODO Auto-generated method stub
+		try {
+			FriendDTO f = (FriendDTO)DTO;
+			String sql = "select * from friend where myId=? and yourId=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, f.getMyId());
+			psmt.setString(2, f.getYourId());
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
 		return false;
 	}
 	
@@ -119,8 +137,8 @@ public class FriendDAO implements DAOInterface {
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("DB not connect");
+			e.printStackTrace();
+			System.out.println("DB error");
 		}
 		return fList;
 	}
