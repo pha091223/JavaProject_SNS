@@ -1,29 +1,70 @@
 package frame;
 
+import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.TextAttribute;
+import java.util.ArrayList;
+import java.util.Map;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 
 import client.ClientChat;
 import db.PostDTO;
 
-public class OnePostFrame {
+public class OnePostFrame extends JFrame {
+	private HomeFrame HomeF = null;
 	private ClientChat nowCc = null;
+
 	private String nowId = null;
 	
-	OnePostFrame(ClientChat cc){
+	OnePostFrame(HomeFrame hF, ClientChat cc){
+		super("Post");
+		HomeF = hF;
 		nowCc = cc;
+		nowId = nowCc.getNowCcId();
+	}
+	
+	public void viewLayOut(PostDTO p) {
+		this.setLayout(new BorderLayout());
+		this.setBounds(100, 100, 530, 400);
+		
+		JPanel contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		
+		contentPane.add(viewPost(p, "favorite"));
+		
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setVisible(true);
+		
+		this.add(contentPane, "Center");
+	}
+	
+	private void getListSize(PostDTO p, JButton postFavoriteNum) {
+		String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
+		Object receiveObject = nowCc.getObject(msg);
+		ArrayList<Object> list = (ArrayList<Object>)receiveObject;
+		postFavoriteNum.setText("Favorite:" + (String.valueOf(list.size())));
 	}
 
-	public Panel viewPost(PostDTO p) {
+	public Panel viewPost(PostDTO p, String keyword) {
 		Panel viewPost = new Panel();
-		viewPost.setBounds(10, 120, 465, 240);
+		
+		if(keyword.equals("favorite")) {
+			viewPost.setBounds(32, 20, 465, 240);	
+		} else {
+			viewPost.setBounds(10, 120, 465, 240);			
+		}
 		
 		JTextPane postContent = new JTextPane();
 		postContent.setEditable(false);
@@ -31,9 +72,37 @@ public class OnePostFrame {
 		
 		JButton postfavoriteBtn = new JButton("Favorite");
 		
+		nowCc.send("chkFavorite:" + nowId + "/" + p.getNo());
+		nowCc.receive();
+		
+		if(nowCc.getReceiveMessage().contains("true")) {
+			postfavoriteBtn.setText("Unfavorite");
+		} else {
+			postfavoriteBtn.setText("Favorite");
+		}
+		
+		// 관심글을 누른 사람 수
+		JButton postFavoriteNum = new JButton();
+		
 		postfavoriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// 관심글(좋아요) 등록
+				if(postfavoriteBtn.getText().equals("Favorite")) {
+					nowCc.chkSet("addFavorite:" + nowId + "/" + p.getNo());
+					
+					if(nowCc.getChkMessage().indexOf("true")!=-1){
+						postfavoriteBtn.setText("Unfavorite");
+					}
+					
+					getListSize(p, postFavoriteNum);
+				} else if(postfavoriteBtn.getText().equals("Unfavorite")) {
+					nowCc.chkSet("delFavorite:" + nowId + "/" + p.getNo());
+					
+					if(nowCc.getChkMessage().indexOf("true")!=-1) {
+						postfavoriteBtn.setText("Favorite");
+					}
+					
+					getListSize(p, postFavoriteNum);
+				}
 			}
 		});
 		
@@ -42,7 +111,7 @@ public class OnePostFrame {
 		postModifyBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				
+				// 글 수정
 			}
 		});
 		
@@ -52,9 +121,28 @@ public class OnePostFrame {
 		// 글 작성 시간
 		JLabel writeTime = new JLabel(p.getDay());
 		
-		// getList - 조건 : 글 작성자=대상 Id
-		JLabel postFavoriteNum = new JLabel("Favorite num");
+		// 관심글을 누른 사람 수
+		getListSize(p, postFavoriteNum);
+		postFavoriteNum.setBorderPainted(true);
+		postFavoriteNum.setContentAreaFilled(false);
+		Font font = postFavoriteNum.getFont();
+		Map attributes = font.getAttributes();
+		attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+		postFavoriteNum.setFont(font.deriveFont(attributes));
 		
+		postFavoriteNum.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
+				Object receiveObject = nowCc.getObject(msg);
+				
+				new UserListFrame(HomeF, nowCc, receiveObject, "favorite");
+			}
+		});
+		
+		// 글 삭제
 		JButton postDeleteBtn = new JButton("Delete");
 		
 		postDeleteBtn.addActionListener(new ActionListener() {
@@ -100,7 +188,6 @@ public class OnePostFrame {
 						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 							.addComponent(postfavoriteBtn)
 							.addGroup(gl_panel.createSequentialGroup()
-								.addGap(4)
 								.addComponent(postFavoriteNum))
 							.addComponent(postDeleteBtn)
 							.addComponent(postModifyBtn)))
@@ -137,12 +224,10 @@ public class OnePostFrame {
 						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 							.addComponent(postfavoriteBtn)
 							.addGroup(gl_panel.createSequentialGroup()
-								.addGap(4)
 								.addComponent(postFavoriteNum))))
 			);
 			viewPost.setLayout(gl_panel);
 		}
-		
 		return viewPost;
 	}
 

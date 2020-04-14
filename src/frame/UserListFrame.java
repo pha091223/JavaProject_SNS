@@ -19,19 +19,21 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ScrollPaneConstants;
 
 import client.ClientChat;
+import db.FavoriteDTO;
 import db.FriendDTO;
 
-public class FriendFrame extends JFrame {
+public class UserListFrame extends JFrame {
 	private HomeFrame HomeF = null;
 	private ClientChat nowCc = null;
 	
-	private ArrayList<Object> fList = null;
+	private ArrayList<Object> list = null;
 	
-	FriendFrame(HomeFrame h, ClientChat cc, Object o){
+	UserListFrame(HomeFrame h, ClientChat cc, Object o, String keyword){
+		super("List");
 		HomeF = h;
 		this.nowCc = cc;
 		
-		fList = (ArrayList<Object>)o;
+		list = (ArrayList<Object>)o;
 		
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 300, 400);
@@ -40,43 +42,50 @@ public class FriendFrame extends JFrame {
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 		
-		JPanel myFriendAll = new JPanel();
-		myFriendAll.setLayout(null);
-		myFriendAll.setBounds(0, 0, 300, 400);
+		JPanel listAll = new JPanel();
+		listAll.setLayout(null);
+		listAll.setBounds(0, 0, 300, 400);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setBounds(5, 5, 275, 355);
 		scrollPane.setPreferredSize(new Dimension(250, 1000));
-		myFriendAll.add(scrollPane);
+		listAll.add(scrollPane);
 		
-		JPanel myFList = new JPanel();
-		myFList.setLayout(new BoxLayout(myFList, BoxLayout.Y_AXIS));
+		JPanel myList = new JPanel();
+		myList.setLayout(new BoxLayout(myList, BoxLayout.Y_AXIS));
 		
-		scrollPane.setViewportView(myFList);
+		scrollPane.setViewportView(myList);
 		
-		for(int i=0; i<fList.size(); i++) {
-			FriendDTO f = (FriendDTO)(fList.get(i));
-			String FriendId = f.getYourId();
-			myFList.add(viewMyFList(FriendId));
+		if(keyword.equals("friend")) {
+			for(int i=0; i<list.size(); i++) {
+					FriendDTO fr = (FriendDTO)(list.get(i));
+					String FriendId = fr.getYourId();
+					myList.add(viewMyFList(FriendId));
+			}
+		} else if(keyword.equals("favorite")) {
+			for(int i=0; i<list.size(); i++) {
+				FavoriteDTO f = (FavoriteDTO)(list.get(i));
+				String FavoriteId = f.getId();
+				myList.add(viewMyFList(FavoriteId));
+			}
 		}
 		
-		this.add(myFriendAll);
+		this.add(listAll);
 	}
-
-	private Panel viewMyFList(String FriendId) {
+	
+	private Panel viewMyFList(String userId) {
 		// TODO Auto-generated method stub
 		Panel FList = new Panel();
 		
-		JLabel FName = new JLabel(FriendId);
+		JLabel FName = new JLabel(userId);
 		
 		JButton FProfileBtn = new JButton("Profile");
 		
 		FProfileBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				new ProfileFrame(FriendId, nowCc, HomeF);
-				dispose();
+				new ProfileFrame(userId, nowCc, HomeF);
 			}
 		});
 		

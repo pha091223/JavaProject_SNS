@@ -148,27 +148,25 @@ public class ChkFrame extends JFrame {
 					dispose();
 				}
 			});
+		} else if(chkMsg.equals("Logout true" + ":GoodBye")) {
+			OkBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					System.exit(0);
+				}
+			});
 		} else {
-			if(chkMsg.equals("Logout true" + ":GoodBye")) {
-				OkBtn.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						System.exit(0);
-					}
-				});
-			} else {
-				OkBtn.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						setVisible(false);
-						nowCc.Home(chkMsg, nowCc);
-					}
-				});
-			}
+			OkBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					setVisible(false);
+					nowCc.Home(chkMsg, nowCc);
+				}
+			});
 		}
 	}
 

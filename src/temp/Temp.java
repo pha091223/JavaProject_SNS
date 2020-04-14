@@ -20,6 +20,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.awt.TextArea;
 
 public class Temp extends JFrame {
 	private JPanel contentPane;
@@ -44,10 +45,24 @@ public class Temp extends JFrame {
 	 * Create the frame.
 	 */
 	public Temp() {
-		this.setLayout(new BorderLayout());
-		this.setBounds(200, 100, 300, 400);
+		getContentPane().setLayout(new BorderLayout());
+		
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		getContentPane().add(panel, "Center");
+		
+		JTextPane textPane = new JTextPane();
+		textPane.setBounds(32, 5, 150, 500);
+		textPane.setText("AAAAAA" + "\n");
+		panel.add(textPane);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		getContentPane().add(scrollPane, BorderLayout.CENTER);
+		this.setBounds(200, 100, 300, 500);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+		scrollPane.setViewportView(textPane);
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 	}

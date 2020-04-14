@@ -199,12 +199,12 @@ public class HomeFrame extends JFrame {
 	
 	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel, 글을 보고 있는 사용자 Id
 	private void settingPostView(ArrayList<Object> pList, JPanel postPanel, String id) {
-		OnePostFrame pF = new OnePostFrame(nowCc);
+		OnePostFrame pF = new OnePostFrame(HomeF, nowCc);
 		
 		if(pList.size()>0) {
 			for(int i=0; i<pList.size(); i++) {
 				PostDTO p = (PostDTO)pList.get(i);
-				postPanel.add(pF.viewPost(p));
+				postPanel.add(pF.viewPost(p, ""));
 			}
 		} else if(pList.size()==0) {
 			JPanel temp = new JPanel();
@@ -255,7 +255,7 @@ public class HomeFrame extends JFrame {
 					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + id);
 				}
 				
-				new FriendFrame(HomeF, nowCc, receiveObject);
+				new UserListFrame(HomeF, nowCc, receiveObject, "friend");
 			}
 		});
 		
@@ -275,7 +275,15 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				// getList - 조건 : 관심글 등록자=대상자 Id
+				Object receiveObject = null;
+				
+				if(nowId.equals(id)) {
+					receiveObject = nowCc.getObject("getList:" + "favorite" + "/" + nowId);
+				} else if(!nowId.equals(id)) {
+					receiveObject = nowCc.getObject("getList:" + "favorite" + "/" + id);
+				}
+				
+				new FavoriteFrame(HomeF, nowCc, receiveObject);
 			}
 		});
 		
@@ -298,7 +306,7 @@ public class HomeFrame extends JFrame {
 		// 자신이 쓴 글 List 받아오기
 		Object receiveObject_myPost = nowCc.getObject("getList:" + "post" + "/" + id);
 		ArrayList<Object> myPList = (ArrayList<Object>)receiveObject_myPost;
-		
+				
 		settingPostView(myPList, myPost, id);
 		
 		tab_2.add(scrollPane);
@@ -326,7 +334,7 @@ public class HomeFrame extends JFrame {
 			JButton FollowBtn = new JButton();
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
-			nowCc.send("chkfollow:" + nowId + "/" + id);
+			nowCc.send("chkFollow:" + nowId + "/" + id);
 			nowCc.receive();
 			
 			if(nowCc.getReceiveMessage().contains("true")) {
@@ -342,13 +350,13 @@ public class HomeFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					if(FollowBtn.getText().equals("Follow")) {
-						nowCc.chkSet("addfollow:" + nowId + "/" + id);
+						nowCc.chkSet("addFollow:" + nowId + "/" + id);
 						
 						if(nowCc.getChkMessage().indexOf("true")!=-1){
 							FollowBtn.setText("Unfollow");
 						}
 					} else if(FollowBtn.getText().equals("Unfollow")) {
-						nowCc.chkSet("delfollow:" + nowId + "/" + id);
+						nowCc.chkSet("delFollow:" + nowId + "/" + id);
 						
 						if(nowCc.getChkMessage().indexOf("true")!=-1) {
 							FollowBtn.setText("Follow");

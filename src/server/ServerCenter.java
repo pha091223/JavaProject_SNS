@@ -3,10 +3,10 @@ package server;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import db.DAOCenter;
+import db.FavoriteDTO;
 import db.FriendDTO;
 import db.MemberDTO;
 import db.PostDTO;
@@ -58,13 +58,44 @@ public class ServerCenter {
 		} else if(msg.indexOf("getList:")!=-1) {
 			getList(msg);
 		} else if(msg.indexOf("profile:")!=-1) {
-			viewProfile(msg);
+			profile(msg);
 		} else if(msg.indexOf("myPage:")!=-1) {
 			myPage(msg);
-		} else if(msg.indexOf("follow:")!=-1) {
+		} else if(msg.indexOf("Follow:")!=-1) {
 			followFriend(msg);
 		} else if(msg.indexOf("Post:")!=-1) {
 			post(msg);
+		} else if(msg.indexOf("Favorite:")!=-1) {
+			favorite(msg);
+		}
+	}
+	
+	private void favorite(String msg) {
+		String id = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
+		String postNum = msg.substring(msg.indexOf("/")+1, msg.length());
+		
+		FavoriteDTO f = new FavoriteDTO();
+		f.setId(id);
+		f.setPostNum(postNum);
+		
+		if(msg.contains("addFavorite:")) {
+			if(Dc.insert("favorite", f)) {
+				nowSc.send("Favorite true");
+			} else {
+				nowSc.send("Favorite false");
+			}
+		} else if(msg.contains("delFavorite:")) {
+			if(Dc.delete("favorite", f)) {
+				nowSc.send("Unfavorite true");
+			} else {
+				nowSc.send("Unfavorite false");
+			}
+		} else if(msg.contains("chkFavorite:")) {
+			if(Dc.select("favorite", f)) {
+				nowSc.send("true");
+			} else {
+				nowSc.send("false");
+			}
 		}
 	}
 	
@@ -100,6 +131,9 @@ public class ServerCenter {
 				
 				nowSc.send("Post Delete hope" + ":" + postNum);
 			}
+		} else if(msg.contains("selectPost:")) {
+			String postNum = msg.substring(msg.lastIndexOf(":")+1, msg.length());
+			sendObject(Dc.select("post", postNum));
 		}
 	}
 
@@ -108,25 +142,24 @@ public class ServerCenter {
 		String myId = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
 		String yourId = msg.substring(msg.indexOf("/")+1, msg.length());
 		
-		FriendDTO f = new FriendDTO();
-		f.setMyId(myId);
-		f.setYourId(yourId);
+		FriendDTO fr = new FriendDTO();
+		fr.setMyId(myId);
+		fr.setYourId(yourId);
 		
-		if(msg.contains("addfollow:")) {
-			if(Dc.insert("friend", f)) {
+		if(msg.contains("addFollow:")) {
+			if(Dc.insert("friend", fr)) {
 				nowSc.send("Follow true");
 			} else {
 				nowSc.send("Follow false");
 			}			
-		} else if(msg.contains("delfollow:")) {
-			// follow 풀기
-			if(Dc.delete("friend", f)) {
+		} else if(msg.contains("delFollow:")) {
+			if(Dc.delete("friend", fr)) {
 				nowSc.send("Unfollow true");
 			} else {
 				nowSc.send("Unfollow false");
 			}
-		} else if(msg.contains("chkfollow:")) {
-			if(Dc.select("friend", f)) {
+		} else if(msg.contains("chkFollow:")) {
+			if(Dc.select("friend", fr)) {
 				nowSc.send("true");
 			} else {
 				nowSc.send("false");
@@ -199,7 +232,7 @@ public class ServerCenter {
 		}
 	}
 
-	private void viewProfile(String msg) {
+	private void profile(String msg) {
 		// TODO Auto-generated method stub
 		try {
 			String id = msg.substring(msg.indexOf(":")+1, msg.length());

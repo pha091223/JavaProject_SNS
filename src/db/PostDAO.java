@@ -31,12 +31,13 @@ public class PostDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		try {
 //			PostDTO p = (PostDTO)DTO;
-//			String sql = "insert into post values(no.nextval, sysdate, ?, ?)";
+//			String sql = "insert into post values(post_no.nextval, sysdate, ?, ?)";
 //			PreparedStatement psmt = con.prepareStatement(sql);
 //			
 //			psmt.setString(1, p.getId());
 //			psmt.setString(2, p.getText());
 			
+			/* Test */
 			PostDTO p = (PostDTO)DTO;
 			String sql = "insert into post values(?, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
@@ -44,6 +45,7 @@ public class PostDAO implements DAOInterface {
 			psmt.setString(1, String.valueOf("15"));
 			psmt.setString(2, p.getId());
 			psmt.setString(3, p.getText());
+			/* */
 
 			int a = psmt.executeUpdate();
 
@@ -99,6 +101,27 @@ public class PostDAO implements DAOInterface {
 	@Override
 	public Object select(String s) {
 		// TODO Auto-generated method stub
+		try {
+			String sql = "select * from post where no=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, s);
+			
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				PostDTO p = new PostDTO();
+				
+				p.setNo(rs.getString("no"));
+				p.setDay(rs.getString("day"));
+				p.setId(rs.getString("id"));
+				p.setText(rs.getString("text"));
+				
+				return p;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 

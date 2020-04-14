@@ -1,6 +1,7 @@
 package db;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,6 +29,23 @@ public class FavoriteDAO implements DAOInterface {
 	@Override
 	public boolean insert(Object DTO) {
 		// TODO Auto-generated method stub
+		try {
+			FavoriteDTO f = (FavoriteDTO)DTO;
+			String sql = "insert into favorite values(?, ?)";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, f.getPostNum());
+			psmt.setString(2, f.getId());
+			
+			int a = psmt.executeUpdate();
+			
+			if(a>0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
 		return false;
 	}
 
@@ -40,6 +58,23 @@ public class FavoriteDAO implements DAOInterface {
 	@Override
 	public boolean delete(Object DTO) {
 		// TODO Auto-generated method stub
+		try {
+			FavoriteDTO f = (FavoriteDTO)DTO;
+			String sql = "delete from favorite where no=? and id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, f.getPostNum());
+			psmt.setString(2, f.getId());
+			
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt>0) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
 		return false;
 	}
 
@@ -52,6 +87,22 @@ public class FavoriteDAO implements DAOInterface {
 	@Override
 	public boolean select(Object DTO) {
 		// TODO Auto-generated method stub
+		try {
+			FavoriteDTO f = (FavoriteDTO)DTO;
+			String sql = "select * from favorite where no=? and id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, f.getPostNum());
+			psmt.setString(2, f.getId());
+			int cnt = psmt.executeUpdate();
+			
+			if(cnt==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
 		return false;
 	}
 
@@ -70,7 +121,37 @@ public class FavoriteDAO implements DAOInterface {
 	@Override
 	public Object getDBList(String tName, String s) {
 		// TODO Auto-generated method stub
-		return null;
+		ArrayList<Object> fList = new ArrayList<>();
+		try {
+			String sql = null;
+			String keyword = null;
+			
+			if(s.contains("/u")) {
+				sql = "select * from favorite where no=?";
+				keyword = s.substring(0, s.indexOf("/"));
+			} else {
+				sql = "select * from favorite where id=?";
+				keyword = s;
+			}
+			
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, keyword);
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				FavoriteDTO f = new FavoriteDTO();
+				
+				f.setId(rs.getString("id"));
+				f.setPostNum(rs.getString("no"));
+				
+				fList.add(f);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
+		return fList;
 	}
 	
 

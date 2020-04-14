@@ -14,7 +14,7 @@ public class ProfileFrame extends JFrame {
 	
 	private String id = null;
 	
-	ProfileFrame(String id, ClientChat cc, HomeFrame HomeF){
+	ProfileFrame(String id, ClientChat cc, HomeFrame HomeF){		
 		this.id = id;
 		nowCc = cc;
 		this.HomeF = HomeF;
@@ -24,7 +24,7 @@ public class ProfileFrame extends JFrame {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		
+				
 		HomeF.createProfile(panel, id, cc);
 		
 		this.add(panel, "Center");
