@@ -27,6 +27,10 @@ public class ServerCenter {
 		sList.add(sc);
 	}
 	
+	public void delSc(ServerChat sc) {
+		sList.remove(sc);
+	}
+	
 	private void sendObject(Object o) {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -199,7 +203,7 @@ public class ServerCenter {
 				if(Dc.delete("member", nowSc.getNowScId())) {
 					for(ServerChat i : sList) {
 						if(i.getNowScId().equals(nowSc.getNowScId())){
-							sList.remove(i);
+							delSc(i);
 							break;
 						}
 					}
@@ -352,7 +356,7 @@ public class ServerCenter {
 		
 		if(msg.indexOf("sure")!=-1) {
 			nowSc.send("Logout true");
-			sList.remove(nowSc);
+			delSc(nowSc);
 		} else {
 			nowSc.send("Logout hope");
 		}

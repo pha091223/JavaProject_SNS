@@ -34,7 +34,7 @@ public class OnePostFrame extends JFrame {
 		nowId = nowCc.getNowCcId();
 	}
 	
-	public void viewLayOut(PostDTO p) {
+	public void viewPostLayOut(PostDTO p) {
 		this.setLayout(new BorderLayout());
 		this.setBounds(100, 100, 530, 400);
 		
@@ -54,7 +54,7 @@ public class OnePostFrame extends JFrame {
 		String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
 		Object receiveObject = nowCc.getObject(msg);
 		ArrayList<Object> list = (ArrayList<Object>)receiveObject;
-		postFavoriteNum.setText("Favorite:" + (String.valueOf(list.size())));
+		postFavoriteNum.setText("Likes : " + (String.valueOf(list.size())));
 	}
 
 	public Panel viewPost(PostDTO p, String keyword) {
@@ -66,6 +66,7 @@ public class OnePostFrame extends JFrame {
 			viewPost.setBounds(10, 120, 465, 240);			
 		}
 		
+		// 글 표시
 		JTextPane postContent = new JTextPane();
 		postContent.setEditable(false);
 		postContent.setText(p.getText());
@@ -138,7 +139,8 @@ public class OnePostFrame extends JFrame {
 				String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
 				Object receiveObject = nowCc.getObject(msg);
 				
-				new UserListFrame(HomeF, nowCc, receiveObject, "favorite");
+				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				userListF.viewListFrame("favorite");
 			}
 		});
 		

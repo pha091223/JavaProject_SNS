@@ -2,6 +2,7 @@ package frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,9 +47,14 @@ public class FavoriteFrame extends JFrame {
 		myFavoriteAll.setLayout(null);
 		myFavoriteAll.setBounds(0, 0, 300, 400);
 		
+		JLabel listName = new JLabel("favorite list");
+		listName.setBounds(15, 5, 100, 20);
+		listName.setFont(new Font("Dialog", Font.BOLD, 15));
+		myFavoriteAll.add(listName);
+		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		scrollPane.setBounds(5, 5, 275, 355);
+		scrollPane.setBounds(5, 30, 275, 325);
 		scrollPane.setPreferredSize(new Dimension(250, 1000));
 		myFavoriteAll.add(scrollPane);
 		
@@ -81,7 +87,7 @@ public class FavoriteFrame extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				OnePostFrame pF = new OnePostFrame(HomeF, nowCc);
-				pF.viewLayOut(FavoritePost);
+				pF.viewPostLayOut(FavoritePost);
 			}
 		});
 		

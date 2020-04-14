@@ -52,13 +52,13 @@ public class Temp extends JFrame {
 		getContentPane().add(panel, "Center");
 		
 		JTextPane textPane = new JTextPane();
-		textPane.setBounds(32, 5, 150, 500);
+		textPane.setBounds(32, 5, 0, 0);
 		textPane.setText("AAAAAA" + "\n");
 		panel.add(textPane);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
-		this.setBounds(200, 100, 300, 500);
+		this.setBounds(200, 100, 300, 300);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		

@@ -255,7 +255,8 @@ public class HomeFrame extends JFrame {
 					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + id);
 				}
 				
-				new UserListFrame(HomeF, nowCc, receiveObject, "friend");
+				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				userListF.viewListFrame("friend");
 			}
 		});
 		
@@ -401,8 +402,68 @@ public class HomeFrame extends JFrame {
 		});
 	}
 
+	/* 미완성 */
 	private void createDirectMessage() {
 		// TODO Auto-generated method stub
+		tab_3.setLayout(null);
+		tab_3.setBorder(new EmptyBorder(5, 5, 5, 5));
+		
+		JPanel DM = new JPanel();
+		DM.setLayout(new BorderLayout());
+		DM.setBounds(0, 0, 480, 435);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollPane.setBounds(0, 0, 480, 435);
+		scrollPane.setPreferredSize(new Dimension(450, 1000));
+		DM.add(scrollPane);
+		
+		JPanel myDMList = new JPanel();
+		myDMList.setLayout(new BoxLayout(myDMList, BoxLayout.Y_AXIS));
+		
+		scrollPane.setViewportView(myDMList);
+		
+		ArrayList<String> DMList = new ArrayList<>();
+		
+		if(DMList.size()>0) {
+			
+		} else if(DMList.size()==0) {
+			JPanel temp = new JPanel();
+			temp.setLayout(new BorderLayout());
+			JLabel empty = new JLabel("Empty Message");
+			empty.setHorizontalAlignment(JLabel.CENTER);
+			temp.add(empty, "Center");
+			myDMList.add(temp);
+		}
+		
+		JPanel Btn = new JPanel();
+		Btn.setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 3));
+		
+		JButton frListBtn = new JButton("Follow List");
+		frListBtn.setPreferredSize(new Dimension(97, 23));
+		
+		frListBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Object receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
+				
+				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				userListF.viewListFrame("DMfriend");
+			}
+		});
+		
+		JButton TempBtn = new JButton("");
+		TempBtn.setPreferredSize(new Dimension(97, 23));
+		
+		Btn.add(frListBtn);
+		Btn.add(TempBtn);
+		
+		DM.add(scrollPane, "Center");
+		DM.add(Btn, "South");
+		
+		tab_3.add(DM);
 	}
 
 	private void createSearch() {

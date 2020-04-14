@@ -34,7 +34,7 @@
 	no number,
 	id varchar2(8),
 	primary key(no, id),
-	foreign key(no) references post(no),
+	foreign key(no) references post(no) on delete cascade,
 	foreign key(id) references member(id));
 	
 	- 친구 목록
