@@ -76,6 +76,7 @@ public class LoginFrame extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object nowCom = e.getSource();
+		
 		String id = idField.getText();
 		String pwd = pwdField.getText();
 		

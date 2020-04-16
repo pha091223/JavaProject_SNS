@@ -1,22 +1,26 @@
 package test;
 
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
 import javax.swing.JFrame;
 
 import db.DAOCenter;
-import db.MemberDTO;
 
-public class Test extends JFrame {
+public class Test extends JFrame {	
 	private DAOCenter Dc = DAOCenter.getInstance();
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		new Test();
 		
 	}
 	
-	Test() {
-		MemberDTO a = (MemberDTO)Dc.select("member", "kkk");
-		System.out.println(a.getPwd());
+	Test() throws Exception {
+		ServerSocket serverO = new ServerSocket();
+		serverO.bind(new InetSocketAddress("10.0.0.104", 8888));
+		
+		String a = "Login true/Object port:" + serverO.getLocalPort();
 	}
 
 }

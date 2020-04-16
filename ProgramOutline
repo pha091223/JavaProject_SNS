@@ -10,20 +10,15 @@
 	- 글 목록
 	create table post(
 	no number,
-	day number not null,
-	id varchar2(8),
-	text varchar2(200) not null,
-	image blob default empty_blob(),
-	primary key(no),
-	foreign key(id) references member(id));
-	
-	create table post(
-	no number,
 	day date not null,
 	id varchar2(8),
 	text varchar2(200) not null,
 	primary key(no),
-	foreign key(id) references member(id));
+	foreign key(id) references member(id) on delete cascade);
+	
+	/
+	image blob default empty_blob(),
+	/
 	
 	// Sequence
 	create sequence post_no
@@ -42,8 +37,8 @@
 	myid varchar2(8),
 	yourid varchar2(8),
 	primary key(myid, yourid),
-	foreign key(myid) references member(id),
-	foreign key(yourid) references member(id));
+	foreign key(myid) references member(id) on delete cascade,
+	foreign key(yourid) references member(id) on delete cascade);
 	
 ───────────────────────────────────────────────────────────────
 

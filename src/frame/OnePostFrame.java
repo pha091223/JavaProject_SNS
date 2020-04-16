@@ -55,6 +55,7 @@ public class OnePostFrame extends JFrame {
 		Object receiveObject = nowCc.getObject(msg);
 		ArrayList<Object> list = (ArrayList<Object>)receiveObject;
 		postFavoriteNum.setText("Likes : " + (String.valueOf(list.size())));
+		
 	}
 
 	public Panel viewPost(PostDTO p, String keyword) {
@@ -74,11 +75,11 @@ public class OnePostFrame extends JFrame {
 		JButton postfavoriteBtn = new JButton("Favorite");
 		
 		nowCc.send("chkFavorite:" + nowId + "/" + p.getNo());
-		nowCc.receive();
+		nowCc.sleep();
 		
-		if(nowCc.getReceiveMessage().contains("true")) {
+		if(nowCc.getReceiveMessage().indexOf("chkFavorite true")!=-1) {
 			postfavoriteBtn.setText("Unfavorite");
-		} else {
+		} else if(nowCc.getReceiveMessage().indexOf("chkFavorite false")!=-1){
 			postfavoriteBtn.setText("Favorite");
 		}
 		
@@ -88,17 +89,19 @@ public class OnePostFrame extends JFrame {
 		postfavoriteBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(postfavoriteBtn.getText().equals("Favorite")) {
-					nowCc.chkSet("addFavorite:" + nowId + "/" + p.getNo());
+					nowCc.send("addFavorite:" + nowId + "/" + p.getNo());
+					nowCc.sleep();
 					
-					if(nowCc.getChkMessage().indexOf("true")!=-1){
+					if(nowCc.getReceiveMessage().indexOf("Favorite true")!=-1){
 						postfavoriteBtn.setText("Unfavorite");
 					}
 					
 					getListSize(p, postFavoriteNum);
 				} else if(postfavoriteBtn.getText().equals("Unfavorite")) {
-					nowCc.chkSet("delFavorite:" + nowId + "/" + p.getNo());
+					nowCc.send("delFavorite:" + nowId + "/" + p.getNo());
+					nowCc.sleep();
 					
-					if(nowCc.getChkMessage().indexOf("true")!=-1) {
+					if(nowCc.getReceiveMessage().indexOf("Unfavorite true")!=-1) {
 						postfavoriteBtn.setText("Favorite");
 					}
 					
@@ -152,11 +155,11 @@ public class OnePostFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				nowCc.chkSet("deletePost:" + nowId + "/" + p.getNo());
+				nowCc.send("deletePost:" + nowId + "/" + p.getNo());
 			}
 		});
 		
-		if(nowCc.getNowScId().equals(p.getId())) {
+		if(nowCc.getNowCcId().equals(p.getId())) {
 			GroupLayout gl_panel = new GroupLayout(viewPost);
 			gl_panel.setHorizontalGroup(
 				gl_panel.createParallelGroup(Alignment.LEADING)
@@ -196,7 +199,7 @@ public class OnePostFrame extends JFrame {
 			);
 			viewPost.setLayout(gl_panel);
 			
-		} else if(!nowCc.getNowScId().equals(p.getId())) {
+		} else if(!nowCc.getNowCcId().equals(p.getId())) {
 			GroupLayout gl_panel = new GroupLayout(viewPost);
 			gl_panel.setHorizontalGroup(
 				gl_panel.createParallelGroup(Alignment.LEADING)

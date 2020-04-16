@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -115,7 +117,7 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				nowCc.chkSet("logout:" + nowCc.getNowCcId());
+				nowCc.send("logout:" + nowCc.getNowCcId());
 			}
 			
 			@Override
@@ -336,11 +338,11 @@ public class HomeFrame extends JFrame {
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
 			nowCc.send("chkFollow:" + nowId + "/" + id);
-			nowCc.receive();
+			nowCc.sleep();
 			
-			if(nowCc.getReceiveMessage().contains("true")) {
+			if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 				FollowBtn.setText("Unfollow");
-			} else {
+			} else if(nowCc.getReceiveMessage().indexOf("false")!=-1){
 				FollowBtn.setText("Follow");
 			}
 			tab_2.add(FollowBtn);
@@ -351,15 +353,15 @@ public class HomeFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					if(FollowBtn.getText().equals("Follow")) {
-						nowCc.chkSet("addFollow:" + nowId + "/" + id);
+						nowCc.send("addFollow:" + nowId + "/" + id);
 						
-						if(nowCc.getChkMessage().indexOf("true")!=-1){
+						if(nowCc.getReceiveMessage().indexOf("true")!=-1){
 							FollowBtn.setText("Unfollow");
 						}
 					} else if(FollowBtn.getText().equals("Unfollow")) {
-						nowCc.chkSet("delFollow:" + nowId + "/" + id);
+						nowCc.send("delFollow:" + nowId + "/" + id);
 						
-						if(nowCc.getChkMessage().indexOf("true")!=-1) {
+						if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 							FollowBtn.setText("Follow");
 						}
 					}
@@ -616,6 +618,23 @@ public class HomeFrame extends JFrame {
 		tabPane.add("Profile", tab_2);
 		tabPane.add("DirectMessage", tab_3);
 		tabPane.add("Search", tab_4);
+		
+//		tabPane.addChangeListener(new ChangeListener() {
+//			
+//			@Override
+//			public void stateChanged(ChangeEvent e) {
+//				// TODO Auto-generated method stub
+//				if(tabPane.getSelectedIndex()==0) {
+//					createTimeline();
+//				} else if(tabPane.getSelectedIndex()==1) {
+//					createProfile(tab_2, nowId, nowCc);
+//				} else if(tabPane.getSelectedIndex()==2) {
+//					createDirectMessage();
+//				} else if(tabPane.getSelectedIndex()==3) {
+//					createSearch();
+//				}
+//			}
+//		});
 	}
 
 }

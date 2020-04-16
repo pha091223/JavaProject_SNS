@@ -17,7 +17,6 @@ public class ChkFrame extends JFrame {
 	private JLabel textLabel;
 	private JButton OkBtn;
 	
-	private ChkFrame nowChkF = null;
 	private ClientChat nowCc = null;
 	
 	private String chkMsg = null;
@@ -27,8 +26,12 @@ public class ChkFrame extends JFrame {
 		setResizable(false);
 		this.nowCc = cc;
 		this.chkMsg = chk;
-		nowChkF = this;
-		Frame();
+		
+		if(chkMsg.indexOf("chk")!=-1) {
+			System.out.println("Check");
+		} else {
+			Frame();
+		}
 	}
 	
 	private void Frame() {
@@ -45,7 +48,7 @@ public class ChkFrame extends JFrame {
 			if(chkMsg.contains("true")) {
 				textLabel = new JLabel("Welcome");
 			} else if(chkMsg.contains("false")) {
-				textLabel = new JLabel("Inexistant ID or Wrong PWD");
+				textLabel = new JLabel("Wrong ID or PWD");
 			}
 		} else if(chkMsg.contains("Logout")) {
 			if(chkMsg.contains("hope")) {
@@ -109,10 +112,10 @@ public class ChkFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated stub
 					if(chkMsg.contains("MyPage")){
-						nowCc.chkSet("deletemyPage:sure");
+						nowCc.send("deletemyPage:sure");
 					} else if(chkMsg.contains("Post")) {
 						String postNum = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
-						nowCc.chkSet("deletePost:sure" + "/" + postNum);
+						nowCc.send("deletePost:sure" + "/" + postNum);
 					}
 					setVisible(false);
 				}
@@ -136,7 +139,7 @@ public class ChkFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated stub
 					setVisible(false);
-					nowCc.chkSet("logout:sure");
+					nowCc.send("logout:sure");
 				}
 			});
 			
@@ -155,6 +158,15 @@ public class ChkFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					System.exit(0);
+				}
+			});
+		} else if(chkMsg.equals("Already access member")) {
+			OkBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					dispose();
 				}
 			});
 		} else {

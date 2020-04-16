@@ -87,7 +87,12 @@ public class FavoriteFrame extends JFrame {
 			
 			public void actionPerformed(ActionEvent e) {
 				OnePostFrame pF = new OnePostFrame(HomeF, nowCc);
-				pF.viewPostLayOut(FavoritePost);
+				try {
+					pF.viewPostLayOut(FavoritePost);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		

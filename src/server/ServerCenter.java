@@ -96,9 +96,9 @@ public class ServerCenter {
 			}
 		} else if(msg.contains("chkFavorite:")) {
 			if(Dc.select("favorite", f)) {
-				nowSc.send("true");
+				nowSc.send("chkFavorite true");
 			} else {
-				nowSc.send("false");
+				nowSc.send("chkFavorite false");
 			}
 		}
 	}
@@ -164,9 +164,9 @@ public class ServerCenter {
 			}
 		} else if(msg.contains("chkFollow:")) {
 			if(Dc.select("friend", fr)) {
-				nowSc.send("true");
+				nowSc.send("chkFollow true");
 			} else {
-				nowSc.send("false");
+				nowSc.send("chkFollow false");
 			}
 		}
 	}
@@ -368,14 +368,29 @@ public class ServerCenter {
 		String id = reMsg.substring(0, reMsg.indexOf("/"));
 		String pwd = reMsg.substring(reMsg.indexOf("/")+1, reMsg.length());
 		
-		MemberDTO m = new MemberDTO();
-		m.setId(id);
-		m.setPwd(pwd);
+		// 다중 접속 방어
+		boolean chk = true;
 		
-		if(Dc.select("member", m)) {
-			nowSc.send("Login true");
-		} else {
-			nowSc.send("Login false");
+		if(sList.size()>1) {
+			for(ServerChat i : sList) {
+				if(i.getNowScId()!=null && i.getNowScId().equals(id)) {
+					nowSc.send("Already access member");
+					chk = false;
+					break;
+				}
+			}
+		}
+		
+		if(chk==true) {
+			MemberDTO m = new MemberDTO();
+			m.setId(id);
+			m.setPwd(pwd);
+			
+			if(Dc.select("member", m)) {
+				nowSc.send("Login true/Object port:" + nowSc.getObjectPortNum());
+			} else {
+				nowSc.send("Login false");
+			}
 		}
 	}
 	

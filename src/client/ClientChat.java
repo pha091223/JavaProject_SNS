@@ -14,6 +14,10 @@ import frame.LoginFrame;
 
 public class ClientChat {
 	private Socket withServer = null;
+	private Socket withServerObject = null;
+	
+	private ClientChat nowCc = null;
+	
 	private InputStream reMsg = null;
 	private OutputStream seMsg = null;
 	
@@ -21,28 +25,54 @@ public class ClientChat {
 	private HomeFrame homeF = null;
 	
 	private String nowId = null;
-	private String chk = null;
 	private String receiveMsg = null;
 	
 	ClientChat(Socket s){
 		this.withServer = s;
+		this.nowCc = this;
+		receive();
 		login(this);
 	}
 	
 	public void receive() {
 		// TODO Auto-generated method stub
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					while(true) {
+						reMsg = withServer.getInputStream();
+						byte[] buffer = new byte[256];
+						reMsg.read(buffer);
+						String reMsg = new String(buffer);
+						reMsg = reMsg.trim();
+						receiveMsg = reMsg;
+						
+						System.out.println("/ReceiveMessage:" + receiveMsg);
+						
+						if(receiveMsg.contains("MyPage Delete true")) {
+							System.exit(0);
+						}
+						
+						ChkFrame chkF = new ChkFrame(receiveMsg, nowCc);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					// e.printStackTrace();
+					System.out.println("Server Out");
+				}
+			}
+		}).start();
+	}
+	
+	public void sleep() {
 		try {
-			reMsg = withServer.getInputStream();
-			byte[] buffer = new byte[256];
-			reMsg.read(buffer);
-			String reMsg = new String(buffer);
-			reMsg = reMsg.trim();
-			System.out.println(reMsg);
-			receiveMsg = reMsg;
-		} catch (IOException e) {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			System.out.println("Server Out");
+			e.printStackTrace();
 		}
 	}
 	
@@ -72,16 +102,28 @@ public class ClientChat {
 	public void Home(String chk, ClientChat cc) {
 		// TODO Auto-generated method stub
 		if(chk.indexOf("Login true")!=-1) {
-			loginF.dispose();
-			homeF = HomeFrame.getInstance(nowId, cc);
-			homeF.Frame();
+			try {
+				loginF.dispose();
+				
+				// Login True이니 ObjectStream을 위한 Socket Port Number 할당
+				int portNum = Integer.valueOf(chk.substring(chk.indexOf(":")+1, chk.length()));
+				
+				if(portNum!=-1) {
+					withServerObject = new Socket("10.0.0.104", portNum);				
+				} else {
+					System.out.println("Object Socket Port Wrong");
+				}
+				
+				receive();
+				
+				homeF = HomeFrame.getInstance(nowId, cc);
+				homeF.Frame();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} else if(chk.indexOf("Login false")!=-1){
 			nowId = null;
 		}
-	}
-	
-	public String getNowScId() {
-		return nowId;
 	}
 	
 	public Object getObject(String msg) {
@@ -92,7 +134,7 @@ public class ClientChat {
 	public Object receiveObject() {
 		// TODO Auto-generated method stub
 		try {
-			reMsg = withServer.getInputStream();
+			reMsg = withServerObject.getInputStream();
 			byte[] reBuffer = new byte[1024];
 			reMsg.read(reBuffer);
 			
@@ -112,44 +154,33 @@ public class ClientChat {
 	public void Join() {
 		JoinFrame joinF = new JoinFrame(this);
 	}
-	
-	public void chkSet(String msg) {
-		try {
-			seMsg = withServer.getOutputStream();
-			seMsg.write(msg.getBytes());
-			
-			reMsg = withServer.getInputStream();
-			byte[] buffer = new byte[256];
-			reMsg.read(buffer);
-			chk = new String(buffer);
-			chk = chk.trim();
-			
-			System.out.println("/CheckMessage:" + chk);
 
-			if(chk.contains("MyPage Delete true")) {
-				System.exit(0);
-			}
+	public void loginSet(String id, String pwd) {
+		try {
+			String user = "login:" + id + "/" + pwd;
 			
-			ChkFrame chkF = new ChkFrame(chk, this);
+			nowId = id;
+			
+			System.out.println("id:" + id);
+			System.out.println("pwd:" + pwd);
+			
+			seMsg = withServer.getOutputStream();
+			seMsg.write(user.getBytes());
+			
+//			reMsg = withServer.getInputStream();
+//			byte[] buffer = new byte[256];
+//			reMsg.read(buffer);
+//			
+//			receiveMsg = new String(buffer);
+//			receiveMsg = receiveMsg.trim();
+//			
+//			System.out.println("/ReceiveMessage:" + receiveMsg);
+//			
+//			ChkFrame chkF = new ChkFrame(receiveMsg, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-	
-	public String getChkMessage() {
-		return chk;
-	}
-	
-	public void loginSet(String id, String pwd) {
-		String user = "login:" + id + "/" + pwd;
-		
-		nowId = id;
-		
-		System.out.println("id:" + id);
-		System.out.println("pwd:" + pwd);
-		
-		chkSet(user);
 	}
 
 }

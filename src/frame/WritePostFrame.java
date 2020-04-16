@@ -52,9 +52,9 @@ public class WritePostFrame extends JFrame {
 		
 		btnShare.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				nowCc.chkSet("sharePost:" + nowCc.getNowCcId() + "/" + textPane.getText());
+				nowCc.send("sharePost:" + nowCc.getNowCcId() + "/" + textPane.getText());
 				
-				if(nowCc.getChkMessage().contains("true")) {
+				if(nowCc.getReceiveMessage().contains("true")) {
 					setClose();
 				}
 			}

@@ -67,9 +67,9 @@ public class UserListFrame extends JFrame {
 		
 		if(keyword.contains("friend")) {
 			for(int i=0; i<list.size(); i++) {
-					FriendDTO fr = (FriendDTO)(list.get(i));
-					String FriendId = fr.getYourId();
-					myList.add(viewMyFList(FriendId, keyword));
+				FriendDTO fr = (FriendDTO)(list.get(i));
+				String FriendId = fr.getYourId();
+				myList.add(viewMyFList(FriendId, keyword));
 			}
 		} else if(keyword.equals("favorite")) {
 			for(int i=0; i<list.size(); i++) {
