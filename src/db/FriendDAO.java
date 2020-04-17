@@ -15,11 +15,11 @@ public class FriendDAO implements DAOInterface {
 	private static FriendDAO FriendDAO = null;
 	
 	private FriendDAO(){
-		
+		ConnectionCenter conC = new ConnectionCenter();
+		con = conC.getConnection();
 	}
 	
-	public static FriendDAO getInstance(Connection c) {
-		con = c;
+	public static FriendDAO getInstance() {
 		if(FriendDAO==null) {
 			FriendDAO = new FriendDAO();
 		}

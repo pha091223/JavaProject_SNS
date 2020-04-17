@@ -4,22 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 public class FavoriteDAO implements DAOInterface {
 	private static Connection con = null;
-	private Statement stmt = null;
 	private ResultSet rs = null;
 	
 	private static FavoriteDAO FavoriteDAO = null;
 	
 	private FavoriteDAO(){
-		
+		ConnectionCenter conC = new ConnectionCenter();
+		con = conC.getConnection();
 	}
 	
-	public static FavoriteDAO getInstance(Connection c) {
-		con = c;
+	public static FavoriteDAO getInstance() {
 		if(FavoriteDAO==null) {
 			FavoriteDAO = new FavoriteDAO();
 		}
@@ -109,7 +107,23 @@ public class FavoriteDAO implements DAOInterface {
 	@Override
 	public Object select(String s) {
 		// TODO Auto-generated method stub
-		return null;
+		String count = null;
+		try {
+			String sql = "select count(*) from favorite where no=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, s);
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				count = rs.getString("count(*)");
+			}
+			return count;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("DB error");
+		}
+		return count;
 	}
 
 	@Override

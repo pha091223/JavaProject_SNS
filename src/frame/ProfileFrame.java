@@ -29,7 +29,6 @@ public class ProfileFrame extends JFrame {
 		
 		this.add(panel, "Center");
 		
-		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);

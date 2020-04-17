@@ -109,7 +109,8 @@ public class ClientChat {
 				int portNum = Integer.valueOf(chk.substring(chk.indexOf(":")+1, chk.length()));
 				
 				if(portNum!=-1) {
-					withServerObject = new Socket("10.0.0.104", portNum);				
+					withServerObject = new Socket("10.0.0.104", portNum);
+					System.out.println("/PortNumber:" + portNum);
 				} else {
 					System.out.println("Object Socket Port Wrong");
 				}
@@ -166,17 +167,6 @@ public class ClientChat {
 			
 			seMsg = withServer.getOutputStream();
 			seMsg.write(user.getBytes());
-			
-//			reMsg = withServer.getInputStream();
-//			byte[] buffer = new byte[256];
-//			reMsg.read(buffer);
-//			
-//			receiveMsg = new String(buffer);
-//			receiveMsg = receiveMsg.trim();
-//			
-//			System.out.println("/ReceiveMessage:" + receiveMsg);
-//			
-//			ChkFrame chkF = new ChkFrame(receiveMsg, this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

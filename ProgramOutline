@@ -40,6 +40,25 @@
 	foreign key(myid) references member(id) on delete cascade,
 	foreign key(yourid) references member(id) on delete cascade);
 	
+	- DMRoom
+	create table dmroom(
+	roomname varchar2(10),
+	id varchar2(8),
+	primary key(roomname, id),
+	foreign key(id) references member(id) on delete cascade);
+	
+	- DM
+	create table directmessage(
+	roomname varchar2(10),
+	day date not null,
+	sendid varchar2(8),
+	message varchar2(200) not null,
+	foreign key(roomname, sendid) references dmroom(roomname, id) on delete cascade);
+	
+	// Sequence
+	create sequence dmroom_no
+	increment by 1;
+	
 ───────────────────────────────────────────────────────────────
 
 	2. Program 기능

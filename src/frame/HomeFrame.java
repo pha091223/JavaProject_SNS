@@ -1,6 +1,7 @@
 package frame;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -8,6 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.font.TextAttribute;
@@ -34,7 +37,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import client.ClientChat;
-import db.FriendDTO;
+import db.DMRoomDTO;
 import db.MemberDTO;
 import db.PostDTO;
 
@@ -74,9 +77,9 @@ public class HomeFrame extends JFrame {
 		this.setBounds(200, 100, 500, 500);
 		
 		createTimeline();
-		createProfile(tab_2, nowId, nowCc);
-		createDirectMessage();
-		createSearch();
+//		createProfile(tab_2, nowId, nowCc);
+//		createDirectMessage();
+//		createSearch();
 		
 		createTabbledP();
 		
@@ -403,8 +406,7 @@ public class HomeFrame extends JFrame {
 			}
 		});
 	}
-
-	/* 미완성 */
+	
 	private void createDirectMessage() {
 		// TODO Auto-generated method stub
 		tab_3.setLayout(null);
@@ -425,18 +427,10 @@ public class HomeFrame extends JFrame {
 		
 		scrollPane.setViewportView(myDMList);
 		
-		ArrayList<String> DMList = new ArrayList<>();
+		ArrayList<Object> DMRoomList = 
+				(ArrayList<Object>)nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
 		
-		if(DMList.size()>0) {
-			
-		} else if(DMList.size()==0) {
-			JPanel temp = new JPanel();
-			temp.setLayout(new BorderLayout());
-			JLabel empty = new JLabel("Empty Message");
-			empty.setHorizontalAlignment(JLabel.CENTER);
-			temp.add(empty, "Center");
-			myDMList.add(temp);
-		}
+		settingDMView(DMRoomList, myDMList);
 		
 		JPanel Btn = new JPanel();
 		Btn.setLayout(new FlowLayout(FlowLayout.RIGHT, 8, 3));
@@ -456,16 +450,90 @@ public class HomeFrame extends JFrame {
 			}
 		});
 		
-		JButton TempBtn = new JButton("");
-		TempBtn.setPreferredSize(new Dimension(97, 23));
+		JButton RefreshBtn = new JButton("Refresh");
+		RefreshBtn.setPreferredSize(new Dimension(97, 23));
+		
+		RefreshBtn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("/RefreshBtn Click:DirectMessage");
+				
+				myDMList.removeAll();
+				
+				// 레이아웃 변경을 적용하고 다시 그림
+				revalidate();
+				repaint();
+			}
+		});
 		
 		Btn.add(frListBtn);
-		Btn.add(TempBtn);
+		Btn.add(RefreshBtn);
 		
 		DM.add(scrollPane, "Center");
 		DM.add(Btn, "South");
 		
 		tab_3.add(DM);
+	}
+	
+	private void settingDMView(ArrayList<Object> DMRoomList, JPanel myDMList) {
+		OneDMFrame dmF = new OneDMFrame(nowCc, nowId);
+		
+		if(DMRoomList.size()>0) {
+			for(int i=0; i<DMRoomList.size(); i++) {
+				DMRoomDTO dmR = (DMRoomDTO)DMRoomList.get(i);
+				String dmRName = dmR.getRoomname();
+				JPanel dmP = dmF.oneDM(dmRName);
+				
+				dmP.addMouseListener(new MouseListener() {
+					
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mousePressed(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseExited(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						// TODO Auto-generated method stub
+						
+					}
+					
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						// TODO Auto-generated method stub
+						System.out.println("/Message Click");
+//						dmP.setBackground(null);
+						dmP.setBackground(Color.gray);
+						
+						DirectMessageFrame dmF = new DirectMessageFrame(nowCc);
+						dmF.OpenChattingRoom(dmRName);
+						
+					}
+				});
+				myDMList.add(dmP);
+			}
+		} else if(DMRoomList.size()==0) {
+			JPanel temp = new JPanel();
+			temp.setLayout(new BorderLayout());
+			JLabel empty = new JLabel("Empty Message");
+			empty.setHorizontalAlignment(JLabel.CENTER);
+			temp.add(empty, "Center");
+			myDMList.add(temp);
+		}
 	}
 
 	private void createSearch() {
@@ -619,22 +687,27 @@ public class HomeFrame extends JFrame {
 		tabPane.add("DirectMessage", tab_3);
 		tabPane.add("Search", tab_4);
 		
-//		tabPane.addChangeListener(new ChangeListener() {
-//			
-//			@Override
-//			public void stateChanged(ChangeEvent e) {
-//				// TODO Auto-generated method stub
-//				if(tabPane.getSelectedIndex()==0) {
-//					createTimeline();
-//				} else if(tabPane.getSelectedIndex()==1) {
-//					createProfile(tab_2, nowId, nowCc);
-//				} else if(tabPane.getSelectedIndex()==2) {
-//					createDirectMessage();
-//				} else if(tabPane.getSelectedIndex()==3) {
-//					createSearch();
-//				}
-//			}
-//		});
+		// 탭 변화를 감지하여 탭에 맞는 메소드 실행
+		tabPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				// TODO Auto-generated method stub
+				if(tabPane.getSelectedIndex()==0) {
+					createTimeline();
+					System.out.println("/Tab0:Timeline");
+				} else if(tabPane.getSelectedIndex()==1) {
+					createProfile(tab_2, nowId, nowCc);
+					System.out.println("/Tab1:myProilfe");
+				} else if(tabPane.getSelectedIndex()==2) {
+					createDirectMessage();
+					System.out.println("/Tab2:myDirectMessage");
+				} else if(tabPane.getSelectedIndex()==3) {
+					createSearch();
+					System.out.println("/Tab3:Search");
+				}
+			}
+		});
 	}
 
 }

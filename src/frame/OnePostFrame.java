@@ -50,12 +50,11 @@ public class OnePostFrame extends JFrame {
 		this.add(contentPane, "Center");
 	}
 	
-	private void getListSize(PostDTO p, JButton postFavoriteNum) {
-		String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
+	private void getFavoriteCount(PostDTO p, JButton postFavoriteNum) {	
+		String msg = "countFavorite:" + "/" + p.getNo();
 		Object receiveObject = nowCc.getObject(msg);
-		ArrayList<Object> list = (ArrayList<Object>)receiveObject;
-		postFavoriteNum.setText("Likes : " + (String.valueOf(list.size())));
-		
+		String count = (String)receiveObject;
+		postFavoriteNum.setText("Likes: " + count);
 	}
 
 	public Panel viewPost(PostDTO p, String keyword) {
@@ -96,7 +95,7 @@ public class OnePostFrame extends JFrame {
 						postfavoriteBtn.setText("Unfavorite");
 					}
 					
-					getListSize(p, postFavoriteNum);
+					getFavoriteCount(p, postFavoriteNum);
 				} else if(postfavoriteBtn.getText().equals("Unfavorite")) {
 					nowCc.send("delFavorite:" + nowId + "/" + p.getNo());
 					nowCc.sleep();
@@ -105,7 +104,7 @@ public class OnePostFrame extends JFrame {
 						postfavoriteBtn.setText("Favorite");
 					}
 					
-					getListSize(p, postFavoriteNum);
+					getFavoriteCount(p, postFavoriteNum);
 				}
 			}
 		});
@@ -126,7 +125,7 @@ public class OnePostFrame extends JFrame {
 		JLabel writeTime = new JLabel(p.getDay());
 		
 		// 관심글을 누른 사람 수
-		getListSize(p, postFavoriteNum);
+		getFavoriteCount(p, postFavoriteNum);
 		postFavoriteNum.setBorderPainted(true);
 		postFavoriteNum.setContentAreaFilled(false);
 		Font font = postFavoriteNum.getFont();

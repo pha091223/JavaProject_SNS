@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import db.DAOCenter;
+import db.DirectMessageDTO;
 import db.FavoriteDTO;
 import db.FriendDTO;
 import db.MemberDTO;
@@ -71,9 +72,16 @@ public class ServerCenter {
 			post(msg);
 		} else if(msg.indexOf("Favorite:")!=-1) {
 			favorite(msg);
+		} else if(msg.indexOf("DM:")!=-1) {
+			DirectMessage(msg);
 		}
 	}
 	
+	private void DirectMessage(String msg) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private void favorite(String msg) {
 		String id = msg.substring(msg.indexOf(":")+1, msg.indexOf("/"));
 		String postNum = msg.substring(msg.indexOf("/")+1, msg.length());
@@ -84,15 +92,15 @@ public class ServerCenter {
 		
 		if(msg.contains("addFavorite:")) {
 			if(Dc.insert("favorite", f)) {
-				nowSc.send("Favorite true");
+				nowSc.send("chkAddFavorite true");
 			} else {
-				nowSc.send("Favorite false");
+				nowSc.send("chkAddFavorite false");
 			}
 		} else if(msg.contains("delFavorite:")) {
 			if(Dc.delete("favorite", f)) {
-				nowSc.send("Unfavorite true");
+				nowSc.send("chkDelUnfavorite true");
 			} else {
-				nowSc.send("Unfavorite false");
+				nowSc.send("chkDelUnfavorite false");
 			}
 		} else if(msg.contains("chkFavorite:")) {
 			if(Dc.select("favorite", f)) {
@@ -100,6 +108,8 @@ public class ServerCenter {
 			} else {
 				nowSc.send("chkFavorite false");
 			}
+		} else if(msg.contains("countFavorite:")) {
+			sendObject(Dc.select("favorite", postNum));
 		}
 	}
 	
@@ -318,6 +328,11 @@ public class ServerCenter {
 				case "friend" :
 					os.writeObject(Dc.getDB("friend", keyword));
 					break;
+				case "dmroom" :
+					os.writeObject(Dc.getDB("dmroom", keyword));
+					break;
+				case "directmessage" :	
+					os.writeObject(Dc.getDB("directmessage", keyword));
 			}
 			
 			byte[] resultByte = bos.toByteArray();

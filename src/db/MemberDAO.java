@@ -15,11 +15,11 @@ public class MemberDAO implements DAOInterface {
 	private static MemberDAO MemberDAO = null;
 	
 	private MemberDAO(){
-		
+		ConnectionCenter conC = new ConnectionCenter();
+		con = conC.getConnection();
 	}
 	
-	public static MemberDAO getInstance(Connection c) {
-		con = c;
+	public static MemberDAO getInstance() {
 		if(MemberDAO==null) {
 			MemberDAO = new MemberDAO();
 		}

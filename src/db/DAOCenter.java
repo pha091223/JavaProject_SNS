@@ -1,29 +1,24 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
 public class DAOCenter {
-	private Connection con = null;
-	
 	private DAOInterface Dif = null;
+	
 	private MemberDAO mDAO = null;
 	private PostDAO pDAO = null;
 	private FavoriteDAO fDAO = null;
 	private FriendDAO frDAO = null;
+	private DMRoomDAO dmRDAO = null;
+	private DirectMessageDAO dmDAO = null;
 	
 	private static DAOCenter DAOCenter = null;
 	
-	private DAOCenter(){
-		connect();
-		if(con!=null) {
-			mDAO = MemberDAO.getInstance(con);
-			pDAO = PostDAO.getInstance(con);
-			fDAO = FavoriteDAO.getInstance(con);
-			frDAO = FriendDAO.getInstance(con);
-		}
+	private DAOCenter(){		
+		mDAO = MemberDAO.getInstance();
+		pDAO = PostDAO.getInstance();
+		fDAO = FavoriteDAO.getInstance();
+		frDAO = FriendDAO.getInstance();
+		dmRDAO = DMRoomDAO.getInstance();
+		dmDAO = DirectMessageDAO.getInstance();
 	}
 	
 	public static DAOCenter getInstance() {
@@ -31,25 +26,6 @@ public class DAOCenter {
 			DAOCenter = new DAOCenter();
 		}
 		return DAOCenter;
-	}
-	
-	static {
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-		} catch (ClassNotFoundException e) {
-			System.out.println("Class load fail :" + e.getMessage());
-		}
-	}
-	
-	private void connect() {
-		try {
-			con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:orcl", 
-						"system", "11111111");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Class load fail : " + e.getMessage());
-		}
 	}
 	
 	public boolean insert(String tName, Object DTO) {
@@ -106,6 +82,11 @@ public class DAOCenter {
 			case "friend" :
 				Dif = frDAO;
 				break;
+			case "dmroom" :
+				Dif = dmRDAO;
+				break;
+			case "directmessage" :
+				Dif = dmDAO;
 		}
 	}
 

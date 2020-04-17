@@ -26,7 +26,7 @@ public class WritePostFrame extends JFrame {
 	private void createWritePostFrame() {
 		// TODO Auto-generated method stub
 		this.setLayout(new BorderLayout());
-		this.setBounds(100, 100, 530, 400);
+		this.setBounds(200, 100, 530, 400);
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -53,6 +53,7 @@ public class WritePostFrame extends JFrame {
 		btnShare.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				nowCc.send("sharePost:" + nowCc.getNowCcId() + "/" + textPane.getText());
+				nowCc.sleep();
 				
 				if(nowCc.getReceiveMessage().contains("true")) {
 					setClose();
