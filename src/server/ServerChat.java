@@ -20,7 +20,7 @@ public class ServerChat extends Thread {
 	
 	private String nowId = null;
 	
-	ServerChat(Socket c, ServerSocket o, ServerCenter sc) throws Exception{
+	ServerChat(Socket c, ServerSocket o, ServerCenter sc){
 		this.withClient = c;
 		this.serverO = o;
 		this.sc = sc;
@@ -63,8 +63,8 @@ public class ServerChat extends Thread {
 						reMsg = reMsg.trim();
 						System.out.println(reMsg);
 						
-						if(reMsg.indexOf("setList:")!=-1) {
-							nowId = reMsg.substring(reMsg.indexOf("/")+1, reMsg.length());
+						if(nowId==null && reMsg.indexOf("getList:")!=-1) {
+							nowId = reMsg.substring(reMsg.indexOf("/")+1, reMsg.lastIndexOf("/"));
 						}
 						
 						sc.receiveClientMsg(reMsg, nowSc);

@@ -31,8 +31,7 @@ public class MyPageFrame extends JFrame {
 		this.nowCc = cc;
 		this.nowId = id;
 		
-		cc.send("myPage:" + id);
-		MemberDTO my = (MemberDTO)cc.receiveObject();
+		MemberDTO my = (MemberDTO)nowCc.getObject("myPage:" + id);
 		
 		Frame(my);
 	}

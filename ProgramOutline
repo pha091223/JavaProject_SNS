@@ -51,9 +51,9 @@
 	create table directmessage(
 	roomname varchar2(10),
 	day date not null,
-	sendid varchar2(8),
+	id varchar2(8),
 	message varchar2(200) not null,
-	foreign key(roomname, sendid) references dmroom(roomname, id) on delete cascade);
+	foreign key(roomname, id) references dmroom(roomname, id) on delete cascade);
 	
 	// Sequence
 	create sequence dmroom_no

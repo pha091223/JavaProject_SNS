@@ -30,8 +30,9 @@ public class PostDAO implements DAOInterface {
 	public boolean insert(Object DTO) {
 		// TODO Auto-generated method stub
 		try {
-			/*
 			PostDTO p = (PostDTO)DTO;
+			
+			/*
 			String sql = "insert into post values(post_no.nextval, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			
@@ -40,7 +41,6 @@ public class PostDAO implements DAOInterface {
 			*/
 			
 			// Test
-			PostDTO p = (PostDTO)DTO;
 			String sql = "insert into post values(?, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			

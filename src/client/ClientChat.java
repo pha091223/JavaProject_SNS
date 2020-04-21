@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 
 import frame.ChkFrame;
+import frame.DirectMessageFrame;
 import frame.HomeFrame;
 import frame.JoinFrame;
 import frame.LoginFrame;
@@ -26,6 +27,10 @@ public class ClientChat {
 	
 	private String nowId = null;
 	private String receiveMsg = null;
+	
+	private int portNum = -1;
+	
+	private DirectMessageFrame OpendmF = null;
 	
 	ClientChat(Socket s){
 		this.withServer = s;
@@ -52,6 +57,18 @@ public class ClientChat {
 						
 						System.out.println("/ReceiveMessage:" + receiveMsg);
 						
+						// Login True이니 ObjectStream을 위한 Socket Port Number 할당
+						if(receiveMsg.indexOf("/Object port")!=-1) {
+							portNum = Integer.valueOf(receiveMsg.substring(receiveMsg.indexOf(":")+1, receiveMsg.length()));
+							
+							if(portNum!=-1) {
+								withServerObject = new Socket("10.0.0.104", portNum);
+								System.out.println("/PortNumber:" + portNum);
+							} else {
+								System.out.println("Object Socket Port Wrong");
+							}
+						} 
+						
 						if(receiveMsg.contains("MyPage Delete true")) {
 							System.exit(0);
 						}
@@ -65,6 +82,14 @@ public class ClientChat {
 				}
 			}
 		}).start();
+	}
+	
+	public void setOpenDmF(DirectMessageFrame dmF) {
+		this.OpendmF = dmF;
+	}
+	
+	public DirectMessageFrame getOpenDmF() {
+		return this.OpendmF;
 	}
 	
 	public void sleep() {
@@ -104,19 +129,6 @@ public class ClientChat {
 		if(chk.indexOf("Login true")!=-1) {
 			try {
 				loginF.dispose();
-				
-				// Login True이니 ObjectStream을 위한 Socket Port Number 할당
-				int portNum = Integer.valueOf(chk.substring(chk.indexOf(":")+1, chk.length()));
-				
-				if(portNum!=-1) {
-					withServerObject = new Socket("10.0.0.104", portNum);
-					System.out.println("/PortNumber:" + portNum);
-				} else {
-					System.out.println("Object Socket Port Wrong");
-				}
-				
-				receive();
-				
 				homeF = HomeFrame.getInstance(nowId, cc);
 				homeF.Frame();
 			} catch (Exception e) {

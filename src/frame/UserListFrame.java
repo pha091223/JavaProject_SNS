@@ -24,14 +24,14 @@ import db.FavoriteDTO;
 import db.FriendDTO;
 
 public class UserListFrame extends JFrame {
-	private HomeFrame HomeF = null;
+	private HomeFrame homeF = null;
 	private ClientChat nowCc = null;
 	
 	private ArrayList<Object> list = null;
 	
 	UserListFrame(HomeFrame h, ClientChat cc, Object o){
 		super("List");
-		HomeF = h;
+		homeF = h;
 		this.nowCc = cc;
 		
 		list = (ArrayList<Object>)o;
@@ -94,7 +94,22 @@ public class UserListFrame extends JFrame {
 			FDMBtn.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
+					// chkDM : DM 방이 존재하는지 아닌지 체크
+					// 존재하면 그대로 roomName을 받아옴
+					// 존재하지 않으면 임시 방 이름을 지정해 Server에 보내주며 DB에서 sequence로 방 이름 할당
+					Object o = nowCc.getObject("chkDM:" + nowCc.getNowCcId() + "/" + userId);
+					String roomName = (String)o;
 					
+					System.out.println("/chkRoom:" + roomName);
+					
+					DirectMessageFrame dmF = new DirectMessageFrame();
+					nowCc.setOpenDmF(dmF);
+					
+					if(roomName!=null) {
+						dmF.OpenChattingRoom(nowCc, roomName);
+					} else if(roomName==null) {
+						dmF.OpenChattingRoom(nowCc, "temp" + "+" + userId);
+					}
 				}
 			});
 			
@@ -124,7 +139,7 @@ public class UserListFrame extends JFrame {
 			FProfileBtn.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					new ProfileFrame(userId, nowCc, HomeF);
+					new ProfileFrame(userId, nowCc, homeF);
 				}
 			});
 			

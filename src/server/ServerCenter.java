@@ -6,6 +6,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import db.DAOCenter;
+import db.DMRoomDTO;
 import db.DirectMessageDTO;
 import db.FavoriteDTO;
 import db.FriendDTO;
@@ -79,7 +80,86 @@ public class ServerCenter {
 	
 	private void DirectMessage(String msg) {
 		// TODO Auto-generated method stub
+		String keyword = msg.substring(msg.indexOf(":")+1, msg.length());
 		
+		if(msg.contains("myDM:")) {
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream os = new ObjectOutputStream(bos);
+				
+				os.writeObject(Dc.select("directmessage", keyword));
+				
+				byte[] resultByte = bos.toByteArray();
+				nowSc.sendDB(resultByte);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if(msg.contains("sendDM:")) {
+			String id = keyword.substring(0, keyword.indexOf("/"));
+			String DMmsg = keyword.substring(keyword.indexOf("/")+1, keyword.lastIndexOf("/"));
+			String DMRoomName = keyword.substring(keyword.lastIndexOf("/")+1, keyword.length());
+			
+			if(DMRoomName.contains("temp+")) {
+				String yourId = DMRoomName.substring(DMRoomName.indexOf("+")+1, DMRoomName.length());
+				
+				DMRoomDTO dmR = new DMRoomDTO();
+				dmR.setId(id);
+				
+				if(Dc.insert("dmroom", dmR)) {
+					DMRoomDTO dmRN = (DMRoomDTO)(Dc.select("dmroom", id));
+					DMRoomName = dmRN.getRoomname();
+					
+					DMRoomDTO your_dmR = new DMRoomDTO();
+					your_dmR.setRoomname(DMRoomName);
+					your_dmR.setId(yourId);
+					
+					if(Dc.insert("dmroom", your_dmR)) {
+						sendDMMsg(id, DMmsg, DMRoomName);
+					}
+				} else {
+					nowSc.send("DMRoom create false");
+				}
+			} else {
+				sendDMMsg(id, DMmsg, DMRoomName);
+			}
+		} else if(msg.contains("chkDM:")) {
+			try {
+				ByteArrayOutputStream bos = new ByteArrayOutputStream();
+				ObjectOutputStream os = new ObjectOutputStream(bos);
+				
+				os.writeObject(Dc.select("dmroom", keyword));
+				
+				byte[] resultByte = bos.toByteArray();
+				nowSc.sendDB(resultByte);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void sendDMMsg(String id, String DMmsg, String DMRoomName) {
+		DirectMessageDTO dm = new DirectMessageDTO();
+		dm.setRoomname(DMRoomName);
+		dm.setId(id);
+		dm.setMessage(DMmsg);
+		
+		if(Dc.insert("directmessage", dm)) {
+			ArrayList<Object> list = (ArrayList<Object>)Dc.getDB("dmroom", DMRoomName + "/r");
+			
+			for(ServerChat i : sList) {
+				for(Object j : list) {
+					DMRoomDTO dr = (DMRoomDTO)j;
+					if(i.getNowScId().equals(dr.getId())) {
+						String receiveDM = "DM:" + "[" + id + "]" + DMmsg;
+						i.send(receiveDM);
+					}
+				}
+			}
+		} else {
+			nowSc.send("DirectMessage send false");
+		}
 	}
 
 	private void favorite(String msg) {

@@ -19,29 +19,28 @@ import db.DirectMessageDTO;
 public class OneDMFrame extends JFrame {
 	private ClientChat nowCc = null;
 	private String nowId = null;
-	private String roomName = null;
 
 	public OneDMFrame(ClientChat cc, String id) {
 		this.nowCc = cc;
 		this.nowId = id;
 	}
 
-	public JPanel oneDM(String dmRName) {
-		roomName = dmRName;
-		
-		ArrayList<Object> DMList = 
-				(ArrayList<Object>)nowCc.getObject("getList:" + "directmessage" + "/" + dmRName);
-		
-		System.out.println("/////////" + DMList);
-		
+	public JPanel oneDM(String dmRoomName) {
 		JPanel oneUser = new JPanel();
 		oneUser.setBounds(12, 35, 410, 64);
 		oneUser.setBorder(new TitledBorder(new LineBorder(Color.DARK_GRAY)));
 		
-		DirectMessageDTO recently = (DirectMessageDTO)DMList.get(0);
-		String recentlyId = recently.getId();
-		String recentlyDay = recently.getDay();
-		String recentlyMsg = recently.getMessage();
+		// roomname 안의 DM 중 가장 최근 튜플 하나만 가져옴
+		DirectMessageDTO recently = (DirectMessageDTO)nowCc.getObject("myDM:" + dmRoomName);
+		String recentlyId = null;
+		String recentlyDay = null;
+		String recentlyMsg = null;
+		
+		if(recently!=null) {
+			recentlyId = recently.getId();
+			recentlyDay = recently.getDay();
+			recentlyMsg = recently.getMessage();
+		}
 		
 		// DM 상대 ID
 		JLabel userDMsendId = new JLabel(recentlyId);
@@ -52,10 +51,12 @@ public class OneDMFrame extends JFrame {
 		// 마지막으로 보낸 혹은 받은 Message
 		JLabel userDMMsg = new JLabel(recentlyId);
 		// 50자까지 미리 보기
-		if(recentlyMsg.length()<=50) {
-			userDMMsg.setText(recentlyMsg);
-		} else {
-			userDMMsg.setText(recentlyMsg.substring(0,47) + "...");
+		if(recentlyMsg!=null) {
+			if(recentlyMsg.length()<=50) {
+				userDMMsg.setText(recentlyMsg);
+			} else {
+				userDMMsg.setText(recentlyMsg.substring(0,47) + "...");
+			}
 		}
 
 		GroupLayout gl_oneUser = new GroupLayout(oneUser);

@@ -167,6 +167,4 @@ public class FavoriteDAO implements DAOInterface {
 		}
 		return fList;
 	}
-	
-
 }

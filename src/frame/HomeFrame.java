@@ -56,7 +56,7 @@ public class HomeFrame extends JFrame {
 	private static ClientChat nowCc = null;
 	private static String nowId = null;
 	
-	private static HomeFrame HomeF = null;
+	private static HomeFrame homeF = null;
 	
 	private HomeFrame(){
 		super("SNS Program");
@@ -65,10 +65,10 @@ public class HomeFrame extends JFrame {
 	public static HomeFrame getInstance(String id, ClientChat cc) {
 		nowId = id;
 		nowCc = cc;
-		if(HomeF==null) {
-			HomeF = new HomeFrame();
+		if(homeF==null) {
+			homeF = new HomeFrame();
 		}
-		return HomeF;
+		return homeF;
 	}
 
 	public void Frame() {
@@ -204,7 +204,7 @@ public class HomeFrame extends JFrame {
 	
 	// PostList, PostList를 띄우는 그룹화 된 Panel이 들어갈 JPanel, 글을 보고 있는 사용자 Id
 	private void settingPostView(ArrayList<Object> pList, JPanel postPanel, String id) {
-		OnePostFrame pF = new OnePostFrame(HomeF, nowCc);
+		OnePostFrame pF = new OnePostFrame(homeF, nowCc);
 		
 		if(pList.size()>0) {
 			for(int i=0; i<pList.size(); i++) {
@@ -260,7 +260,7 @@ public class HomeFrame extends JFrame {
 					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + id);
 				}
 				
-				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				UserListFrame userListF = new UserListFrame(homeF, nowCc, receiveObject);
 				userListF.viewListFrame("friend");
 			}
 		});
@@ -289,7 +289,7 @@ public class HomeFrame extends JFrame {
 					receiveObject = nowCc.getObject("getList:" + "favorite" + "/" + id);
 				}
 				
-				new FavoriteFrame(HomeF, nowCc, receiveObject);
+				new FavoriteFrame(homeF, nowCc, receiveObject);
 			}
 		});
 		
@@ -317,6 +317,7 @@ public class HomeFrame extends JFrame {
 		
 		tab_2.add(scrollPane);
 		
+		// 사용자와 Profile 대상자가 같은 사람일 시
 		if(this.nowId.equals(id)) {
 			JButton MyPageBtn = new JButton("MyPage");
 			MyPageBtn.setBounds(12, 410, 97, 23);
@@ -337,6 +338,7 @@ public class HomeFrame extends JFrame {
 			
 			PostWriteBtnListner(PostWriteBtn, nowCc);
 		} else {
+			// 사용자와 Profile 대상자가 다른 사람일 시
 			JButton FollowBtn = new JButton();
 			FollowBtn.setBounds(12, 410, 97, 23);
 			
@@ -367,6 +369,30 @@ public class HomeFrame extends JFrame {
 						if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 							FollowBtn.setText("Follow");
 						}
+					}
+				}
+			});
+			
+			JButton DMBtn = new JButton("D.M");
+			DMBtn.setBounds(118, 410, 70, 23);
+			tab_2.add(DMBtn);
+			
+			DMBtn.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					Object o = nowCc.getObject("chkDM:" + nowCc.getNowCcId() + "/" + id);
+					String roomName = (String)o;
+					
+					System.out.println("/chkRoom:" + roomName);
+					
+					DirectMessageFrame dmF = new DirectMessageFrame();
+					
+					if(roomName!=null) {
+						dmF.OpenChattingRoom(nowCc, roomName);
+					} else if(roomName==null) {
+						dmF.OpenChattingRoom(nowCc, "temp" + "+" + id);
 					}
 				}
 			});
@@ -445,7 +471,7 @@ public class HomeFrame extends JFrame {
 				// TODO Auto-generated method stub
 				Object receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
 				
-				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				UserListFrame userListF = new UserListFrame(homeF, nowCc, receiveObject);
 				userListF.viewListFrame("DMfriend");
 			}
 		});
@@ -462,7 +488,11 @@ public class HomeFrame extends JFrame {
 				
 				myDMList.removeAll();
 				
-				// 레이아웃 변경을 적용하고 다시 그림
+				ArrayList<Object> DMRoomList = 
+						(ArrayList<Object>)nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
+				
+				settingDMView(DMRoomList, myDMList);
+				
 				revalidate();
 				repaint();
 			}
@@ -483,8 +513,8 @@ public class HomeFrame extends JFrame {
 		if(DMRoomList.size()>0) {
 			for(int i=0; i<DMRoomList.size(); i++) {
 				DMRoomDTO dmR = (DMRoomDTO)DMRoomList.get(i);
-				String dmRName = dmR.getRoomname();
-				JPanel dmP = dmF.oneDM(dmRName);
+				String dmRoomName = dmR.getRoomname();
+				JPanel dmP = dmF.oneDM(dmRoomName);
 				
 				dmP.addMouseListener(new MouseListener() {
 					
@@ -516,12 +546,15 @@ public class HomeFrame extends JFrame {
 					public void mouseClicked(MouseEvent e) {
 						// TODO Auto-generated method stub
 						System.out.println("/Message Click");
-//						dmP.setBackground(null);
 						dmP.setBackground(Color.gray);
 						
-						DirectMessageFrame dmF = new DirectMessageFrame(nowCc);
-						dmF.OpenChattingRoom(dmRName);
-						
+						if(e.getClickCount()==2) {
+							DirectMessageFrame dmF = new DirectMessageFrame();
+							nowCc.setOpenDmF(dmF);
+							
+							dmF.OpenChattingRoom(nowCc, dmRoomName);
+							dmP.setBackground(null);
+						}
 					}
 				});
 				myDMList.add(dmP);
@@ -560,7 +593,7 @@ public class HomeFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				if(searchM.getText().length()>0) {
-					new ProfileFrame(searchM.getText(), nowCc, HomeF);
+					new ProfileFrame(searchM.getText(), nowCc, homeF);
 				}
 			}
 		});

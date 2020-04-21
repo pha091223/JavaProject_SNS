@@ -28,12 +28,13 @@ public class DirectMessageDAO implements DAOInterface {
 	public boolean insert(Object DTO) {
 		// TODO Auto-generated method stub
 		try {
-			DirectMessageDTO dm = (DirectMessageDTO)DTO;
-			String sql = "insert into directmessage values(dmroom_no, sysdate, ?, ?)";
+			DirectMessageDTO dm = (DirectMessageDTO)DTO;			
+			String sql = "insert into directmessage values(?, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			
-			psmt.setString(1, dm.getId());
-			psmt.setString(2, dm.getMessage());
+			psmt.setString(1, dm.getRoomname());
+			psmt.setString(2, dm.getId());
+			psmt.setString(3, dm.getMessage());
 			
 			int cnt = psmt.executeUpdate();
 			
@@ -74,9 +75,26 @@ public class DirectMessageDAO implements DAOInterface {
 	@Override
 	public Object select(String s) {
 		// TODO Auto-generated method stub
-//		select * from (select * from directmessage where roomname=1 order by day) w
-//		here rownum=1;
-		
+		try {
+			String sql = "select * from (select * from directmessage where roomname=? order by day desc) "
+					+ "where rownum=1";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, s);
+			rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				DirectMessageDTO dm = new DirectMessageDTO();
+				dm.setRoomname(rs.getString("roomname"));
+				dm.setDay(rs.getString("day"));
+				dm.setId(rs.getString("id"));
+				dm.setMessage(rs.getString("message"));
+				
+				return dm;				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
@@ -91,7 +109,7 @@ public class DirectMessageDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		ArrayList<Object> dmList = new ArrayList<>();
 		try {
-			String sql = "select * from directmessage where roomname=? order by day desc";
+			String sql = "select * from directmessage where roomname=? order by day";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			psmt.setString(1, s);
 			rs = psmt.executeQuery();

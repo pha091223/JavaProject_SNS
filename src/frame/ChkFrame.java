@@ -29,6 +29,13 @@ public class ChkFrame extends JFrame {
 		
 		if(chkMsg.indexOf("chk")!=-1) {
 			System.out.println("Check");
+		} else if(chkMsg.substring(0, chkMsg.indexOf(":")+1).equals("DM:")) {			
+			// 누군가가 DM을 보냈으면 받은 사람들의 창에 실시간으로도 적용되게 해야 함
+			// > 현재 DM창을 껐다 켜거나 Refresh 눌러서 목록 새로 받아오면 갱신됨, 참가자가 창을 띄우고 있어도 바로 갱신 X
+			// ! new DirectMessageFrame을 쓴 문제, 새로 만들면 안됨 !
+			DirectMessageFrame OpenDmF = nowCc.getOpenDmF();
+			String msg = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
+			OpenDmF.setMessage(msg);
 		} else {
 			Frame();
 		}
@@ -129,7 +136,7 @@ public class ChkFrame extends JFrame {
 					dispose();
 				}
 			});
-		} else if(textLabel.getText().equals("Logout?")) {
+		} else if(textLabel.getText().contains("Logout?")) {
 			JButton cancleBtn = new JButton("Cancel");
 			sP.add(cancleBtn);
 			
