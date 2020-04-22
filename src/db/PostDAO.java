@@ -31,23 +31,11 @@ public class PostDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		try {
 			PostDTO p = (PostDTO)DTO;
-			
-			/*
 			String sql = "insert into post values(post_no.nextval, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			
 			psmt.setString(1, p.getId());
 			psmt.setString(2, p.getText());
-			*/
-			
-			// Test
-			String sql = "insert into post values(?, sysdate, ?, ?)";
-			PreparedStatement psmt = con.prepareStatement(sql);
-			
-			psmt.setString(1, String.valueOf("15"));
-			psmt.setString(2, p.getId());
-			psmt.setString(3, p.getText());
-			//
 
 			int a = psmt.executeUpdate();
 

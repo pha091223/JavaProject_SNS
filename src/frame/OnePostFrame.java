@@ -22,14 +22,14 @@ import client.ClientChat;
 import db.PostDTO;
 
 public class OnePostFrame extends JFrame {
-	private HomeFrame HomeF = null;
+	private HomeFrame homeF = null;
 	private ClientChat nowCc = null;
 
 	private String nowId = null;
 	
 	OnePostFrame(HomeFrame hF, ClientChat cc){
 		super("Post");
-		HomeF = hF;
+		homeF = hF;
 		nowCc = cc;
 		nowId = nowCc.getNowCcId();
 	}
@@ -57,8 +57,8 @@ public class OnePostFrame extends JFrame {
 		postFavoriteNum.setText("Likes: " + count);
 	}
 
-	public Panel viewPost(PostDTO p, String keyword) {
-		Panel viewPost = new Panel();
+	public JPanel viewPost(PostDTO p, String keyword) {
+		JPanel viewPost = new JPanel();
 		
 		if(keyword.equals("favorite")) {
 			viewPost.setBounds(32, 20, 465, 240);	
@@ -109,15 +109,6 @@ public class OnePostFrame extends JFrame {
 			}
 		});
 		
-		JButton postModifyBtn = new JButton("Modify");
-		
-		postModifyBtn.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				// 글 수정
-			}
-		});
-		
 		// 글 작성자 이름
 		JLabel writerId = new JLabel(p.getId());
 		
@@ -141,7 +132,7 @@ public class OnePostFrame extends JFrame {
 				String msg = "getList:" + "favorite" + "/" + p.getNo() + "/u";
 				Object receiveObject = nowCc.getObject(msg);
 				
-				UserListFrame userListF = new UserListFrame(HomeF, nowCc, receiveObject);
+				UserListFrame userListF = new UserListFrame(homeF, nowCc, receiveObject);
 				userListF.viewListFrame("favorite");
 			}
 		});
@@ -155,6 +146,7 @@ public class OnePostFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				nowCc.send("deletePost:" + nowId + "/" + p.getNo());
+				nowCc.sleep();
 			}
 		});
 		
@@ -174,10 +166,8 @@ public class OnePostFrame extends JFrame {
 								.addComponent(postfavoriteBtn)
 								.addGap(8)
 								.addComponent(postFavoriteNum)
-								.addGap(98)
-								.addComponent(postDeleteBtn)
-								.addGap(1)
-								.addComponent(postModifyBtn))))
+								.addGap(164)
+								.addComponent(postDeleteBtn))))
 			);
 			gl_panel.setVerticalGroup(
 				gl_panel.createParallelGroup(Alignment.LEADING)
@@ -193,8 +183,7 @@ public class OnePostFrame extends JFrame {
 							.addComponent(postfavoriteBtn)
 							.addGroup(gl_panel.createSequentialGroup()
 								.addComponent(postFavoriteNum))
-							.addComponent(postDeleteBtn)
-							.addComponent(postModifyBtn)))
+							.addComponent(postDeleteBtn)))
 			);
 			viewPost.setLayout(gl_panel);
 			

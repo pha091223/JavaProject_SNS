@@ -28,7 +28,7 @@ public class DirectMessageDAO implements DAOInterface {
 	public boolean insert(Object DTO) {
 		// TODO Auto-generated method stub
 		try {
-			DirectMessageDTO dm = (DirectMessageDTO)DTO;			
+			DirectMessageDTO dm = (DirectMessageDTO)DTO;
 			String sql = "insert into directmessage values(?, sysdate, ?, ?)";
 			PreparedStatement psmt = con.prepareStatement(sql);
 			

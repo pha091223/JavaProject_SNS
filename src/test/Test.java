@@ -19,10 +19,18 @@ public class Test extends JFrame {
 	}
 	
 	Test() throws Exception {
-		String chkMsg = "DM:" + "[" + "i.getNowScId()" + "]" + "DMmsg";
-		String a = chkMsg.substring(0, chkMsg.indexOf(":")+1);
+		String chkMsg = "DM:" + "[" + "id" + "]" + "DMmsg" + "/" + "DMRoomName";
+				
+		String msg = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.lastIndexOf("/"));
 		
-		System.out.println(a);
+		String sendId = msg.substring(msg.indexOf("[")+1, msg.indexOf("]"));
+		String receiveMsg = msg.substring(msg.indexOf("]")+1, msg.length());
+		String rn = chkMsg.substring(chkMsg.lastIndexOf("/")+1, chkMsg.length());
+		
+		System.out.println(msg);
+		System.out.println(receiveMsg);
+		System.out.println(sendId);
+		System.out.println(rn);
 	}
 
 }

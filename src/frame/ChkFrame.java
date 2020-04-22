@@ -29,15 +29,106 @@ public class ChkFrame extends JFrame {
 		
 		if(chkMsg.indexOf("chk")!=-1) {
 			System.out.println("Check");
-		} else if(chkMsg.substring(0, chkMsg.indexOf(":")+1).equals("DM:")) {			
-			// 누군가가 DM을 보냈으면 받은 사람들의 창에 실시간으로도 적용되게 해야 함
-			// > 현재 DM창을 껐다 켜거나 Refresh 눌러서 목록 새로 받아오면 갱신됨, 참가자가 창을 띄우고 있어도 바로 갱신 X
-			// ! new DirectMessageFrame을 쓴 문제, 새로 만들면 안됨 !
-			DirectMessageFrame OpenDmF = nowCc.getOpenDmF();
-			String msg = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
-			OpenDmF.setMessage(msg);
+		} else if(chkMsg.substring(0, chkMsg.indexOf(":")+1).equals("DM:")) {
+			DirectMessageFrame OpenDmF = nowCc.getOpenDmFrame();
+			
+			String msg = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.lastIndexOf("/"));
+			
+			System.out.println(msg + "/");
+			
+			String sendId = msg.substring(msg.indexOf("[")+1, msg.indexOf("]"));
+			String receiveMsg = msg.substring(msg.indexOf("]")+1, msg.length());
+			String rn = chkMsg.substring(chkMsg.lastIndexOf("/")+1, chkMsg.length());
+			
+			// 기존 DM방을 불러옴
+			OneDMFrame OneDmF = nowCc.getHomeF().getOneDMFrame(rn);
+				
+			if(OpenDmF!=null) {
+				// 임시 방 이름이였을 시 할당받은 방 번호를 DirectMessageFrame에 전달
+				if(OpenDmF.getRoomName().contains("temp")) {
+					OpenDmF.setRoomName(rn);
+				}
+				// 기존에 만들어진 DM방이 존재하는 경우
+				if(OneDmF!=null) {
+					String color = null;
+					// 열려있는 DM창과 만들어진 OneDMFrame이 같은 것인가 판별
+					// : 같다면 메세지를 DM창에 띄우며 DM창 팝업 여부에 따라 OneDMFrame의 Panel 색 변경
+					if(OpenDmF.getYourId().equals(OneDmF.getYourId())) {
+						OpenDmF.setMessage(msg);
+						
+						if(OpenDmF.isVisible()) {
+							color = "noColor";
+						} else if(OpenDmF.isVisible()==false) {
+							color = "Color";
+						}
+					}
+					// DM창을 열고 있는 사용자와 메세지를 보내는 사용자가 같다면 Tab 색깔 바꾸기 X
+					// 자신이 보낸 것이기에 굳이 새로 메세지가 왔다는 알람을 줄 필요가 없음 > OneDMFrame의 Label만 변경
+					if(!OpenDmF.getNowId().equals(sendId)) {
+						nowCc.getHomeF().setTabColor(2, color);
+						OneDmF.setLabel(rn, msg, color);
+					} else {
+						OneDmF.setLabel(rn, msg, color);
+					}
+				} else if(OneDmF==null) {
+					OpenDmF.setMessage(msg);
+					nowCc.getHomeF().tabRefresh("2");
+				}
+			} else if(OpenDmF==null) {
+				// DM창이 열려있지 않은 상태
+				nowCc.getHomeF().setTabColor(2, "Color");
+				
+				// 기존 DM방의 존재 여부
+				if(OneDmF==null) {
+					// Tab 새로고침으로 해당되는 OneDMFrame 생성
+					nowCc.getHomeF().tabRefresh("2");
+					OneDMFrame createOneDmF = nowCc.getHomeF().getOneDMFrame(rn);
+					createOneDmF.setLabel(rn, msg, "Color");
+				} else {
+					OneDmF.setLabel(rn, msg, "Color");
+				}
+			}
 		} else {
 			Frame();
+		}
+	}
+	
+	private void setLocationFrame() {
+		HomeFrame homeF = nowCc.getHomeF();
+		
+		if(homeF==null) {
+			this.setLocationRelativeTo(null);
+		} else {
+			int xx = 0;
+			int yy = 0;
+			
+			if(this.getWidth()<homeF.getWidth()) {
+				int x1 = (homeF.getWidth()-this.getWidth())/2;
+				int x = homeF.getX();
+				xx = x + x1;
+			} else if(this.getWidth()>homeF.getWidth()) {
+				int x1 = (this.getWidth()-homeF.getWidth())/2;
+				int x = homeF.getX();
+				xx = x - x1;
+			} else if(this.getWidth()==homeF.getWidth()) {
+				int x = homeF.getX();
+				xx = x;
+			}
+			
+			if(this.getHeight()<homeF.getHeight()) {
+				int y1 = (homeF.getHeight()-this.getHeight())/2;
+				int y = homeF.getY();
+				yy = y + y1;
+			} else if(this.getHeight()>homeF.getHeight()) {
+				int y1 = (this.getHeight()-homeF.getHeight())/2;
+				int y = homeF.getY();
+				yy = y - y1;
+			} else if(this.getHeight()==homeF.getHeight()) {
+				int y = homeF.getY();
+				yy = y;
+			}
+			
+			this.setLocation(xx, yy);
 		}
 	}
 	
@@ -45,7 +136,7 @@ public class ChkFrame extends JFrame {
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 250, 150);
 		
-		this.setLocationRelativeTo(null);
+		setLocationFrame();
 		
 		// Center panel
 		cP = new JPanel();
@@ -90,6 +181,9 @@ public class ChkFrame extends JFrame {
 					textLabel = new JLabel("Sure?");
 				} else if(chkMsg.contains("true")) {
 					textLabel = new JLabel("Post delete");
+					
+					nowCc.getHomeF().tabRefresh("0");
+					nowCc.getHomeF().tabRefresh("1");
 				}
 			}
 		} else {

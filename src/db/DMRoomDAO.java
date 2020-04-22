@@ -30,17 +30,11 @@ public class DMRoomDAO implements DAOInterface {
 		// TODO Auto-generated method stub
 		try {
 			DMRoomDTO dmR = (DMRoomDTO)DTO;
-			
 			String sql = null;
 			PreparedStatement psmt = null;
 			
 			if(dmR.getRoomname()==null) {
-//				sql = "insert into dmroom values(dmroom_no.nextval, ?)";
-				
-				// Test
-				sql = "insert into dmroom values(1, ?)";
-				//
-				
+				sql = "insert into dmroom values(dmroom_no.nextval, ?)";
 				psmt = con.prepareStatement(sql);
 				psmt.setString(1, dmR.getId());
 			} else {
@@ -92,12 +86,12 @@ public class DMRoomDAO implements DAOInterface {
 		// (상황은 1:1을 가정)
 		// DM 사용자간에 DM 방의 존재 여부를 판별
 		// 1) 존재하지 않으면 null값 할당 > insert문을 통해 sequence 방 번호를 할당하여 DM 방 생성
-		// 		> 생성된 방 번호를 알기 위해 바로 select문을 돌려 가장 최근에 만들어진 DM 방의 번호를 받아옴(내림차순 정렬, rownum=1)
-		// 		> 받은 방 번호로 상대방을 방 안에 참가시키기 위한 insert문 수행
+		// 	> 생성된 방 번호를 알기 위해 바로 select문을 돌려 가장 최근에 만들어진 DM 방의 번호를 받아옴(내림차순 정렬, rownum=1)
+		// 	> 받은 방 번호로 상대방을 방 안에 참가시키기 위한 insert문 수행
 		// 2) 존재한다면 이미 만들어져있는 DM방의 번호 할당 > return 받은 방 번호로 바로 Server에서 send 수행
 		
-		// 처음 방 여부를 체크하는 select문
 		if(s.contains("/")) {
+			// 처음 방 여부를 체크하는 select문
 			String myId = s.substring(0, s.indexOf("/"));
 			String yourId = s.substring(s.indexOf("/")+1, s.length());
 			
@@ -157,7 +151,6 @@ public class DMRoomDAO implements DAOInterface {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 		}
 		return null;
 	}
@@ -182,9 +175,11 @@ public class DMRoomDAO implements DAOInterface {
 				psmt = con.prepareStatement(sql);
 				psmt.setString(1, roomN);
 			} else {
-				sql = "select * from dmroom where id=?";
+				sql = "select * from dmroom where roomname in "
+						+ "(select roomname from dmroom where id=?) and id<>?";
 				psmt = con.prepareStatement(sql);
 				psmt.setString(1, s);
+				psmt.setString(2, s);
 			}
 			
 			rs = psmt.executeQuery();

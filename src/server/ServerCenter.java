@@ -152,7 +152,7 @@ public class ServerCenter {
 				for(Object j : list) {
 					DMRoomDTO dr = (DMRoomDTO)j;
 					if(i.getNowScId().equals(dr.getId())) {
-						String receiveDM = "DM:" + "[" + id + "]" + DMmsg;
+						String receiveDM = "DM:" + "[" + id + "]" + DMmsg + "/" + DMRoomName;
 						i.send(receiveDM);
 					}
 				}

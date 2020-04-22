@@ -12,6 +12,7 @@ import frame.DirectMessageFrame;
 import frame.HomeFrame;
 import frame.JoinFrame;
 import frame.LoginFrame;
+import frame.OneDMFrame;
 
 public class ClientChat {
 	private Socket withServer = null;
@@ -25,12 +26,13 @@ public class ClientChat {
 	private LoginFrame loginF = null;
 	private HomeFrame homeF = null;
 	
+	private DirectMessageFrame OpendmF = null;
+	private OneDMFrame OneDmF = null;
+	
 	private String nowId = null;
 	private String receiveMsg = null;
 	
 	private int portNum = -1;
-	
-	private DirectMessageFrame OpendmF = null;
 	
 	ClientChat(Socket s){
 		this.withServer = s;
@@ -77,19 +79,32 @@ public class ClientChat {
 					}
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
-					// e.printStackTrace();
-					System.out.println("Server Out");
+					e.printStackTrace();
+//					System.out.println("Server Out");
 				}
 			}
 		}).start();
 	}
 	
-	public void setOpenDmF(DirectMessageFrame dmF) {
+	// 만들어진 DM Frame을 받기 위한 메소드(실시간으로 주고받는 Msg Frame에 띄우기)
+	public void setOpenDmFrame(DirectMessageFrame dmF) {
 		this.OpendmF = dmF;
 	}
 	
-	public DirectMessageFrame getOpenDmF() {
+	public DirectMessageFrame getOpenDmFrame() {
 		return this.OpendmF;
+	}
+	
+//	public void setOneDMFrame(OneDMFrame OneDmF) {
+//		this.OneDmF = OneDmF;
+//	}
+//	
+//	public OneDMFrame getOneDMFrame() {
+//		return this.OneDmF;
+//	}
+//	
+	public HomeFrame getHomeF() {
+		return homeF;
 	}
 	
 	public void sleep() {
@@ -155,6 +170,7 @@ public class ClientChat {
 			ObjectInputStream ois = new ObjectInputStream(bis);
 			
 			Object o = ois.readObject();
+			System.out.println("/Object:" + o);
 			
 			return o;
 		} catch (Exception e) {

@@ -24,16 +24,51 @@ public class MyPageFrame extends JFrame {
 	private JButton applyBtn, endBtn;
 	
 	private ClientChat nowCc = null;
+	private HomeFrame homeF = null;
 	
-	private String nowId = null;
+	private String nowId = null;	
 	
-	MyPageFrame(ClientChat cc, String id){
+	MyPageFrame(ClientChat cc, String id, HomeFrame homeF){
 		this.nowCc = cc;
 		this.nowId = id;
+		this.homeF = homeF;
 		
 		MemberDTO my = (MemberDTO)nowCc.getObject("myPage:" + id);
 		
 		Frame(my);
+	}
+	
+	private void setLocationFrame() {
+		int xx = 0;
+		int yy = 0;
+		
+		if(this.getWidth()<homeF.getWidth()) {
+			int x1 = (homeF.getWidth()-this.getWidth())/2;
+			int x = homeF.getX();
+			xx = x + x1;
+		} else if(this.getWidth()>homeF.getWidth()) {
+			int x1 = (this.getWidth()-homeF.getWidth())/2;
+			int x = homeF.getX();
+			xx = x - x1;
+		} else if(this.getWidth()==homeF.getWidth()) {
+			int x = homeF.getX();
+			xx = x;
+		}
+		
+		if(this.getHeight()<homeF.getHeight()) {
+			int y1 = (homeF.getHeight()-this.getHeight())/2;
+			int y = homeF.getY();
+			yy = y + y1;
+		} else if(this.getHeight()>homeF.getHeight()) {
+			int y1 = (this.getHeight()-homeF.getHeight())/2;
+			int y = homeF.getY();
+			yy = y - y1;
+		} else if(this.getHeight()==homeF.getHeight()) {
+			int y = homeF.getY();
+			yy = y;
+		}
+		
+		this.setLocation(xx, yy);
 	}
 
 	private void Frame(MemberDTO my) {
@@ -41,7 +76,9 @@ public class MyPageFrame extends JFrame {
 		this.setLayout(null);
 		this.setBounds(0, 0, 300, 300);
 		
-		this.setLocationRelativeTo(null);
+//		this.setLocationRelativeTo(null);
+		
+		setLocationFrame();
 		
 		JLabel main = new JLabel("My Page");
 		main.setBounds(105, 15, 100, 25);

@@ -40,8 +40,9 @@ public class UserListFrame extends JFrame {
 	public void viewListFrame(String keyword) {
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 300, 400);
-		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+		setLocationFrame();
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 		
@@ -82,6 +83,39 @@ public class UserListFrame extends JFrame {
 		this.add(listAll);
 	}
 	
+	private void setLocationFrame() {
+		int xx = 0;
+		int yy = 0;
+		
+		if(this.getWidth()<homeF.getWidth()) {
+			int x1 = (homeF.getWidth()-this.getWidth())/2;
+			int x = homeF.getX();
+			xx = x + x1;
+		} else if(this.getWidth()>homeF.getWidth()) {
+			int x1 = (this.getWidth()-homeF.getWidth())/2;
+			int x = homeF.getX();
+			xx = x - x1;
+		} else if(this.getWidth()==homeF.getWidth()) {
+			int x = homeF.getX();
+			xx = x;
+		}
+		
+		if(this.getHeight()<homeF.getHeight()) {
+			int y1 = (homeF.getHeight()-this.getHeight())/2;
+			int y = homeF.getY();
+			yy = y + y1;
+		} else if(this.getHeight()>homeF.getHeight()) {
+			int y1 = (this.getHeight()-homeF.getHeight())/2;
+			int y = homeF.getY();
+			yy = y - y1;
+		} else if(this.getHeight()==homeF.getHeight()) {
+			int y = homeF.getY();
+			yy = y;
+		}
+		
+		this.setLocation(xx, yy);
+	}
+	
 	public Panel viewMyFList(String userId, String keyword) {
 		// TODO Auto-generated method stub
 		Panel FList = new Panel();
@@ -102,8 +136,8 @@ public class UserListFrame extends JFrame {
 					
 					System.out.println("/chkRoom:" + roomName);
 					
-					DirectMessageFrame dmF = new DirectMessageFrame();
-					nowCc.setOpenDmF(dmF);
+					DirectMessageFrame dmF = new DirectMessageFrame(homeF, userId);
+					nowCc.setOpenDmFrame(dmF);
 					
 					if(roomName!=null) {
 						dmF.OpenChattingRoom(nowCc, roomName);

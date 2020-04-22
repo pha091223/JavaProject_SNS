@@ -16,10 +16,13 @@ import client.ClientChat;
 
 public class WritePostFrame extends JFrame {
 	private ClientChat nowCc = null;
+	private HomeFrame homeF = null;
 
-	WritePostFrame(ClientChat cc) {
+	WritePostFrame(ClientChat cc, HomeFrame homeF) {
 		super("WritePost");
 		nowCc = cc;
+		this.homeF = homeF;
+		
 		createWritePostFrame();
 	}
 
@@ -37,16 +40,16 @@ public class WritePostFrame extends JFrame {
 		
 		contentPane.add(textPane);
 
-		JButton btnAddPicture = new JButton("addPic");
-		
-		btnAddPicture.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// 그림 넣기
-			}
-		});
-		
-		btnAddPicture.setBounds(12, 290, 97, 23);
-		contentPane.add(btnAddPicture);
+//		JButton btnAddPicture = new JButton("addPic");
+//		
+//		btnAddPicture.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				// 그림 넣기
+//			}
+//		});
+//		
+//		btnAddPicture.setBounds(12, 290, 97, 23);
+//		contentPane.add(btnAddPicture);
 
 		JButton btnShare = new JButton("Share");
 		
@@ -58,6 +61,9 @@ public class WritePostFrame extends JFrame {
 				if(nowCc.getReceiveMessage().contains("true")) {
 					setClose();
 				}
+				
+				homeF.tabRefresh("0");
+				homeF.tabRefresh("1");
 			}
 		});
 		

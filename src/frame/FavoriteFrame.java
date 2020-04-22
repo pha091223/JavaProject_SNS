@@ -24,22 +24,24 @@ import db.FavoriteDTO;
 import db.PostDTO;
 
 public class FavoriteFrame extends JFrame {
-	private HomeFrame HomeF = null;
+	private HomeFrame homeF = null;
 	private ClientChat nowCc = null;
 	
 	private ArrayList<Object> fList = null;
 	
 	FavoriteFrame(HomeFrame h, ClientChat cc, Object o){
 		super("Favorite");
-		HomeF = h;
+		homeF = h;
 		this.nowCc = cc;
 		
 		fList = (ArrayList<Object>)o;
 		
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 300, 400);
-		this.setLocationRelativeTo(null);
+//		this.setLocationRelativeTo(null);
 		this.setVisible(true);
+		
+		setLocationFrame();
 		
 		this.setDefaultCloseOperation(this.DISPOSE_ON_CLOSE);
 		
@@ -71,6 +73,39 @@ public class FavoriteFrame extends JFrame {
 		
 		this.add(myFavoriteAll);
 	}
+	
+	private void setLocationFrame() {
+		int xx = 0;
+		int yy = 0;
+		
+		if(this.getWidth()<homeF.getWidth()) {
+			int x1 = (homeF.getWidth()-this.getWidth())/2;
+			int x = homeF.getX();
+			xx = x + x1;
+		} else if(this.getWidth()>homeF.getWidth()) {
+			int x1 = (this.getWidth()-homeF.getWidth())/2;
+			int x = homeF.getX();
+			xx = x - x1;
+		} else if(this.getWidth()==homeF.getWidth()) {
+			int x = homeF.getX();
+			xx = x;
+		}
+		
+		if(this.getHeight()<homeF.getHeight()) {
+			int y1 = (homeF.getHeight()-this.getHeight())/2;
+			int y = homeF.getY();
+			yy = y + y1;
+		} else if(this.getHeight()>homeF.getHeight()) {
+			int y1 = (this.getHeight()-homeF.getHeight())/2;
+			int y = homeF.getY();
+			yy = y - y1;
+		} else if(this.getHeight()==homeF.getHeight()) {
+			int y = homeF.getY();
+			yy = y;
+		}
+		
+		this.setLocation(xx, yy);
+	}
 
 	private Panel viewMyFList(String PostNum) {
 		// TODO Auto-generated method stub
@@ -86,7 +121,7 @@ public class FavoriteFrame extends JFrame {
 		FPostBtn.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				OnePostFrame pF = new OnePostFrame(HomeF, nowCc);
+				OnePostFrame pF = new OnePostFrame(homeF, nowCc);
 				try {
 					pF.viewPostLayOut(FavoritePost);
 				} catch (Exception e1) {
