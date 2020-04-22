@@ -37,7 +37,6 @@ public class ChkFrame extends JFrame {
 			System.out.println(msg + "/");
 			
 			String sendId = msg.substring(msg.indexOf("[")+1, msg.indexOf("]"));
-			String receiveMsg = msg.substring(msg.indexOf("]")+1, msg.length());
 			String rn = chkMsg.substring(chkMsg.lastIndexOf("/")+1, chkMsg.length());
 			
 			// 기존 DM방을 불러옴
@@ -52,7 +51,7 @@ public class ChkFrame extends JFrame {
 				if(OneDmF!=null) {
 					String color = null;
 					// 열려있는 DM창과 만들어진 OneDMFrame이 같은 것인가 판별
-					// : 같다면 메세지를 DM창에 띄우며 DM창 팝업 여부에 따라 OneDMFrame의 Panel 색 변경
+					// 같다면 메세지를 DM창에 띄우며 DM창 팝업 여부에 따라 OneDMFrame의 Panel 색 변경
 					if(OpenDmF.getYourId().equals(OneDmF.getYourId())) {
 						OpenDmF.setMessage(msg);
 						
@@ -72,7 +71,14 @@ public class ChkFrame extends JFrame {
 					}
 				} else if(OneDmF==null) {
 					OpenDmF.setMessage(msg);
+					// Tab 새로고침으로 해당되는 OneDMFrame 생성
 					nowCc.getHomeF().tabRefresh("2");
+					OneDMFrame createOneDmF = nowCc.getHomeF().getOneDMFrame(rn);
+					if(createOneDmF.getYourId().equals(sendId)) {
+						createOneDmF.setLabel(rn, msg, "Color");						
+					} else {
+						createOneDmF.setLabel(rn, msg, "noColor");
+					}
 				}
 			} else if(OpenDmF==null) {
 				// DM창이 열려있지 않은 상태
@@ -80,7 +86,6 @@ public class ChkFrame extends JFrame {
 				
 				// 기존 DM방의 존재 여부
 				if(OneDmF==null) {
-					// Tab 새로고침으로 해당되는 OneDMFrame 생성
 					nowCc.getHomeF().tabRefresh("2");
 					OneDMFrame createOneDmF = nowCc.getHomeF().getOneDMFrame(rn);
 					createOneDmF.setLabel(rn, msg, "Color");

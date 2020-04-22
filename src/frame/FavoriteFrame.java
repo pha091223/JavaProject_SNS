@@ -124,6 +124,7 @@ public class FavoriteFrame extends JFrame {
 				OnePostFrame pF = new OnePostFrame(homeF, nowCc);
 				try {
 					pF.viewPostLayOut(FavoritePost);
+					setClose();
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -154,6 +155,10 @@ public class FavoriteFrame extends JFrame {
 		FList.setLayout(groupLayout);
 		
 		return FList;
+	}
+	
+	public void setClose() {
+		this.setVisible(false);
 	}
 	
 }

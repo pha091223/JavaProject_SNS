@@ -25,11 +25,46 @@ public class WritePostFrame extends JFrame {
 		
 		createWritePostFrame();
 	}
+	
+	private void setLocationFrame() {
+		int xx = 0;
+		int yy = 0;
+		
+		if(this.getWidth()<homeF.getWidth()) {
+			int x1 = (homeF.getWidth()-this.getWidth())/2;
+			int x = homeF.getX();
+			xx = x + x1;
+		} else if(this.getWidth()>homeF.getWidth()) {
+			int x1 = (this.getWidth()-homeF.getWidth())/2;
+			int x = homeF.getX();
+			xx = x - x1;
+		} else if(this.getWidth()==homeF.getWidth()) {
+			int x = homeF.getX();
+			xx = x;
+		}
+		
+		if(this.getHeight()<homeF.getHeight()) {
+			int y1 = (homeF.getHeight()-this.getHeight())/2;
+			int y = homeF.getY();
+			yy = y + y1;
+		} else if(this.getHeight()>homeF.getHeight()) {
+			int y1 = (this.getHeight()-homeF.getHeight())/2;
+			int y = homeF.getY();
+			yy = y - y1;
+		} else if(this.getHeight()==homeF.getHeight()) {
+			int y = homeF.getY();
+			yy = y;
+		}
+		
+		this.setLocation(xx, yy);
+	}
 
 	private void createWritePostFrame() {
 		// TODO Auto-generated method stub
 		this.setLayout(new BorderLayout());
 		this.setBounds(200, 100, 530, 400);
+		
+		setLocationFrame();
 		
 		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));

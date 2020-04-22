@@ -181,7 +181,6 @@ public class OnePostFrame extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				nowCc.send("deletePost:" + nowId + "/" + p.getNo());
-				nowCc.sleep();
 			}
 		});
 		

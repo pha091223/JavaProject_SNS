@@ -174,6 +174,7 @@ public class UserListFrame extends JFrame {
 				
 				public void actionPerformed(ActionEvent e) {
 					new ProfileFrame(userId, nowCc, homeF);
+					setClose();
 				}
 			});
 			
@@ -200,6 +201,11 @@ public class UserListFrame extends JFrame {
 		}
 		
 		return FList;
+	}
+	
+	private void setClose() {
+		// TODO Auto-generated method stub
+		this.setVisible(false);
 	}
 
 }
