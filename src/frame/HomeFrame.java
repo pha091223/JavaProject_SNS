@@ -64,10 +64,10 @@ public class HomeFrame extends JFrame {
 		super("SNS Program" + "_" + nowId);
 	}
 
-	public static HomeFrame getInstance(String id, ClientChat cc) {
-		nowId = id;
-		nowCc = cc;
-		if (homeF == null) {
+	public static HomeFrame getInstance(String id, ClientChat cc){
+		nowId=id;
+		nowCc=cc;
+		if(homeF==null) {
 			homeF = new HomeFrame();
 		}
 		return homeF;
@@ -180,7 +180,7 @@ public class HomeFrame extends JFrame {
 				myPost.removeAll();
 
 				Object o = nowCc.getObject("getList:" + "post" + "/" + nowId + "/t");
-				ArrayList<Object> pList = (ArrayList<Object>) o;
+				ArrayList<Object> pList = (ArrayList<Object>)o;
 
 				settingPostView(pList, myPost, nowId);
 
@@ -208,12 +208,12 @@ public class HomeFrame extends JFrame {
 	private void settingPostView(ArrayList<Object> pList, JPanel postPanel, String id) {
 		OnePostFrame pF = new OnePostFrame(homeF, nowCc);
 
-		if (pList.size() > 0) {
-			for (int i = 0; i < pList.size(); i++) {
-				PostDTO p = (PostDTO) pList.get(i);
+		if(pList.size()>0) {
+			for (int i=0; i<pList.size(); i++) {
+				PostDTO p = (PostDTO)pList.get(i);
 				postPanel.add(pF.viewPost(p, ""));
 			}
-		} else if (pList.size() == 0) {
+		} else if(pList.size()==0) {
 			JPanel temp = new JPanel();
 			temp.setLayout(new BorderLayout());
 			JLabel empty = new JLabel("Empty Post");
@@ -226,7 +226,7 @@ public class HomeFrame extends JFrame {
 	public void createProfile(JPanel tab_2, String id, ClientChat nowCc) {
 		// TODO Auto-generated method stub
 		Object receiveObject = nowCc.getObject("profile:" + id);
-		MemberDTO my = (MemberDTO) receiveObject;
+		MemberDTO my = (MemberDTO)receiveObject;
 
 		tab_2.setLayout(null);
 		tab_2.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -256,9 +256,9 @@ public class HomeFrame extends JFrame {
 				// TODO Auto-generated method stub
 				Object receiveObject = null;
 
-				if (nowId.equals(id)) {
+				if(nowId.equals(id)) {
 					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + nowId);
-				} else if (!nowId.equals(id)) {
+				} else if(!nowId.equals(id)) {
 					receiveObject = nowCc.getObject("getList:" + "friend" + "/" + id);
 				}
 
@@ -285,9 +285,9 @@ public class HomeFrame extends JFrame {
 				// TODO Auto-generated method stub
 				Object receiveObject = null;
 
-				if (nowId.equals(id)) {
+				if(nowId.equals(id)) {
 					receiveObject = nowCc.getObject("getList:" + "favorite" + "/" + nowId);
-				} else if (!nowId.equals(id)) {
+				} else if(!nowId.equals(id)) {
 					receiveObject = nowCc.getObject("getList:" + "favorite" + "/" + id);
 				}
 
@@ -320,7 +320,7 @@ public class HomeFrame extends JFrame {
 		tab_2.add(scrollPane);
 
 		// 사용자와 Profile 대상자가 같은 사람일 시 : MyPage, PostWrite
-		if (this.nowId.equals(id)) {
+		if(this.nowId.equals(id)) {
 			JButton MyPageBtn = new JButton("MyPage");
 			MyPageBtn.setBounds(12, 410, 97, 23);
 			tab_2.add(MyPageBtn);
@@ -347,9 +347,9 @@ public class HomeFrame extends JFrame {
 			nowCc.send("chkFollow:" + nowId + "/" + id);
 			nowCc.sleep();
 
-			if (nowCc.getReceiveMessage().indexOf("true") != -1) {
+			if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 				FollowBtn.setText("Unfollow");
-			} else if (nowCc.getReceiveMessage().indexOf("false") != -1) {
+			} else if(nowCc.getReceiveMessage().indexOf("false")!=-1) {
 				FollowBtn.setText("Follow");
 			}
 			tab_2.add(FollowBtn);
@@ -359,18 +359,18 @@ public class HomeFrame extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
-					if (FollowBtn.getText().equals("Follow")) {
+					if(FollowBtn.getText().equals("Follow")) {
 						nowCc.send("addFollow:" + nowId + "/" + id);
 						nowCc.sleep();
 
-						if (nowCc.getReceiveMessage().indexOf("true") != -1) {
+						if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 							FollowBtn.setText("Unfollow");
 						}
-					} else if (FollowBtn.getText().equals("Unfollow")) {
+					} else if(FollowBtn.getText().equals("Unfollow")) {
 						nowCc.send("delFollow:" + nowId + "/" + id);
 						nowCc.sleep();
 
-						if (nowCc.getReceiveMessage().indexOf("true") != -1) {
+						if(nowCc.getReceiveMessage().indexOf("true")!=-1) {
 							FollowBtn.setText("Follow");
 						}
 					}
@@ -387,16 +387,16 @@ public class HomeFrame extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					Object o = nowCc.getObject("chkDM:" + nowCc.getNowCcId() + "/" + id);
-					String roomName = (String) o;
+					String roomName = (String)o;
 
 					System.out.println("/chkRoom:" + roomName);
 
 					DirectMessageFrame dmF = new DirectMessageFrame(homeF, id);
 					nowCc.setOpenDmFrame(dmF);
 
-					if (roomName != null) {
+					if(roomName!=null) {
 						dmF.OpenChattingRoom(nowCc, roomName);
-					} else if (roomName == null) {
+					} else if(roomName==null) {
 						dmF.OpenChattingRoom(nowCc, "temp" + "+" + id);
 					}
 				}
@@ -417,7 +417,7 @@ public class HomeFrame extends JFrame {
 				myPost.removeAll();
 
 				Object receiveObject_Post = nowCc.getObject("getList:" + "post" + "/" + id);
-				ArrayList<Object> pList = (ArrayList<Object>) receiveObject_Post;
+				ArrayList<Object> pList = (ArrayList<Object>)receiveObject_Post;
 
 				settingPostView(pList, myPost, id);
 
@@ -458,7 +458,8 @@ public class HomeFrame extends JFrame {
 
 		scrollPane.setViewportView(myDMList);
 
-		ArrayList<Object> DMRoomList = (ArrayList<Object>) nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
+		ArrayList<Object> DMRoomList = 
+				(ArrayList<Object>) nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
 
 		settingDMView(DMRoomList, myDMList);
 
@@ -492,7 +493,8 @@ public class HomeFrame extends JFrame {
 
 				myDMList.removeAll();
 
-				ArrayList<Object> DMRoomList = (ArrayList<Object>) nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
+				ArrayList<Object> DMRoomList = 
+						(ArrayList<Object>) nowCc.getObject("getList:" + "dmroom" + "/" + nowId);
 
 				settingDMView(DMRoomList, myDMList);
 
@@ -511,8 +513,8 @@ public class HomeFrame extends JFrame {
 	}
 
 	private void settingDMView(ArrayList<Object> DMRoomList, JPanel myDMList) {
-		if (DMRoomList.size() > 0) {
-			for (int i = 0; i < DMRoomList.size(); i++) {
+		if(DMRoomList.size()>0) {
+			for(int i=0; i<DMRoomList.size(); i++) {
 				DMRoomDTO dmR = (DMRoomDTO) DMRoomList.get(i);
 				String dmRoomName = dmR.getRoomname();
 				String dmYourId = dmR.getId();
@@ -522,7 +524,7 @@ public class HomeFrame extends JFrame {
 				myDMList.add(dmF.oneDM(dmRoomName, dmYourId));
 				OneDMFrameList.add(dmF);
 			}
-		} else if (DMRoomList.size() == 0) {
+		} else if(DMRoomList.size()==0) {
 			JPanel temp = new JPanel();
 			temp.setLayout(new BorderLayout());
 			JLabel empty = new JLabel("Empty Message");
@@ -531,11 +533,15 @@ public class HomeFrame extends JFrame {
 			myDMList.add(temp);
 		}
 	}
+	
+//	public void delOneDMFrame(OneDMFrame OneDMF) {
+//		OneDMFrameList.remove(OneDMF);
+//	}
 
 	public OneDMFrame getOneDMFrame(String dmRoomName) {
-		if (OneDMFrameList.size() > 0) {
-			for (OneDMFrame i : OneDMFrameList) {
-				if (i.getDmRoomName().equals(dmRoomName)) {
+		if(OneDMFrameList.size()>0) {
+			for(OneDMFrame i : OneDMFrameList) {
+				if(i.getDmRoomName().equals(dmRoomName)) {
 					return i;
 				}
 			}
@@ -566,7 +572,7 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (searchM.getText().length() > 0) {
+				if(searchM.getText().length()>0) {
 					new ProfileFrame(searchM.getText(), nowCc, homeF);
 				}
 			}
@@ -575,13 +581,13 @@ public class HomeFrame extends JFrame {
 
 	private void createSearchData(JTextField txtInput) {
 		Object receiveObject = nowCc.getObject("setList:" + "member" + "/" + nowId);
-		setupAutoComplete(txtInput, (ArrayList<Object>) receiveObject);
+		setupAutoComplete(txtInput, (ArrayList<Object>)receiveObject);
 		txtInput.setColumns(30);
 	}
 
 	private boolean isAdjusting(JComboBox cbInput) {
-		if (cbInput.getClientProperty("is_adjusting") instanceof Boolean) {
-			return (Boolean) cbInput.getClientProperty("is_adjusting");
+		if(cbInput.getClientProperty("is_adjusting") instanceof Boolean) {
+			return (Boolean)cbInput.getClientProperty("is_adjusting");
 		}
 		return false;
 	}
@@ -600,8 +606,8 @@ public class HomeFrame extends JFrame {
 
 		setAdjusting(cbInput, false);
 
-		for (int i = 0; i < items.size(); i++) {
-			MemberDTO m = (MemberDTO) items.get(i);
+		for(int i=0; i<items.size(); i++) {
+			MemberDTO m = (MemberDTO)items.get(i);
 			model.addElement(m.getId());
 		}
 
@@ -611,8 +617,8 @@ public class HomeFrame extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (!isAdjusting(cbInput)) {
-					if (cbInput.getSelectedItem() != null) {
+				if(!isAdjusting(cbInput)) {
+					if(cbInput.getSelectedItem()!=null) {
 						txtInput.setText(cbInput.getSelectedItem().toString());
 					}
 				}
@@ -624,21 +630,21 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				setAdjusting(cbInput, true);
-				if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-					if (cbInput.isPopupVisible()) {
+				if(e.getKeyCode()==KeyEvent.VK_SPACE) {
+					if(cbInput.isPopupVisible()) {
 						e.setKeyCode(KeyEvent.VK_ENTER);
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_UP
-						|| e.getKeyCode() == KeyEvent.VK_DOWN) {
+				if(e.getKeyCode()==KeyEvent.VK_ENTER || e.getKeyCode()==KeyEvent.VK_UP
+						|| e.getKeyCode()==KeyEvent.VK_DOWN) {
 					e.setSource(cbInput);
 					cbInput.dispatchEvent(e);
-					if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-						if (cbInput.getSelectedItem() != null && cbInput.getSelectedItem().toString() != null) {
+					if(e.getKeyCode()==KeyEvent.VK_ENTER) {
+						if(cbInput.getSelectedItem()!=null && cbInput.getSelectedItem().toString()!=null) {
 							txtInput.setText(cbInput.getSelectedItem().toString());
-							for (int i = 0; i < items.size(); i++) {
+							for(int i=0; i<items.size(); i++) {
 								MemberDTO m = (MemberDTO) items.get(i);
-								if (m.getId().equals(txtInput.getText())) {
+								if(m.getId().equals(txtInput.getText())) {
 									searchM.setText(txtInput.getText());
 									txtInput.setText("");
 									break;
@@ -648,7 +654,7 @@ public class HomeFrame extends JFrame {
 						cbInput.setPopupVisible(false);
 					}
 				}
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
 					cbInput.setPopupVisible(false);
 				}
 				setAdjusting(cbInput, false);
@@ -672,15 +678,15 @@ public class HomeFrame extends JFrame {
 				setAdjusting(cbInput, true);
 				model.removeAllElements();
 				String input = txtInput.getText();
-				if (!input.isEmpty()) {
-					for (int i = 0; i < items.size(); i++) {
+				if(!input.isEmpty()) {
+					for(int i=0; i<items.size(); i++) {
 						MemberDTO m = (MemberDTO) items.get(i);
-						if (m.getId().toLowerCase().indexOf(input.toLowerCase()) != -1) {
+						if(m.getId().toLowerCase().indexOf(input.toLowerCase())!=-1) {
 							model.addElement(m.getId());
 						}
 					}
 				}
-				cbInput.setPopupVisible(model.getSize() > 0);
+				cbInput.setPopupVisible(model.getSize()>0);
 				setAdjusting(cbInput, false);
 			}
 		});
@@ -711,9 +717,9 @@ public class HomeFrame extends JFrame {
 	}
 
 	public void setTabColor(int tabNum, String keyword) {
-		if (keyword.equals("Color")) {
+		if(keyword.equals("Color")) {
 			tabPane.setBackgroundAt(tabNum, Color.cyan);
-		} else if (keyword.equals("noColor")) {
+		} else if(keyword.equals("noColor")) {
 			tabPane.setBackgroundAt(tabNum, null);
 		}
 	}
@@ -731,15 +737,15 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
-				if (tabPane.getSelectedIndex() == 0) {
+				if(tabPane.getSelectedIndex()==0) {
 					tabRefresh("0");
 					System.out.println("/Tab0:Timeline");
-				} else if (tabPane.getSelectedIndex() == 1) {
+				} else if(tabPane.getSelectedIndex()==1) {
 					tabRefresh("1");
 					System.out.println("/Tab1:myProilfe");
-				} else if (tabPane.getSelectedIndex() == 2) {
+				} else if(tabPane.getSelectedIndex()==2) {
 					System.out.println("/Tab2:myDirectMessage");
-				} else if (tabPane.getSelectedIndex() == 3) {
+				} else if(tabPane.getSelectedIndex()==3) {
 					createSearch();
 					System.out.println("/Tab3:Search");
 				}

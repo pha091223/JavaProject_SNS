@@ -186,6 +186,20 @@ public class ChkFrame extends JFrame {
 					nowCc.getHomeF().tabRefresh("1");
 				}
 			}
+		} else if(chkMsg.contains("MyDM")){
+			if(chkMsg.contains("Delete")) {
+				if(chkMsg.contains("hope")) {
+					textLabel = new JLabel("Sure?");
+				} else if(chkMsg.contains("true")) {
+//					String rn = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
+//					OneDMFrame delOneDmF = nowCc.getHomeF().getOneDMFrame(rn);
+//					nowCc.getHomeF().delOneDMFrame(delOneDmF);
+					
+					textLabel = new JLabel("DM Exit");
+					
+					nowCc.getHomeF().tabRefresh("2");
+				}
+			}
 		} else {
 			textLabel = new JLabel(chkMsg);
 		}
@@ -217,6 +231,9 @@ public class ChkFrame extends JFrame {
 					} else if(chkMsg.contains("Post")) {
 						String postNum = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
 						nowCc.send("deletePost:sure" + "/" + postNum);
+					} else if(chkMsg.contains("MyDM")) {
+						String keyword = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
+						nowCc.send("deleteDM:sure" + "/" + keyword);
 					}
 					setVisible(false);
 				}

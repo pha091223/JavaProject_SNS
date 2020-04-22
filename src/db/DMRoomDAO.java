@@ -65,6 +65,22 @@ public class DMRoomDAO implements DAOInterface {
 	@Override
 	public boolean delete(Object DTO) {
 		// TODO Auto-generated method stub
+		try {
+			DMRoomDTO dmR = (DMRoomDTO)DTO;
+			String sql = "delete from dmroom where roomname=? and id=?";
+			PreparedStatement psmt = con.prepareStatement(sql);
+			psmt.setString(1, dmR.getRoomname());
+			psmt.setString(2, dmR.getId());
+			
+			int count = psmt.executeUpdate();
+			
+			if(count==1) {
+				return true;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 

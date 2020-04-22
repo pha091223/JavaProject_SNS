@@ -19,18 +19,14 @@ public class Test extends JFrame {
 	}
 	
 	Test() throws Exception {
-		String chkMsg = "DM:" + "[" + "id" + "]" + "DMmsg" + "/" + "DMRoomName";
-				
-		String msg = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.lastIndexOf("/"));
+		String chkMsg = "MyDM Delete hope:" + "dmRoomName" + "/" + "nowId";
+		String keyword = chkMsg.substring(chkMsg.indexOf(":")+1, chkMsg.length());
+		String msg = "deleteDM:sure" + "/" + keyword;
+		String dmRoomName = msg.substring(msg.indexOf("/")+1, msg.lastIndexOf("/"));
+		String id = msg.substring(msg.lastIndexOf("/")+1, msg.length());
 		
-		String sendId = msg.substring(msg.indexOf("[")+1, msg.indexOf("]"));
-		String receiveMsg = msg.substring(msg.indexOf("]")+1, msg.length());
-		String rn = chkMsg.substring(chkMsg.lastIndexOf("/")+1, chkMsg.length());
-		
-		System.out.println(msg);
-		System.out.println(receiveMsg);
-		System.out.println(sendId);
-		System.out.println(rn);
+		System.out.println(dmRoomName);
+		System.out.println(id);
 	}
 
 }

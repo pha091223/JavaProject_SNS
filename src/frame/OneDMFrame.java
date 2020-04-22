@@ -1,6 +1,8 @@
 package frame;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.SimpleDateFormat;
@@ -10,7 +12,9 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
@@ -37,11 +41,13 @@ public class OneDMFrame extends JFrame {
 	private String dmRoomName = null;
 	
 	private HomeFrame homeF = null;
+	private OneDMFrame nowOneDMF = null;
 	
 	public OneDMFrame(ClientChat cc, String id, HomeFrame homeF) {
 		this.nowCc = cc;
 		this.nowId = id;
 		this.homeF = homeF;
+		this.nowOneDMF = this;
 	}
 	
 	public String getDmRoomName() {
@@ -104,18 +110,43 @@ public class OneDMFrame extends JFrame {
 					System.out.println("/Message Click");
 					oneUser.setBackground(Color.LIGHT_GRAY);
 					oneUser.setBorder(new TitledBorder(new LineBorder(Color.DARK_GRAY)));
+					
+					if(e.getClickCount()==2) {
+						DirectMessageFrame dmF = new DirectMessageFrame(homeF, yourId);
+						nowCc.setOpenDmFrame(dmF);
+						
+						dmF.OpenChattingRoom(nowCc, dmRoomName);
+						oneUser.setBackground(null);
+						oneUser.setBorder(null);
+						
+						// New Message로 인해 바뀌었던 tab 색깔 원래대로
+						nowCc.getHomeF().setTabColor(2, "noColor");
+					}
 				}
 				
-				if(e.getClickCount()==2) {
-					DirectMessageFrame dmF = new DirectMessageFrame(homeF, yourId);
-					nowCc.setOpenDmFrame(dmF);
+				if(e.getButton()==3) {
+					oneUser.setBackground(Color.LIGHT_GRAY);
+					oneUser.setBorder(new TitledBorder(new LineBorder(Color.DARK_GRAY)));
 					
-					dmF.OpenChattingRoom(nowCc, dmRoomName);
-					oneUser.setBackground(null);
-					oneUser.setBorder(null);
+					JPopupMenu DmPopup = new JPopupMenu();
+					JMenuItem dmDel = new JMenuItem("Exit");
 					
-					// New Message로 인해 바뀌었던 tab 색깔 원래대로
-					nowCc.getHomeF().setTabColor(2, "noColor");
+					dmDel.addActionListener(new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							// TODO Auto-generated method stub
+							oneUser.setBackground(null);
+							oneUser.setBorder(null);
+							
+							nowCc.send("deleteDM:" + dmRoomName + "/" + nowId);
+						}
+					});
+					
+					DmPopup.add(dmDel);
+					oneUser.add(DmPopup);
+					
+					DmPopup.show(oneUser, e.getX(), e.getY());
 				}
 			}
 		});

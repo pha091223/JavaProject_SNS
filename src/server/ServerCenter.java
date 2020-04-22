@@ -136,6 +136,25 @@ public class ServerCenter {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		} else if(msg.contains("deleteDM:")) {
+			if(msg.indexOf("sure")!=-1) {
+				String dmRoomName = msg.substring(msg.indexOf("/")+1, msg.lastIndexOf("/"));
+				String id = msg.substring(msg.lastIndexOf("/")+1, msg.length());
+				
+//				nowSc.send("MyDM Delete true:" + dmRoomName);
+				
+				DMRoomDTO dmR = new DMRoomDTO();
+				dmR.setRoomname(dmRoomName);
+				dmR.setId(id);
+				
+				// DB에서 해당하는 dmroom 튜플을 지워버리면 나갈 의사를 밝히지 않은 상대방도 DM 불러오기 불가능
+				// 자신이 나가도 나가지 않은 상대방한테는 내용과 OneDMFrame이 그대로 보이게 해야함 > DB Attribute 추가 방법 예상
+				if(Dc.delete("dmroom", dmR)) {
+					nowSc.send("MyDM Delete true");
+				}
+			} else {
+				nowSc.send("MyDM Delete hope:" + keyword);
+			}
 		}
 	}
 	
