@@ -136,7 +136,7 @@ public class JoinFrame extends JFrame {
 				nowCc.send(msg);
 				nowCc.sleep();
 				
-				if(nowCc.getReceiveMessage().indexOf("true")!=-1){
+				if(nowCc.getReceiveMessage().indexOf("Join true")!=-1){
 					dispose();
 				}
 			}

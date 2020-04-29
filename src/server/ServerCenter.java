@@ -514,6 +514,8 @@ public class ServerCenter {
 		String pwd = reMsg.substring(reMsg.indexOf("/")+1, reMsg.lastIndexOf("/"));
 		String phone = reMsg.substring(reMsg.lastIndexOf("/")+1, reMsg.length());
 		
+		System.out.println("/IDchk:" + idChk);
+		
 		if(idChk==true) {
 			if(phone.length()>11) {
 				nowSc.send("Wrong PhoneNumber");

@@ -556,7 +556,7 @@ public class HomeFrame extends JFrame {
 		JTextField txtInput = new JTextField();
 		searchP.setLayout(new BorderLayout());
 		searchP.add(txtInput, "North");
-
+		
 		tab_4.add(searchP, "North");
 
 		createSearchData(txtInput);
@@ -574,6 +574,7 @@ public class HomeFrame extends JFrame {
 				// TODO Auto-generated method stub
 				if(searchM.getText().length()>0) {
 					new ProfileFrame(searchM.getText(), nowCc, homeF);
+					searchM.setText("");
 				}
 			}
 		});
@@ -643,7 +644,7 @@ public class HomeFrame extends JFrame {
 						if(cbInput.getSelectedItem()!=null && cbInput.getSelectedItem().toString()!=null) {
 							txtInput.setText(cbInput.getSelectedItem().toString());
 							for(int i=0; i<items.size(); i++) {
-								MemberDTO m = (MemberDTO) items.get(i);
+								MemberDTO m = (MemberDTO)items.get(i);
 								if(m.getId().equals(txtInput.getText())) {
 									searchM.setText(txtInput.getText());
 									txtInput.setText("");

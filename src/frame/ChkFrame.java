@@ -55,11 +55,16 @@ public class ChkFrame extends JFrame {
 					if(OpenDmF.getYourId().equals(OneDmF.getYourId())) {
 						OpenDmF.setMessage(msg);
 						
+						System.out.println("/" + OpenDmF.getYourId());
+						System.out.println("/" + OneDmF.getYourId());
+						
 						if(OpenDmF.isVisible()) {
 							color = "noColor";
 						} else if(OpenDmF.isVisible()==false) {
 							color = "Color";
 						}
+					} else {
+						color = "Color";
 					}
 					// DM창을 열고 있는 사용자와 메세지를 보내는 사용자가 같다면 Tab 색깔 바꾸기 X
 					// 자신이 보낸 것이기에 굳이 새로 메세지가 왔다는 알람을 줄 필요가 없음 > OneDMFrame의 Label만 변경

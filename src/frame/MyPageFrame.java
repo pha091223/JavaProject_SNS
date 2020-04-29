@@ -175,6 +175,7 @@ public class MyPageFrame extends JFrame {
 					}
 				}
 				nowCc.send(msg);
+				nowCc.sleep();
 				
 				if(nowCc.getReceiveMessage().indexOf("true")!=-1){
 					dispose();

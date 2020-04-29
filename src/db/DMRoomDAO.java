@@ -96,16 +96,15 @@ public class DMRoomDAO implements DAOInterface {
 		return false;
 	}
 
+	// (상황은 1:1을 가정)
+	// DM 사용자간에 DM 방의 존재 여부를 판별
+	// 1) 존재하지 않으면 null값 할당 > insert문을 통해 sequence 방 번호를 할당하여 DM 방 생성
+	// 	> 생성된 방 번호를 알기 위해 바로 select문을 돌려 가장 최근에 만들어진 DM 방의 번호를 받아옴(내림차순 정렬, rownum=1)
+	// 	> 받은 방 번호로 상대방을 방 안에 참가시키기 위한 insert문 수행
+	// 2) 존재한다면 이미 만들어져있는 DM방의 번호 할당 > return 받은 방 번호로 바로 Server에서 send 수행
 	@Override
 	public Object select(String s) {
 		// TODO Auto-generated method stub
-		// (상황은 1:1을 가정)
-		// DM 사용자간에 DM 방의 존재 여부를 판별
-		// 1) 존재하지 않으면 null값 할당 > insert문을 통해 sequence 방 번호를 할당하여 DM 방 생성
-		// 	> 생성된 방 번호를 알기 위해 바로 select문을 돌려 가장 최근에 만들어진 DM 방의 번호를 받아옴(내림차순 정렬, rownum=1)
-		// 	> 받은 방 번호로 상대방을 방 안에 참가시키기 위한 insert문 수행
-		// 2) 존재한다면 이미 만들어져있는 DM방의 번호 할당 > return 받은 방 번호로 바로 Server에서 send 수행
-		
 		if(s.contains("/")) {
 			// 처음 방 여부를 체크하는 select문
 			String myId = s.substring(0, s.indexOf("/"));
@@ -115,34 +114,41 @@ public class DMRoomDAO implements DAOInterface {
 			PreparedStatement psmt = null;
 			
 			try {			
-				sql = "create view dmroom_1 as select * from dmroom where id='" + myId + "'";
-				Statement st = con.createStatement();
-				st.executeUpdate(sql);
-				
-				sql = "create view dmroom_2 as select * from dmroom where id='" + yourId + "'";
-				st = con.createStatement();
-				st.executeUpdate(sql);
-				
-				sql = "select dmroom_1.roomname from dmroom_1, dmroom_2 "
-						+ "where dmroom_1.roomname=dmroom_2.roomname";
+//				sql = "create view dmroom_1 as select * from dmroom where id='" + myId + "'";
+//				Statement st = con.createStatement();
+//				st.executeUpdate(sql);
+//				
+//				sql = "create view dmroom_2 as select * from dmroom where id='" + yourId + "'";
+//				st = con.createStatement();
+//				st.executeUpdate(sql);
+//				
+//				sql = "select dmroom_1.roomname from dmroom_1, dmroom_2 "
+//						+ "where dmroom_1.roomname=dmroom_2.roomname";
+//				psmt = con.prepareStatement(sql);
+
+				sql = "select * from dmroom where roomname in "
+						+ "(select roomname from dmroom where id=?) and id=?";
 				psmt = con.prepareStatement(sql);
-				rs = psmt.executeQuery();
+				psmt.setString(1, myId);
+				psmt.setString(2, yourId);
 				
 				String roomName = null;
 				
 				while(rs.next()) {
 					roomName = rs.getString("roomname");
+					
+					return roomName;
 				}
 				
-				sql = "drop view dmroom_1";
-				st = con.createStatement();
-				st.executeUpdate(sql);
-				
-				sql = "drop view dmroom_2";
-				st = con.createStatement();
-				st.executeUpdate(sql);
-				
-				return roomName;
+//				sql = "drop view dmroom_1";
+//				st = con.createStatement();
+//				st.executeUpdate(sql);
+//				
+//				sql = "drop view dmroom_2";
+//				st = con.createStatement();
+//				st.executeUpdate(sql);
+//				
+//				return roomName;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
